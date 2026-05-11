@@ -125,3 +125,4 @@ Pour déployer sur Internet rapidement, utilise **Railway** (gratuit) :
 | `Cannot find module 'express'` | Relance `npm install` |
 | `Port 3000 already in use` | Change `PORT=3001` dans `.env` |
 | L'IA répond en anglais | Normal — elle répond dans la langue du cours |
+# studyai
