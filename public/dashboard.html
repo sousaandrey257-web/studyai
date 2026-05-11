@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090f" />
+  <meta name="robots" content="noindex" />
+  <title>Mon espace — StudyAI</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icons/icon.svg" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/gamification.css" />
+  <link rel="stylesheet" href="css/premium.css" />
+</head>
+<body class="dash-body">
+
+  <!-- ===== HEADER ===== -->
+  <header class="dash-header">
+    <a href="/" class="dash-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">StudyAI</span>
+    </a>
+    <div class="dash-header-center">
+      <span class="dash-page-title">Mon espace</span>
+    </div>
+    <div class="dash-header-right">
+      <span id="dash-email" class="dash-email"></span>
+      <a href="/" class="btn-secondary-small">⚡ Nouveau cours</a>
+      <button class="btn-text-small" onclick="dashLogout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <div class="dash-container">
+
+    <!-- Gamification header (niveau, XP, streak, badges) -->
+    <div id="dash-gami"></div>
+
+    <!-- Missions quotidiennes -->
+    <div id="dash-missions"></div>
+
+    <!-- Classement hebdomadaire -->
+    <div id="dash-leaderboard" class="dash-leaderboard hidden"></div>
+
+    <!-- Stats -->
+    <div id="dash-stats" class="dash-stats-row">
+      <div class="dash-stat dash-stat-skeleton">
+        <span class="dash-stat-value">—</span>
+        <span class="dash-stat-label">Sessions</span>
+      </div>
+      <div class="dash-stat dash-stat-skeleton">
+        <span class="dash-stat-value">—</span>
+        <span class="dash-stat-label">Quiz complétés</span>
+      </div>
+      <div class="dash-stat dash-stat-skeleton">
+        <span class="dash-stat-value">—</span>
+        <span class="dash-stat-label">Score moyen</span>
+      </div>
+      <div class="dash-stat dash-stat-skeleton">
+        <span class="dash-stat-value">—</span>
+        <span class="dash-stat-label">Points faibles</span>
+      </div>
+    </div>
+
+    <!-- Weak areas (hidden by default) -->
+    <div id="dash-weak" class="dash-weak hidden"></div>
+
+    <!-- Referral -->
+    <div id="dash-referral"></div>
+
+    <!-- Sessions list -->
+    <div id="dash-list-section">
+      <div class="dash-section-header">
+        <h2 class="dash-section-title">Mes sessions</h2>
+        <span id="dash-session-count" class="dash-session-count"></span>
+      </div>
+      <div id="dash-sessions" class="dash-sessions-grid">
+        <div class="dash-loading">Chargement…</div>
+      </div>
+    </div>
+
+    <!-- Session detail (replaces list) -->
+    <div id="dash-detail" class="hidden"></div>
+
+  </div>
+
+  <script src="js/dashboard.js?v=5"></script>
+  <script src="js/ui.js?v=1"></script>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" aria-label="Navigation">
+    <div class="bottom-nav-inner">
+      <a href="/" class="bottom-nav-item" data-page="/">
+        <span class="bottom-nav-icon">⚡</span>
+        <span>Réviser</span>
+      </a>
+      <a href="/dashboard" class="bottom-nav-item active" data-page="/dashboard">
+        <span class="bottom-nav-icon">📊</span>
+        <span>Espace</span>
+      </a>
+      <a href="/upload" class="bottom-nav-item" data-page="/upload">
+        <span class="bottom-nav-icon">📄</span>
+        <span>Auto Study</span>
+      </a>
+      <button class="bottom-nav-item" onclick="dashLogout()">
+        <span class="bottom-nav-icon">👤</span>
+        <span>Déco</span>
+      </button>
+    </div>
+  </nav>
+</body>
+</html>

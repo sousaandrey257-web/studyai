@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#09090f" />
+  <title>StudyAI — Hors ligne</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #09090f;
+      color: #e2e8f0;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+    }
+    .icon { font-size: 4rem; }
+    h1 { font-size: 1.5rem; font-weight: 700; }
+    p { color: #94a3b8; max-width: 360px; line-height: 1.6; }
+    .btn {
+      margin-top: 1rem;
+      padding: 0.75rem 2rem;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover { background: #4f46e5; }
+  </style>
+</head>
+<body>
+  <div class="icon">📡</div>
+  <h1>Pas de connexion</h1>
+  <p>StudyAI a besoin d'une connexion internet pour analyser tes cours et générer des quiz. Vérifie ta connexion puis réessaie.</p>
+  <button class="btn" onclick="window.location.reload()">Réessayer</button>
+</body>
+</html>

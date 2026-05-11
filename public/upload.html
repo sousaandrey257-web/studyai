@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090f" />
+  <title>Auto Study — StudyAI</title>
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/premium.css" />
+  <link rel="stylesheet" href="css/upload.css" />
+</head>
+<body class="upload-body">
+
+  <!-- Header -->
+  <header class="upload-header">
+    <a href="/" class="dash-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">StudyAI</span>
+    </a>
+    <nav class="upload-header-nav">
+      <a href="/dashboard" class="btn-secondary-small">Mon espace</a>
+    </nav>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="upload-hero" id="section-upload">
+    <div class="upload-hero-inner">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Auto Study Engine — Alimenté par IA
+      </div>
+      <h1 class="upload-hero-title">
+        Dépose ton cours.<br />
+        <span class="upload-hero-gradient">Maîtrise-le en 60 secondes.</span>
+      </h1>
+      <p class="upload-hero-sub">
+        PDF, texte, notes — notre IA génère automatiquement fiche de synthèse, quiz adaptatif, flashcards, pièges et roadmap.
+      </p>
+
+      <!-- Mode selector -->
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="standard">📚 Standard</button>
+        <button class="mode-btn" data-mode="simple">🌱 Débutant</button>
+        <button class="mode-btn" data-mode="expert">🔬 Expert</button>
+        <button class="mode-btn" data-mode="exam">🎯 Examen</button>
+      </div>
+
+      <!-- Upload zone -->
+      <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Zone de dépôt de fichier">
+        <div class="upload-zone-inner" id="upload-zone-inner">
+          <div class="upload-icon-wrap">
+            <div class="upload-icon">📄</div>
+            <div class="upload-icon-ring"></div>
+          </div>
+          <p class="upload-zone-title">Dépose ton fichier ici</p>
+          <p class="upload-zone-sub">PDF, TXT, MD — jusqu'à 20 Mo</p>
+          <button class="upload-browse-btn" id="btn-browse">Parcourir les fichiers</button>
+          <div class="upload-divider"><span>ou</span></div>
+          <button class="upload-paste-btn" id="btn-paste-toggle">✏️ Coller du texte</button>
+        </div>
+        <input type="file" id="file-input" accept=".pdf,.txt,.md,.html,.doc,.docx" style="display:none" />
+      </div>
+
+      <!-- Paste text area (hidden by default) -->
+      <div id="paste-area" class="paste-area hidden">
+        <div class="paste-area-header">
+          <span class="paste-area-label">📋 Colle ton cours ici</span>
+          <button class="paste-area-close" id="btn-paste-close">✕</button>
+        </div>
+        <textarea id="text-input" class="paste-textarea" placeholder="Colle ton texte de cours, tes notes, ou n'importe quel contenu à réviser…" rows="10"></textarea>
+        <div class="paste-area-footer">
+          <span id="char-count" class="char-count">0 caractères</span>
+          <button class="btn-primary btn-analyze" id="btn-analyze-text">
+            Analyser →
+          </button>
+        </div>
+      </div>
+
+      <!-- File preview -->
+      <div id="file-preview" class="file-preview hidden">
+        <div class="file-preview-icon" id="preview-icon">📄</div>
+        <div class="file-preview-info">
+          <span class="file-preview-name" id="preview-name"></span>
+          <span class="file-preview-size" id="preview-size"></span>
+        </div>
+        <button class="file-preview-remove" id="btn-remove-file">✕</button>
+      </div>
+
+      <!-- Analyze button -->
+      <button class="btn-primary btn-analyze-main hidden" id="btn-analyze-file">
+        <span class="btn-label">⚡ Générer mon pack d'étude</span>
+        <span class="btn-sub">Résumé + Quiz + Flashcards + Roadmap</span>
+      </button>
+
+      <!-- Trust indicators -->
+      <div class="upload-trust">
+        <span>🔒 Fichiers traités localement</span>
+        <span>⚡ Résultats en 30-60s</span>
+        <span>🎯 8 contenus générés</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROGRESS ===== -->
+  <section class="upload-progress hidden" id="section-progress">
+    <div class="progress-inner">
+      <div class="progress-header">
+        <div class="progress-brain">🧠</div>
+        <h2 class="progress-title">Génération en cours…</h2>
+        <p class="progress-sub" id="progress-label">Analyse du document…</p>
+      </div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <span class="progress-pct" id="progress-pct">0%</span>
+      </div>
+
+      <div class="progress-steps">
+        <div class="progress-step" id="step-parse">
+          <div class="step-icon">📖</div>
+          <div class="step-label">Lecture</div>
+        </div>
+        <div class="progress-step" id="step-summary">
+          <div class="step-icon">📝</div>
+          <div class="step-label">Synthèse</div>
+        </div>
+        <div class="progress-step" id="step-quiz">
+          <div class="step-icon">🎯</div>
+          <div class="step-label">Quiz</div>
+        </div>
+        <div class="progress-step" id="step-flash">
+          <div class="step-icon">🗂️</div>
+          <div class="step-label">Flashcards</div>
+        </div>
+        <div class="progress-step" id="step-concepts">
+          <div class="step-icon">💡</div>
+          <div class="step-label">Concepts</div>
+        </div>
+        <div class="progress-step" id="step-done">
+          <div class="step-icon">✅</div>
+          <div class="step-label">Prêt</div>
+        </div>
+      </div>
+
+      <p class="progress-tip" id="progress-tip">💡 Notre IA analyse la structure de ton cours pour créer du contenu ultra-personnalisé.</p>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS ===== -->
+  <section class="results-section hidden" id="section-results">
+    <div class="results-container">
+
+      <!-- Results header -->
+      <div class="results-header">
+        <div class="results-meta">
+          <h1 class="results-title" id="res-title">Pack d'étude</h1>
+          <div class="results-badges">
+            <span class="res-badge" id="res-subject"></span>
+            <span class="res-badge res-badge-level" id="res-level"></span>
+            <span class="res-badge res-badge-time" id="res-time"></span>
+          </div>
+        </div>
+        <div class="results-actions">
+          <button class="btn-secondary-small" id="btn-new-study">+ Nouveau cours</button>
+          <button class="btn-secondary-small" id="btn-regen">↻ Regénérer</button>
+          <button class="btn-primary btn-start-exam" id="btn-exam">🎯 Simuler un examen</button>
+        </div>
+      </div>
+
+      <!-- Difficulty gauge -->
+      <div class="difficulty-card">
+        <div class="difficulty-info">
+          <span class="difficulty-label">Score de difficulté</span>
+          <span class="difficulty-value" id="diff-value">—</span>
+        </div>
+        <div class="difficulty-track">
+          <div class="difficulty-fill" id="diff-fill" style="width:0%"></div>
+        </div>
+        <div class="difficulty-labels">
+          <span>Facile</span><span>Moyen</span><span>Difficile</span>
+        </div>
+      </div>
+
+      <!-- Brain links (Second Brain) -->
+      <div class="brain-links hidden" id="brain-links"></div>
+
+      <!-- Tabs -->
+      <div class="results-tabs">
+        <button class="res-tab active" data-tab="summary">📝 Synthèse</button>
+        <button class="res-tab" data-tab="quiz">🎯 Quiz</button>
+        <button class="res-tab" data-tab="flashcards">🗂️ Flashcards</button>
+        <button class="res-tab" data-tab="memo">⚡ Mémo</button>
+        <button class="res-tab" data-tab="concepts">💡 Concepts</button>
+        <button class="res-tab" data-tab="roadmap">🗺️ Roadmap</button>
+      </div>
+
+      <!-- Tab content -->
+      <div class="res-tab-content" id="tab-summary">
+        <div class="summary-executive" id="sum-executive"></div>
+        <div id="sum-sections"></div>
+        <div class="summary-row">
+          <div class="summary-col" id="sum-formulas-col">
+            <h3 class="summary-col-title">⚡ Formules & dates clés</h3>
+            <div id="sum-formulas"></div>
+          </div>
+          <div class="summary-col" id="sum-vocab-col">
+            <h3 class="summary-col-title">📖 Vocabulaire essentiel</h3>
+            <div id="sum-vocab"></div>
+          </div>
+        </div>
+        <div id="sum-mindmap"></div>
+      </div>
+
+      <div class="res-tab-content hidden" id="tab-quiz">
+        <div class="quiz-header">
+          <p class="quiz-info" id="quiz-info"></p>
+          <button class="btn-secondary-small" id="btn-battle">⚔️ Créer un Duel</button>
+        </div>
+        <div id="quiz-questions"></div>
+        <div class="quiz-score hidden" id="quiz-score"></div>
+      </div>
+
+      <div class="res-tab-content hidden" id="tab-flashcards">
+        <div class="flashcard-controls">
+          <button class="btn-secondary-small" id="btn-fc-shuffle">↺ Mélanger</button>
+          <span class="fc-progress" id="fc-progress">0 / 0</span>
+        </div>
+        <div class="flashcard-stack" id="flashcard-stack"></div>
+        <div class="fc-nav">
+          <button class="fc-nav-btn" id="btn-fc-prev">‹</button>
+          <div class="fc-dots" id="fc-dots"></div>
+          <button class="fc-nav-btn" id="btn-fc-next">›</button>
+        </div>
+      </div>
+
+      <div class="res-tab-content hidden" id="tab-memo">
+        <div id="memo-content"></div>
+      </div>
+
+      <div class="res-tab-content hidden" id="tab-concepts">
+        <div id="concepts-list"></div>
+        <div id="traps-list"></div>
+        <div id="exam-questions-list"></div>
+      </div>
+
+      <div class="res-tab-content hidden" id="tab-roadmap">
+        <div id="roadmap-content"></div>
+        <div id="mastery-card"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav" aria-label="Navigation">
+    <div class="bottom-nav-inner">
+      <a href="/" class="bottom-nav-item">
+        <span class="bottom-nav-icon">⚡</span>
+        <span>Réviser</span>
+      </a>
+      <a href="/upload" class="bottom-nav-item active">
+        <span class="bottom-nav-icon">📄</span>
+        <span>Auto Study</span>
+      </a>
+      <a href="/dashboard" class="bottom-nav-item">
+        <span class="bottom-nav-icon">📊</span>
+        <span>Espace</span>
+      </a>
+    </div>
+  </nav>
+
+  <script src="js/upload.js?v=1"></script>
+  <script src="js/ui.js?v=1"></script>
+</body>
+</html>

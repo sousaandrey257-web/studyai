@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090f" />
+  <title>StudyAI — Workspace intelligent</title>
+  <meta name="description" content="Analyse tes cours, crée des flashcards, révise avec l'IA et défie tes amis — tout en un seul endroit." />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta property="og:title" content="StudyAI — Workspace" />
+  <meta property="og:description" content="Ton assistant d'étude IA personnel." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Panel-specific styles -->
+  <link rel="stylesheet" href="css/upload.css" />
+  <link rel="stylesheet" href="css/brain.css" />
+  <link rel="stylesheet" href="css/battle.css" />
+  <!-- Unified shell — loads last to override panel defaults -->
+  <link rel="stylesheet" href="css/app.css?v=4" />
+</head>
+<body class="app-body">
+
+<!-- Unified signal: JS files skip auto-init of heavy operations -->
+<script>window.APP_MANAGED = true;</script>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="app-sidebar" id="app-sidebar">
+  <a href="/app" class="app-sidebar-logo">
+    <div class="sidebar-logo-icon">⚡</div>
+    <span class="sidebar-logo-text">StudyAI</span>
+    <span class="sidebar-logo-badge">Beta</span>
+  </a>
+
+  <nav class="app-sidebar-nav">
+    <div class="app-sidebar-section-label">Principal</div>
+    <button class="app-nav-item active" data-nav="home">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">Accueil</span>
+    </button>
+    <button class="app-nav-item" data-nav="study">
+      <span class="nav-icon">📄</span>
+      <span class="nav-label">Auto Study</span>
+    </button>
+    <button class="app-nav-item" data-nav="brain">
+      <span class="nav-icon">🧠</span>
+      <span class="nav-label">Second Brain</span>
+    </button>
+    <button class="app-nav-item" data-nav="battle">
+      <span class="nav-icon">⚔️</span>
+      <span class="nav-label">Study Duel</span>
+    </button>
+
+    <div class="app-sidebar-section-label" style="margin-top:16px">Outils</div>
+    <a href="/dashboard" class="app-nav-item">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Dashboard complet</span>
+    </a>
+    <a href="/" class="app-nav-item">
+      <span class="nav-icon">🃏</span>
+      <span class="nav-label">Révision classique</span>
+    </a>
+  </nav>
+
+  <div class="app-sidebar-footer">
+    <div class="sidebar-user-card" id="sidebar-user-card">
+      <div class="sidebar-user-avatar">?</div>
+      <div>
+        <div class="sidebar-user-name">Chargement…</div>
+        <div class="sidebar-user-plan">Gratuit</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Mobile overlay -->
+<div class="app-overlay" id="app-overlay"></div>
+
+<!-- ===== MAIN ===== -->
+<main class="app-main">
+
+  <!-- Top bar -->
+  <header class="app-topbar">
+    <button class="topbar-menu" id="btn-sidebar-toggle" aria-label="Menu">☰</button>
+    <div class="topbar-breadcrumb">
+      <span class="breadcrumb-icon" id="breadcrumb-icon">⚡</span>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-section" id="breadcrumb-section">Accueil</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" id="btn-topbar-study">📄 Analyser</button>
+      <button class="topbar-avatar-btn" id="topbar-avatar" title="Mon espace" onclick="window.location='/dashboard'">?</button>
+    </div>
+  </header>
+
+  <!-- ===== PANELS ===== -->
+  <div class="app-panels">
+
+    <!-- ── HOME ── -->
+    <section class="panel panel--active" id="panel-home">
+      <div class="home-wrap">
+
+        <div class="home-greeting-row">
+          <div>
+            <h1 class="home-hello">Bonjour<span class="home-hello-accent" id="home-uname"> ·</span></h1>
+            <p class="home-date" id="home-date-str"></p>
+          </div>
+          <div class="home-streak-badge">
+            <span>🔥</span>
+            <span class="ws-streak-num">0</span>
+            <span class="streak-lbl">jours de suite</span>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="home-qa-grid">
+          <button class="home-qa home-qa-primary" data-nav="study">
+            <div class="home-qa-icon">📄</div>
+            <div class="home-qa-text">
+              <strong>Analyser un cours</strong>
+              <span>PDF, texte, notes → résumé + quiz + flashcards + roadmap en 60s</span>
+            </div>
+            <div class="home-qa-arrow">→</div>
+          </button>
+          <button class="home-qa" data-nav="brain">
+            <div class="home-qa-icon">🧠</div>
+            <div class="home-qa-text">
+              <strong>Second Brain</strong>
+              <span id="hq-brain-stat">— concepts liés</span>
+            </div>
+          </button>
+          <button class="home-qa" data-nav="battle">
+            <div class="home-qa-icon">⚔️</div>
+            <div class="home-qa-text">
+              <strong>Study Duel</strong>
+              <span>Défie un ami en temps réel</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="home-stats-row">
+          <div class="home-stat">
+            <div class="home-stat-val" id="hs-packs" aria-live="polite" aria-label="Cours analysés">0</div>
+            <div class="home-stat-lbl">Cours analysés</div>
+          </div>
+          <div class="home-stat">
+            <div class="home-stat-val" id="hs-cards" aria-live="polite" aria-label="Flashcards créées">0</div>
+            <div class="home-stat-lbl">Flashcards créées</div>
+          </div>
+          <div class="home-stat">
+            <div class="home-stat-val" id="hs-concepts" aria-live="polite" aria-label="Concepts extraits">0</div>
+            <div class="home-stat-lbl">Concepts extraits</div>
+          </div>
+          <div class="home-stat">
+            <div class="home-stat-val" id="hs-streak" aria-live="polite" aria-label="Streak actuel">🔥 0</div>
+            <div class="home-stat-lbl">Streak actuel</div>
+          </div>
+        </div>
+
+        <!-- Recent packs -->
+        <div class="home-section-block">
+          <h2 class="home-section-h">📚 Cours récents</h2>
+          <div id="home-packs"></div>
+        </div>
+
+        <!-- Tip -->
+        <div class="home-tip-card">
+          <div class="home-tip-icon">💡</div>
+          <div class="home-tip-text">
+            Dépose n'importe quel cours (PDF, texte, notes) — StudyAI génère automatiquement une fiche de synthèse, un quiz adaptatif, des flashcards, les concepts clés, les pièges fréquents et un plan de révision sur 7 jours.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── STUDY (Auto Study Engine) ── -->
+    <section class="panel" id="panel-study">
+
+      <section class="upload-hero" id="section-upload">
+        <div class="upload-hero-inner">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Auto Study Engine — Alimenté par IA
+          </div>
+          <h1 class="upload-hero-title">
+            Dépose ton cours.<br />
+            <span class="upload-hero-gradient">Maîtrise-le en 60 secondes.</span>
+          </h1>
+          <p class="upload-hero-sub">
+            PDF, texte, notes — notre IA génère automatiquement fiche de synthèse, quiz adaptatif, flashcards, pièges et roadmap.
+          </p>
+
+          <div class="mode-selector">
+            <button class="mode-btn active" data-mode="standard">📚 Standard</button>
+            <button class="mode-btn" data-mode="simple">🌱 Débutant</button>
+            <button class="mode-btn" data-mode="expert">🔬 Expert</button>
+            <button class="mode-btn" data-mode="exam">🎯 Examen</button>
+          </div>
+
+          <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Zone de dépôt de fichier">
+            <div class="upload-zone-inner" id="upload-zone-inner">
+              <div class="upload-icon-wrap">
+                <div class="upload-icon">📄</div>
+                <div class="upload-icon-ring"></div>
+              </div>
+              <p class="upload-zone-title">Dépose ton fichier ici</p>
+              <p class="upload-zone-sub">PDF, TXT, MD — jusqu'à 20 Mo</p>
+              <button class="upload-browse-btn" id="btn-browse">Parcourir les fichiers</button>
+              <div class="upload-divider"><span>ou</span></div>
+              <button class="upload-paste-btn" id="btn-paste-toggle">✏️ Coller du texte</button>
+            </div>
+            <input type="file" id="file-input" accept=".pdf,.txt,.md,.html,.doc,.docx" style="display:none" />
+          </div>
+
+          <div id="paste-area" class="paste-area hidden">
+            <div class="paste-area-header">
+              <span class="paste-area-label">📋 Colle ton cours ici</span>
+              <button class="paste-area-close" id="btn-paste-close">✕</button>
+            </div>
+            <label for="text-input" class="sr-only">Coller le texte du cours</label>
+            <textarea id="text-input" class="paste-textarea" placeholder="Colle ton texte de cours, tes notes, ou n'importe quel contenu à réviser…" rows="10"></textarea>
+            <div class="paste-area-footer">
+              <span id="char-count" class="char-count">0 caractères</span>
+              <button class="btn-primary btn-analyze" id="btn-analyze-text">Analyser →</button>
+            </div>
+          </div>
+
+          <div id="file-preview" class="file-preview hidden">
+            <div class="file-preview-icon" id="preview-icon">📄</div>
+            <div class="file-preview-info">
+              <span class="file-preview-name" id="preview-name"></span>
+              <span class="file-preview-size" id="preview-size"></span>
+            </div>
+            <button class="file-preview-remove" id="btn-remove-file">✕</button>
+          </div>
+
+          <button class="btn-primary btn-analyze-main hidden" id="btn-analyze-file">
+            <span class="btn-label">⚡ Générer mon pack d'étude</span>
+            <span class="btn-sub">Résumé + Quiz + Flashcards + Roadmap</span>
+          </button>
+
+          <div class="upload-trust">
+            <span>🔒 Fichiers traités localement</span>
+            <span>⚡ Résultats en 30-60s</span>
+            <span>🎯 8 contenus générés</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="upload-progress hidden" id="section-progress">
+        <div class="progress-inner">
+          <div class="progress-header">
+            <div class="progress-brain">🧠</div>
+            <h2 class="progress-title">Génération en cours…</h2>
+            <p class="progress-sub" id="progress-label">Analyse du document…</p>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+            </div>
+            <span class="progress-pct" id="progress-pct">0%</span>
+          </div>
+          <div class="progress-steps">
+            <div class="progress-step" id="step-parse"><div class="step-icon">📖</div><div class="step-label">Lecture</div></div>
+            <div class="progress-step" id="step-summary"><div class="step-icon">📝</div><div class="step-label">Synthèse</div></div>
+            <div class="progress-step" id="step-quiz"><div class="step-icon">🎯</div><div class="step-label">Quiz</div></div>
+            <div class="progress-step" id="step-flash"><div class="step-icon">🗂️</div><div class="step-label">Flashcards</div></div>
+            <div class="progress-step" id="step-concepts"><div class="step-icon">💡</div><div class="step-label">Concepts</div></div>
+            <div class="progress-step" id="step-done"><div class="step-icon">✅</div><div class="step-label">Prêt</div></div>
+          </div>
+          <p class="progress-tip" id="progress-tip">💡 Notre IA analyse la structure de ton cours pour créer du contenu ultra-personnalisé.</p>
+        </div>
+      </section>
+
+      <section class="results-section hidden" id="section-results">
+        <div class="results-container">
+          <div class="results-header">
+            <div class="results-meta">
+              <h1 class="results-title" id="res-title">Pack d'étude</h1>
+              <div class="results-badges">
+                <span class="res-badge" id="res-subject"></span>
+                <span class="res-badge res-badge-level" id="res-level"></span>
+                <span class="res-badge res-badge-time" id="res-time"></span>
+              </div>
+            </div>
+            <div class="results-actions">
+              <button class="btn-secondary-small" id="btn-new-study">+ Nouveau cours</button>
+              <button class="btn-secondary-small" id="btn-regen">↻ Regénérer</button>
+              <button class="btn-primary btn-start-exam" id="btn-exam">🎯 Simuler un examen</button>
+            </div>
+          </div>
+          <div class="difficulty-card">
+            <div class="difficulty-info">
+              <span class="difficulty-label">Score de difficulté</span>
+              <span class="difficulty-value" id="diff-value">—</span>
+            </div>
+            <div class="difficulty-track">
+              <div class="difficulty-fill" id="diff-fill" style="width:0%"></div>
+            </div>
+            <div class="difficulty-labels"><span>Facile</span><span>Moyen</span><span>Difficile</span></div>
+          </div>
+          <div class="brain-links hidden" id="brain-links"></div>
+          <div class="results-tabs">
+            <button class="res-tab active" data-tab="summary">📝 Synthèse</button>
+            <button class="res-tab" data-tab="quiz">🎯 Quiz</button>
+            <button class="res-tab" data-tab="flashcards">🗂️ Flashcards</button>
+            <button class="res-tab" data-tab="memo">⚡ Mémo</button>
+            <button class="res-tab" data-tab="concepts">💡 Concepts</button>
+            <button class="res-tab" data-tab="roadmap">🗺️ Roadmap</button>
+          </div>
+          <div class="res-tab-content" id="tab-summary">
+            <div class="summary-executive" id="sum-executive"></div>
+            <div id="sum-sections"></div>
+            <div class="summary-row">
+              <div class="summary-col" id="sum-formulas-col">
+                <h3 class="summary-col-title">⚡ Formules & dates clés</h3>
+                <div id="sum-formulas"></div>
+              </div>
+              <div class="summary-col" id="sum-vocab-col">
+                <h3 class="summary-col-title">📖 Vocabulaire essentiel</h3>
+                <div id="sum-vocab"></div>
+              </div>
+            </div>
+            <div id="sum-mindmap"></div>
+          </div>
+          <div class="res-tab-content hidden" id="tab-quiz">
+            <div class="quiz-header">
+              <p class="quiz-info" id="quiz-info"></p>
+              <button class="btn-secondary-small" id="btn-battle">⚔️ Créer un Duel</button>
+            </div>
+            <div id="quiz-questions"></div>
+            <div class="quiz-score hidden" id="quiz-score"></div>
+          </div>
+          <div class="res-tab-content hidden" id="tab-flashcards">
+            <div class="flashcard-controls">
+              <button class="btn-secondary-small" id="btn-fc-shuffle">↺ Mélanger</button>
+              <span class="fc-progress" id="fc-progress">0 / 0</span>
+            </div>
+            <div class="flashcard-stack" id="flashcard-stack"></div>
+            <div class="fc-nav">
+              <button class="fc-nav-btn" id="btn-fc-prev">‹</button>
+              <div class="fc-dots" id="fc-dots"></div>
+              <button class="fc-nav-btn" id="btn-fc-next">›</button>
+            </div>
+          </div>
+          <div class="res-tab-content hidden" id="tab-memo"><div id="memo-content"></div></div>
+          <div class="res-tab-content hidden" id="tab-concepts">
+            <div id="concepts-list"></div>
+            <div id="traps-list"></div>
+            <div id="exam-questions-list"></div>
+          </div>
+          <div class="res-tab-content hidden" id="tab-roadmap">
+            <div id="roadmap-content"></div>
+            <div id="mastery-card"></div>
+          </div>
+        </div>
+      </section>
+
+    </section><!-- /panel-study -->
+
+    <!-- ── BRAIN (Second Brain) ── -->
+    <section class="panel" id="panel-brain">
+
+      <section class="brain-hero" style="padding-top:28px">
+        <div class="brain-hero-inner">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Second Brain — Graphe de connaissance
+          </div>
+          <h1 class="brain-hero-title">Ton cerveau numérique</h1>
+          <p class="brain-hero-sub">Chaque concept étudié est automatiquement lié aux autres.</p>
+          <div class="brain-stats-bar" id="brain-stats-bar">
+            <div class="brain-stat"><span class="brain-stat-value" id="stat-nodes">—</span><span class="brain-stat-label">Concepts</span></div>
+            <div class="brain-stat"><span class="brain-stat-value" id="stat-edges">—</span><span class="brain-stat-label">Connexions</span></div>
+            <div class="brain-stat"><span class="brain-stat-value" id="stat-subjects">—</span><span class="brain-stat-label">Matières</span></div>
+            <div class="brain-stat"><span class="brain-stat-value" id="stat-sessions">—</span><span class="brain-stat-label">Sessions</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="brain-workspace">
+        <div class="brain-controls">
+          <div class="brain-search-wrap">
+            <label for="brain-search" class="sr-only">Rechercher un concept</label>
+            <input type="text" id="brain-search" class="brain-search" placeholder="🔍 Rechercher un concept…" />
+          </div>
+          <div class="brain-filter-pills" id="brain-filters">
+            <button class="brain-pill active" data-filter="all">Tout</button>
+          </div>
+          <div class="brain-view-btns">
+            <button class="brain-view-btn active" id="btn-view-graph" title="Graphe">⬡</button>
+            <button class="brain-view-btn" id="btn-view-list" title="Liste">☰</button>
+          </div>
+        </div>
+        <div class="brain-graph-wrap" id="brain-graph-wrap">
+          <canvas id="brain-canvas"></canvas>
+          <div class="brain-empty hidden" id="brain-empty">
+            <div class="brain-empty-icon">🧠</div>
+            <h3>Ton Second Brain est vide</h3>
+            <p>Génère ton premier pack d'étude pour construire ton graphe.</p>
+            <button class="btn-primary" data-nav="study">📄 Analyser un cours</button>
+          </div>
+          <div class="brain-loading" id="brain-loading">
+            <div class="brain-spinner"></div>
+            <p>Chargement du graphe…</p>
+          </div>
+        </div>
+        <div class="brain-list-wrap hidden" id="brain-list-wrap">
+          <div id="brain-list"></div>
+        </div>
+        <div class="brain-sidebar hidden" id="brain-sidebar">
+          <button class="brain-sidebar-close" id="btn-sidebar-close">✕</button>
+          <div class="brain-sidebar-inner">
+            <div class="sidebar-concept-badge" id="sidebar-subject"></div>
+            <h2 class="sidebar-concept-name" id="sidebar-name">—</h2>
+            <p class="sidebar-concept-def" id="sidebar-def">—</p>
+            <div class="sidebar-section">
+              <h4>📡 Connexions</h4>
+              <div class="sidebar-connections" id="sidebar-connections"></div>
+            </div>
+            <div class="sidebar-section">
+              <h4>📚 Sessions</h4>
+              <div class="sidebar-sessions" id="sidebar-sessions"></div>
+            </div>
+            <div class="sidebar-section hidden" id="sidebar-mastery-section">
+              <h4>🎯 Maîtrise</h4>
+              <div class="mastery-mini-bar"><div class="mastery-mini-fill" id="sidebar-mastery-fill" style="width:0%"></div></div>
+              <p class="sidebar-mastery-label" id="sidebar-mastery-label"></p>
+            </div>
+            <button class="btn-secondary-small sidebar-deepen-btn" id="btn-deepen">💡 Approfondir</button>
+            <div class="sidebar-deepen-result hidden" id="sidebar-deepen-result"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="brain-insights-section">
+        <div class="brain-insights-inner">
+          <h2 class="brain-insights-title">Insights de ton apprentissage</h2>
+          <div class="brain-insights-grid" id="brain-insights-grid">
+            <div class="brain-insight-card skeleton"></div>
+            <div class="brain-insight-card skeleton"></div>
+            <div class="brain-insight-card skeleton"></div>
+          </div>
+        </div>
+      </section>
+
+    </section><!-- /panel-brain -->
+
+    <!-- ── BATTLE (Study Duel) ── -->
+    <section class="panel" id="panel-battle">
+
+      <section class="battle-section" id="section-lobby">
+        <div class="battle-inner">
+          <div class="battle-hero-badge">⚔️ Study Duel</div>
+          <h1 class="battle-title">Défie tes amis<br /><span class="battle-gradient">en temps réel</span></h1>
+          <p class="battle-sub">Réponds le plus vite possible. Vitesse + précision = victoire.</p>
+          <div class="battle-lobby-cards">
+            <div class="battle-lobby-card" id="card-create">
+              <div class="lobby-card-icon">🎮</div>
+              <h3>Créer un duel</h3>
+              <p>Génère un code et invite un ami</p>
+              <div class="create-info hidden" id="create-info">
+                <div class="battle-code-display" id="battle-code-display">——</div>
+                <p class="create-share-hint">Partage ce code avec ton adversaire</p>
+                <button class="btn-secondary-small" id="btn-copy-code">📋 Copier le code</button>
+              </div>
+              <div class="create-waiting hidden" id="create-waiting">
+                <div class="waiting-pulse"></div>
+                <p>En attente de l'adversaire…</p>
+              </div>
+            </div>
+            <div class="battle-lobby-divider">VS</div>
+            <div class="battle-lobby-card" id="card-join">
+              <div class="lobby-card-icon">🔗</div>
+              <h3>Rejoindre un duel</h3>
+              <p>Saisis le code reçu de ton ami</p>
+              <div class="join-form" id="join-form">
+                <input type="text" id="join-code-input" class="battle-code-input" placeholder="CODE" maxlength="6" />
+                <button class="btn-primary" id="btn-join">Rejoindre →</button>
+              </div>
+              <p class="join-error hidden" id="join-error"></p>
+            </div>
+          </div>
+          <p class="battle-no-battle">Tu dois d'abord <button class="app-link" data-nav="study">générer un quiz</button> pour créer un duel depuis Auto Study.</p>
+        </div>
+      </section>
+
+      <section class="battle-section hidden" id="section-countdown">
+        <div class="battle-inner battle-center">
+          <div class="countdown-vs">
+            <div class="countdown-player"><div class="player-avatar">🧠</div><div class="player-name" id="cd-name1">Toi</div></div>
+            <div class="countdown-number" id="countdown-num">3</div>
+            <div class="countdown-player"><div class="player-avatar">🤖</div><div class="player-name" id="cd-name2">Adversaire</div></div>
+          </div>
+          <p class="countdown-sub">Le duel commence dans…</p>
+        </div>
+      </section>
+
+      <section class="battle-section hidden" id="section-game">
+        <div class="battle-inner">
+          <div class="battle-scoreboard">
+            <div class="sb-player"><span class="sb-name" id="sb-name-me">Moi</span><span class="sb-score" id="sb-score-me">0</span></div>
+            <div class="sb-center"><div class="sb-timer" id="sb-timer">30</div><div class="sb-qnum" id="sb-qnum">Q1/6</div></div>
+            <div class="sb-player sb-player-right"><span class="sb-score" id="sb-score-opp">0</span><span class="sb-name" id="sb-name-opp">Adversaire</span></div>
+          </div>
+          <div class="battle-question-card" id="battle-qcard">
+            <div class="bq-meta">
+              <span class="bq-diff" id="bq-diff">Moyen</span>
+              <span class="bq-speed-bonus" id="bq-speed-bonus">⚡ Bonus vitesse actif</span>
+            </div>
+            <p class="bq-text" id="bq-text">Chargement de la question…</p>
+            <div class="bq-choices" id="bq-choices"></div>
+            <div class="bq-feedback hidden" id="bq-feedback"></div>
+          </div>
+          <div class="opp-status" id="opp-status">
+            <div class="opp-thinking" id="opp-thinking">
+              <span class="opp-dot"></span><span class="opp-dot"></span><span class="opp-dot"></span>
+              <span>Adversaire répond…</span>
+            </div>
+            <div class="opp-answered hidden" id="opp-answered">✓ Adversaire a répondu</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="battle-section hidden" id="section-results">
+        <div class="battle-inner battle-center">
+          <div class="battle-result-crown" id="result-crown">🏆</div>
+          <h2 class="battle-result-title" id="result-title">Résultats</h2>
+          <p class="battle-result-sub" id="result-sub"></p>
+          <div class="battle-final-scores">
+            <div class="final-score-card" id="final-me">
+              <div class="final-score-avatar">🧠</div>
+              <div class="final-score-name" id="final-name-me">Moi</div>
+              <div class="final-score-pts" id="final-pts-me">0 pts</div>
+              <div class="final-score-acc" id="final-acc-me">0% précision</div>
+            </div>
+            <div class="final-vs">VS</div>
+            <div class="final-score-card" id="final-opp">
+              <div class="final-score-avatar">🤖</div>
+              <div class="final-score-name" id="final-name-opp">Adversaire</div>
+              <div class="final-score-pts" id="final-pts-opp">0 pts</div>
+              <div class="final-score-acc" id="final-acc-opp">0% précision</div>
+            </div>
+          </div>
+          <div class="battle-result-breakdown" id="result-breakdown"></div>
+          <div class="battle-result-actions">
+            <button class="btn-primary" id="btn-rematch">↻ Revanche</button>
+            <button class="btn-secondary-small" data-nav="study">+ Nouveau quiz</button>
+            <a href="/dashboard" class="btn-secondary-small">Mon espace</a>
+          </div>
+        </div>
+      </section>
+
+    </section><!-- /panel-battle -->
+
+  </div><!-- /app-panels -->
+
+</main>
+
+<!-- ===== BOTTOM NAV (mobile) ===== -->
+<nav class="app-bnav" aria-label="Navigation principale">
+  <div class="app-bnav-inner">
+    <button class="app-bnav-item active" data-nav="home">
+      <span class="bnav-icon">⚡</span><span>Accueil</span>
+    </button>
+    <button class="app-bnav-item" data-nav="study">
+      <span class="bnav-icon">📄</span><span>Study</span>
+    </button>
+    <button class="app-bnav-item" data-nav="brain">
+      <span class="bnav-icon">🧠</span><span>Brain</span>
+    </button>
+    <button class="app-bnav-item" data-nav="battle">
+      <span class="bnav-icon">⚔️</span><span>Duel</span>
+    </button>
+    <a href="/dashboard" class="app-bnav-item">
+      <span class="bnav-icon">📊</span><span>Plus</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Toast container -->
+<div class="app-toast-wrap" aria-live="polite"></div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/upload.js?v=4" defer></script>
+<script src="js/brain.js?v=4" defer></script>
+<script src="js/battle.js?v=4" defer></script>
+<script src="js/workspace.js?v=4" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+version: '3.9'
+
+# ============================================================
+#  StudyAI — Docker Compose
+#  For local production testing and self-hosted deployment.
+#  Usage:
+#    cp .env.example .env   # fill in your values
+#    docker compose up -d
+# ============================================================
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # --- Copy from .env or use Docker secrets ---
+      JWT_SECRET:            ${JWT_SECRET}
+      ADMIN_KEY:             ${ADMIN_KEY}
+      SUPER_ADMIN_EMAIL:     ${SUPER_ADMIN_EMAIL}
+      GROQ_API_KEY:          ${GROQ_API_KEY:-}
+      OPENAI_API_KEY:        ${OPENAI_API_KEY:-}
+      STRIPE_SECRET_KEY:     ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLIC_KEY:     ${STRIPE_PUBLIC_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      REDIS_URL:             redis://redis:6379
+      ALLOWED_ORIGINS:       ${ALLOWED_ORIGINS:-}
+    volumes:
+      # Persist user data outside the container
+      - studyai_data:/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - studyai_net
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - studyai_net
+
+volumes:
+  studyai_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  studyai_net:
+    driver: bridge

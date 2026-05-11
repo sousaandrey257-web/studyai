@@ -1,0 +1,859 @@
+// ============================================================
+//  StudyAI — Frontend
+// ============================================================
+
+// Traduction (i18n.js chargé avant ce fichier)
+function t(key, vars) {
+  if (!window.i18n) return key;
+  return window.i18n.t(key, vars);
+}
+
+// État global
+const state = {
+  quizQuestions:    [],
+  currentQuestion:  0,
+  score:            0,
+  answered:         false,
+  flashcardData:    [],
+  premiumToken:     localStorage.getItem('studyai_premium_token') || null,
+  currentContentId: null,
+  country: null,
+  wrongQuestions:        [],  // questions ratées (texte) pour le quiz de consolidation
+  currentTopic:          '',  // sujet du cours courant
+  correctByDifficulty:   {},  // { "1": n, "2": n, "3": n } — correct par difficulté
+};
+
+// ============================================================
+//  DÉMARRAGE — s'exécute dès que la page est chargée
+// ============================================================
+document.addEventListener('DOMContentLoaded', function () {
+
+  // --- Éléments DOM ---
+  const courseInput       = document.getElementById('course-input');
+  const charCount         = document.getElementById('char-count');
+  const btnGenerate       = document.getElementById('btn-generate');
+  const sectionInput      = document.getElementById('section-input');
+  const sectionLoading    = document.getElementById('section-loading');
+  const sectionResults    = document.getElementById('section-results');
+  const sectionQuiz       = document.getElementById('section-quiz');
+  const loadingMsg        = document.getElementById('loading-msg');
+  const summaryText       = document.getElementById('summary-text');
+  const flashcardList     = document.getElementById('flashcard-list');
+  const quizQCount        = document.getElementById('quiz-question-count');
+  const btnStartQuiz      = document.getElementById('btn-start-quiz');
+  const btnRestart        = document.getElementById('btn-restart');
+  const quizFill          = document.getElementById('quiz-progress-fill');
+  const quizCounter       = document.getElementById('quiz-counter');
+  const quizQuestionText  = document.getElementById('quiz-question-text');
+  const quizOptions       = document.getElementById('quiz-options');
+  const quizExplanation   = document.getElementById('quiz-explanation');
+  const quizExplText      = document.getElementById('quiz-explanation-text');
+  const btnNext           = document.getElementById('btn-next-question');
+  const quizScore         = document.getElementById('quiz-score');
+  const scoreEmoji        = document.getElementById('score-emoji');
+  const scoreValue        = document.getElementById('score-value');
+  const scoreTotal        = document.getElementById('score-total');
+  const scoreMessage      = document.getElementById('score-message');
+  const btnRetry          = document.getElementById('btn-retry-quiz');
+  const btnBack           = document.getElementById('btn-back-results');
+  const usageBadge        = document.getElementById('usage-badge');
+  const usageText         = document.getElementById('usage-text');
+  const toast             = document.getElementById('toast');
+  const modalPremium      = document.getElementById('modal-premium');
+  const btnPremium        = document.getElementById('btn-premium-header');
+  const langSelect        = document.getElementById('lang-select');
+  const quizMeta           = document.getElementById('quiz-meta');
+  const quizDiffBadge      = document.getElementById('quiz-difficulty-badge');
+  const quizTypeBadge      = document.getElementById('quiz-type-badge');
+  const quizOpenZone       = document.getElementById('quiz-open-zone');
+  const quizOpenInput      = document.getElementById('quiz-open-input');
+  const quizSelfAssess     = document.getElementById('quiz-self-assess');
+
+  // --- i18n ---
+  if (window.i18n) {
+    if (langSelect) langSelect.value = window.i18n.currentLang;
+    window.i18n.applyTranslations();
+    document.addEventListener('langchange', function () {
+      if (langSelect) langSelect.value = window.i18n.currentLang;
+      refreshUsage();
+    });
+  }
+
+  // --- Tarification régionale ---
+  fetch('/api/country').then(function (r) { return r.json(); }).then(function (pricing) {
+    state.country = pricing.country || null;
+    document.querySelectorAll('[data-price-key]').forEach(function (el) {
+      const val = pricing[el.dataset.priceKey];
+      if (val) el.textContent = val;
+    });
+    // Note de facturation si devise locale ≠ EUR
+    if (pricing.currency && pricing.currency !== 'EUR') {
+      const note = document.querySelector('.modal-free-note');
+      if (note) note.textContent = (note.textContent || '') + ' · Facturation en EUR';
+    }
+  }).catch(function () {});
+
+  // --- URL params ---
+  const params    = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  if (sessionId) {
+    verifyPayment(sessionId).then(function () {
+      window.history.replaceState({}, '', '/');
+    });
+  }
+
+  // Referral code → stocké, utilisé après inscription
+  const refCode = params.get('ref');
+  if (refCode) {
+    try { sessionStorage.setItem('studyai_ref', refCode); } catch {}
+  }
+  // Topic pré-rempli depuis un lien partagé
+  const topicParam = params.get('topic');
+  if (topicParam && courseInput) {
+    courseInput.value = decodeURIComponent(topicParam).slice(0, 10000);
+    courseInput.dispatchEvent(new Event('input'));
+  }
+  if (refCode || topicParam) window.history.replaceState({}, '', '/');
+
+  // --- Usage badge ---
+  refreshUsage();
+
+  // ============================================================
+  //  EVENTS
+  // ============================================================
+
+  // Compteur de caractères
+  courseInput.addEventListener('input', function () {
+    const len = courseInput.value.length;
+    charCount.textContent = len + ' / 10 000';
+    charCount.style.color = len > 9000 ? 'var(--warning)' : 'var(--text-subtle)';
+  });
+
+  // Bouton Générer
+  btnGenerate.addEventListener('click', generate);
+
+  // Aussi sur Ctrl+Entrée dans la textarea
+  courseInput.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generate();
+  });
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(function (tab) {
+    tab.addEventListener('click', function () { switchTab(tab.dataset.tab); });
+  });
+
+  if (btnRestart)    btnRestart.addEventListener('click', resetToInput);
+  if (btnStartQuiz)  btnStartQuiz.addEventListener('click', startQuiz);
+  if (btnNext)       btnNext.addEventListener('click', nextQuestion);
+  if (btnRetry)      btnRetry.addEventListener('click', startQuiz);
+  if (btnBack)       btnBack.addEventListener('click', function () { showSection('results'); switchTab('flashcard'); });
+  if (btnPremium)    btnPremium.addEventListener('click', showModal);
+
+  // ============================================================
+  //  GÉNÉRATION
+  // ============================================================
+
+  window.useExample = function (btn) {
+    courseInput.value = btn.textContent;
+    courseInput.dispatchEvent(new Event('input'));
+    courseInput.focus();
+  };
+
+  async function generate() {
+    const text = courseInput.value.trim();
+
+    if (text.length < 10) {
+      showToast('⚠️ Écris au moins quelques mots.', 'error');
+      courseInput.focus();
+      return;
+    }
+
+    showSection('loading');
+
+    // Messages de chargement — adaptés selon la longueur du texte
+    const isCommand = text.length < 200;
+    const msgs = isCommand
+      ? ['Analyse de ta demande…', 'Création du contenu…', 'Rédaction des questions…', 'Finalisation…']
+      : ['Lecture du cours…', 'Extraction des idées clés…', 'Rédaction du résumé…', 'Création du quiz…', 'Finalisation…'];
+    let mi = 0;
+    loadingMsg.textContent = msgs[0];
+    const ticker = setInterval(function () {
+      mi++;
+      if (mi < msgs.length) loadingMsg.textContent = msgs[mi];
+      else clearInterval(ticker);
+    }, 800);
+
+    const controller = new AbortController();
+    const fetchTimeout = setTimeout(() => controller.abort(), 45000);
+
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (state.premiumToken) headers['x-premium-token'] = state.premiumToken;
+      if (window.auth?.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
+
+      const res  = await fetch('/api/generate', { method: 'POST', headers, body: JSON.stringify({ text, country: state.country || null }), signal: controller.signal });
+      clearTimeout(fetchTimeout);
+      const data = await res.json();
+
+      clearInterval(ticker);
+
+      if (!res.ok) {
+        if (data.error === 'limit_reached') { showSection('input'); showModal(); return; }
+        showSection('input');
+        showToast('❌ ' + (data.error || 'Erreur serveur'), 'error');
+        return;
+      }
+
+      if (data.remaining !== null && data.remaining !== undefined) {
+        updateUsage(data.remaining, false);
+      }
+
+      state.currentContentId = data.contentId || null;
+      state.currentTopic     = text.slice(0, 100);
+      showResults(data);
+
+    } catch (err) {
+      clearTimeout(fetchTimeout);
+      clearInterval(ticker);
+      showSection('input');
+      if (err.name === 'AbortError') {
+        showToast('❌ Délai dépassé — réessaie avec un texte plus court.', 'error');
+      } else {
+        showToast('❌ Connexion impossible au serveur.', 'error');
+      }
+    }
+  }
+
+  // ============================================================
+  //  AFFICHAGE DES RÉSULTATS
+  // ============================================================
+
+  function injectShareButton(topic) {
+    var existing = document.getElementById('share-btn-wrap');
+    if (existing) existing.remove();
+
+    var tabs = document.querySelector('#section-results .tabs');
+    if (!tabs) return;
+
+    var wrap = document.createElement('div');
+    wrap.id = 'share-btn-wrap';
+    wrap.className = 'share-btn-wrap';
+
+    var btn = document.createElement('button');
+    btn.className = 'share-btn';
+    btn.innerHTML = '🔗 Partager';
+    btn.addEventListener('click', function () {
+      var base   = window.location.origin + '/';
+      var qTopic = '?topic=' + encodeURIComponent((topic || '').slice(0, 200));
+      var url    = base + qTopic;
+
+      // Ajoute le code referral si connecté
+      if (window.auth?.isLoggedIn()) {
+        fetch('/api/referral', { headers: { 'x-auth-token': window.auth.token } })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (d.code) url = base + '?ref=' + d.code + '&topic=' + encodeURIComponent((topic || '').slice(0, 200));
+            copyShareLink(url);
+          }).catch(function () { copyShareLink(url); });
+      } else {
+        copyShareLink(url);
+      }
+    });
+
+    wrap.appendChild(btn);
+    tabs.parentNode.insertBefore(wrap, tabs);
+  }
+
+  function copyShareLink(url) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function () {
+        showToast('🔗 Lien copié — partage-le à tes amis !', 'success');
+      }).catch(function () { fallbackCopy(url); });
+    } else {
+      fallbackCopy(url);
+    }
+  }
+
+  function fallbackCopy(url) {
+    var ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity  = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('🔗 Lien copié !', 'success');
+  }
+
+  // Expose globally for inline onclick handlers
+  window.dismissGuestNudge = function () {
+    var nudge = document.getElementById('guest-nudge');
+    if (nudge) nudge.classList.add('hidden');
+    try { sessionStorage.setItem('nudge_dismissed', '1'); } catch {}
+  };
+
+  window.openRegisterModal = function () {
+    if (window.showAuthModal) window.showAuthModal();
+    setTimeout(function () {
+      if (window.switchAuthTab) window.switchAuthTab('register');
+    }, 50);
+  };
+
+  function showResults(data) {
+    summaryText.textContent = data.summary || '';
+
+    flashcardList.innerHTML = '';
+    state.flashcardData = data.flashcard || [];
+    state.flashcardData.forEach(function (point) {
+      const li  = document.createElement('li');
+      li.className = 'flashcard-item';
+      const dot = document.createElement('span');
+      dot.className = 'flashcard-dot';
+      const txt = document.createElement('span');
+      txt.textContent = point;
+      li.appendChild(dot);
+      li.appendChild(txt);
+      flashcardList.appendChild(li);
+    });
+
+    state.quizQuestions = data.quiz || [];
+    const n = state.quizQuestions.length;
+    quizQCount.textContent = n + ' question' + (n > 1 ? 's' : '') + ' — du facile au difficile';
+
+    const mode = data.mode || 'full';
+    showSection('results');
+
+    if (mode === 'quiz') {
+      switchTab('quiz');
+      setTimeout(startQuiz, 120);
+    } else {
+      switchTab('summary');
+    }
+
+    // Bouton partage viral
+    injectShareButton(state.currentTopic);
+
+    // Guest nudge — invite à créer un compte après la première génération
+    if (!window.auth?.isLoggedIn()) {
+      try {
+        if (!sessionStorage.getItem('nudge_dismissed')) {
+          setTimeout(function () {
+            var nudge = document.getElementById('guest-nudge');
+            if (nudge) nudge.classList.remove('hidden');
+          }, 800);
+        }
+      } catch {}
+    }
+  }
+
+  // ============================================================
+  //  QUIZ
+  // ============================================================
+
+  function startQuiz() {
+    state.currentQuestion = 0;
+    state.score = 0;
+    state.answered = false;
+    state.wrongQuestions = [];
+    state.correctByDifficulty = {};
+    quizScore.classList.add('hidden');
+    showSection('quiz');
+    showQuestion(0);
+  }
+
+  function showQuestion(idx) {
+    const q     = state.quizQuestions[idx];
+    const total = state.quizQuestions.length;
+
+    quizFill.style.width = Math.round((idx / total) * 100) + '%';
+    quizCounter.textContent = 'Question ' + (idx + 1) + ' / ' + total;
+    quizQuestionText.textContent = q.question;
+
+    state.answered = false;
+    quizExplanation.classList.add('hidden');
+    quizSelfAssess.classList.add('hidden');
+    quizOpenZone.classList.add('hidden');
+    btnNext.classList.add('hidden');
+    quizOpenInput.value = '';
+
+    // Badges difficulté + type
+    const diffLabels = { 1: 'Facile', 2: 'Moyen', 3: 'Difficile' };
+    const diffClasses = { 1: 'easy', 2: 'medium', 3: 'hard' };
+    const d = q.difficulty || 1;
+    quizDiffBadge.textContent = diffLabels[d] || 'Facile';
+    quizDiffBadge.className = 'quiz-difficulty-badge ' + (diffClasses[d] || 'easy');
+    quizTypeBadge.textContent = q.type === 'open' ? '✍ Réponse rédigée' : '✦ QCM';
+    quizMeta.classList.remove('hidden');
+
+    if (q.type === 'open') {
+      quizOptions.innerHTML = '';
+      quizOptions.classList.add('hidden');
+      quizOpenZone.classList.remove('hidden');
+    } else {
+      quizOptions.classList.remove('hidden');
+      quizOptions.innerHTML = '';
+      (q.options || []).forEach(function (opt, i) {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.textContent = opt;
+        btn.addEventListener('click', function () { answer(i, q.answer, q.explanation); });
+        quizOptions.appendChild(btn);
+      });
+    }
+  }
+
+  function answer(selected, correct, explanation) {
+    if (state.answered) return;
+    state.answered = true;
+
+    const btns = quizOptions.querySelectorAll('.quiz-option');
+    btns.forEach(function (b) { b.disabled = true; });
+    btns[correct].classList.add('correct');
+    if (selected !== correct) {
+      btns[selected].classList.add('incorrect');
+      const q = state.quizQuestions[state.currentQuestion];
+      state.wrongQuestions.push(q.question);
+    } else {
+      state.score++;
+      const q = state.quizQuestions[state.currentQuestion];
+      const d = String(q.difficulty || 1);
+      state.correctByDifficulty[d] = (state.correctByDifficulty[d] || 0) + 1;
+    }
+
+    quizExplText.textContent = explanation || '';
+    quizExplanation.classList.remove('hidden');
+
+    const isLast = state.currentQuestion === state.quizQuestions.length - 1;
+    btnNext.textContent = isLast ? 'Voir mon score 🏆' : 'Question suivante →';
+    btnNext.classList.remove('hidden');
+  }
+
+  window.revealAnswer = function () {
+    if (state.answered) return;
+    state.answered = true;
+
+    const q = state.quizQuestions[state.currentQuestion];
+    quizExplText.textContent = (q.expectedAnswer || q.explanation || '') +
+      (q.explanation && q.expectedAnswer ? '\n\n💡 ' + q.explanation : '');
+    quizExplanation.classList.remove('hidden');
+    quizOpenZone.classList.add('hidden');
+    quizSelfAssess.classList.remove('hidden');
+  };
+
+  window.selfAssess = function (wasCorrect) {
+    if (wasCorrect) {
+      state.score++;
+      const q = state.quizQuestions[state.currentQuestion];
+      const d = String(q.difficulty || 1);
+      state.correctByDifficulty[d] = (state.correctByDifficulty[d] || 0) + 1;
+    } else {
+      const q = state.quizQuestions[state.currentQuestion];
+      state.wrongQuestions.push(q.question);
+    }
+    quizSelfAssess.classList.add('hidden');
+    const isLast = state.currentQuestion === state.quizQuestions.length - 1;
+    btnNext.textContent = isLast ? 'Voir mon score 🏆' : 'Question suivante →';
+    btnNext.classList.remove('hidden');
+  };
+
+  function nextQuestion() {
+    const isLast = state.currentQuestion === state.quizQuestions.length - 1;
+    if (isLast) { showScore(); }
+    else { state.currentQuestion++; showQuestion(state.currentQuestion); }
+  }
+
+  function showScore() {
+    const total = state.quizQuestions.length;
+    const pct   = state.score / total;
+    quizFill.style.width = '100%';
+    quizQuestionText.textContent = '';
+    quizOptions.innerHTML = '';
+    quizExplanation.classList.add('hidden');
+    quizOpenZone.classList.add('hidden');
+    quizSelfAssess.classList.add('hidden');
+    btnNext.classList.add('hidden');
+
+    const map = [
+      [1,    '🏆', 'Parfait ! Tu maîtrises ce cours.'],
+      [0.8,  '🌟', 'Excellent ! Encore un peu de révision.'],
+      [0.6,  '👍', 'Bien ! Revois les points manqués.'],
+      [0.4,  '📚', 'Continue de réviser — tu progresses !'],
+      [-1,   '💪', 'Ce cours nécessite plus de révision.'],
+    ];
+    const [, emoji, msg] = map.find(([min]) => pct >= min) || map[map.length - 1];
+
+    scoreEmoji.textContent   = emoji;
+    scoreValue.textContent   = state.score;
+    scoreTotal.textContent   = ' / ' + total;
+    scoreMessage.textContent = msg;
+    quizScore.classList.remove('hidden');
+
+    // Bouton de consolidation si au moins 2 questions ratées
+    const btnConsolidate = document.getElementById('btn-consolidate');
+    if (btnConsolidate) {
+      if (state.wrongQuestions.length >= 2) {
+        btnConsolidate.classList.remove('hidden');
+        btnConsolidate.textContent = '🎯 Renforcer les ' + state.wrongQuestions.length + ' points faibles';
+      } else {
+        btnConsolidate.classList.add('hidden');
+      }
+    }
+
+    // Sauvegarde automatique du score + gamification si connecté
+    if (state.currentContentId && window.auth?.isLoggedIn()) {
+      const quizHeaders = { 'Content-Type': 'application/json', 'x-auth-token': window.auth.token };
+      if (state.premiumToken) quizHeaders['x-premium-token'] = state.premiumToken;
+      fetch('/api/quiz-result', {
+        method: 'POST',
+        headers: quizHeaders,
+        body: JSON.stringify({
+          contentId: state.currentContentId,
+          score: state.score,
+          total,
+          wrongConcepts: state.wrongQuestions,
+          correctByDifficulty: state.correctByDifficulty,
+        }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) { if (data.xpGain) showGamiResult(data); })
+        .catch(function () {});
+    }
+  }
+
+  // ============================================================
+  //  GAMIFICATION — ANIMATIONS & FEEDBACK
+  // ============================================================
+
+  function showGamiResult(data) {
+    var xpTotal = data.xpGain?.total || 0;
+
+    // 1. Popup XP flottant au-dessus du score
+    var anchor = document.getElementById('score-value');
+    if (anchor && xpTotal > 0) {
+      var rect  = anchor.getBoundingClientRect();
+      var popup = document.createElement('div');
+      popup.className   = 'xp-popup';
+      popup.textContent = '+' + xpTotal + ' XP';
+      popup.style.left  = (rect.left + rect.width / 2) + 'px';
+      popup.style.top   = (rect.top + window.scrollY + 10) + 'px';
+      document.body.appendChild(popup);
+      setTimeout(function () { popup.remove(); }, 2000);
+    }
+
+    // 2. Injecte le panel gamification dans le bloc score
+    injectGamiPanel(data);
+
+    // 3. Level up overlay (si passage de niveau)
+    if (data.levelUp) {
+      setTimeout(function () { showLevelUp(data.level); }, 800);
+    }
+
+    // 4. Toasts missions complétées
+    (data.completedMissions || []).forEach(function (m, i) {
+      setTimeout(function () { showMissionToast(m); }, 400 + i * 900);
+    });
+
+    // 5. Toasts des badges débloqués
+    var baseDelay = (data.completedMissions || []).length * 900 + 400;
+    (data.newBadges || []).forEach(function (badge, i) {
+      setTimeout(function () { showBadgeToast(badge); }, (data.levelUp ? 2400 : baseDelay) + i * 1200);
+    });
+
+    // 5. Streak pop
+    var streakEl = document.querySelector('.streak-chip');
+    if (streakEl) streakEl.classList.add('streak-pop');
+  }
+
+  function injectGamiPanel(data) {
+    // Supprime un éventuel panel précédent
+    var old = document.getElementById('gami-score-panel');
+    if (old) old.remove();
+
+    var xpGain  = data.xpGain || {};
+    var prog    = data.progress || {};
+    var pct     = Math.min(prog.pct || 0, 100);
+
+    // Chips de détail XP
+    var chips = '';
+    if (xpGain.base)        chips += '<span class="gami-xp-chip">Score +'  + xpGain.base + '</span>';
+    if (xpGain.perfect)     chips += '<span class="gami-xp-chip bonus">Parfait +'  + xpGain.perfect + '</span>';
+    if (xpGain.streakBonus) chips += '<span class="gami-xp-chip bonus">Série +'    + xpGain.streakBonus + '</span>';
+    if (xpGain.daily)       chips += '<span class="gami-xp-chip bonus">1er today +' + xpGain.daily + '</span>';
+
+    var panel = document.createElement('div');
+    panel.id        = 'gami-score-panel';
+    panel.className = 'gami-score-panel';
+    panel.innerHTML =
+      '<div class="gami-xp-row">' +
+        '<span class="gami-xp-earned">+' + (xpGain.total || 0) + ' XP</span>' +
+        '<div class="gami-xp-details">' + chips + '</div>' +
+      '</div>' +
+      '<div class="gami-level-row">' +
+        '<div class="level-badge" id="gami-lv-badge">Nv ' + data.level + '</div>' +
+        '<div class="gami-level-info">' +
+          '<div class="gami-level-label">Niveau ' + data.level + ' &nbsp;·&nbsp; 🔥 ' + data.streak + ' jour' + (data.streak > 1 ? 's' : '') + '</div>' +
+          '<div class="xp-bar-wrap"><div class="xp-bar-fill" id="gami-xp-fill" style="width:0%"></div></div>' +
+          '<div class="gami-level-sub">' + (prog.current || 0) + ' / ' + (prog.needed || 100) + ' XP</div>' +
+        '</div>' +
+      '</div>' +
+      (data.motivational ? '<div class="gami-motivational">' + data.motivational + '</div>' : '') +
+      '<a class="engage-cta" href="#" id="engage-cta-btn">' +
+        '<div class="engage-cta-text">' +
+          '<strong>📚 Révise un autre cours</strong>' +
+          '<span>Continue ta série — tu es en route !</span>' +
+        '</div>' +
+        '<span class="engage-cta-arrow">→</span>' +
+      '</a>';
+
+    quizScore.appendChild(panel);
+
+    // Anime la barre XP après insertion
+    setTimeout(function () {
+      var fill = document.getElementById('gami-xp-fill');
+      if (fill) fill.style.width = pct + '%';
+    }, 120);
+
+    // Clic sur CTA → retour à l'input
+    var cta = document.getElementById('engage-cta-btn');
+    if (cta) cta.addEventListener('click', function (e) {
+      e.preventDefault();
+      resetToInput();
+    });
+  }
+
+  function showLevelUp(level) {
+    var overlay = document.createElement('div');
+    overlay.className = 'level-up-overlay';
+    overlay.innerHTML =
+      '<div class="level-up-card">' +
+        '<div class="level-up-tag">✨ Niveau supérieur !</div>' +
+        '<div class="level-up-num">' + level + '</div>' +
+        '<div class="level-up-title">Tu es maintenant Niveau ' + level + '</div>' +
+        '<div class="level-up-sub">Continue comme ça — chaque cours compte !</div>' +
+        '<button class="level-up-close" id="lv-close">Super ! 🎉</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    document.getElementById('lv-close').addEventListener('click', function () { overlay.remove(); });
+    setTimeout(function () { overlay.remove(); }, 6000);
+  }
+
+  function showMissionToast(m) {
+    var toast = document.createElement('div');
+    toast.className = 'badge-toast mission-toast';
+    toast.innerHTML =
+      '<div class="badge-toast-icon">' + (m.icon || '🎯') + '</div>' +
+      '<div class="badge-toast-body">' +
+        '<div class="badge-toast-tag">Mission accomplie !</div>' +
+        '<div class="badge-toast-name">' + (m.label || '') + '</div>' +
+        '<div class="badge-toast-desc">+' + (m.xp || 0) + ' XP bonus</div>' +
+      '</div>';
+    document.body.appendChild(toast);
+    setTimeout(function () { toast.remove(); }, 3400);
+  }
+
+  function showBadgeToast(badge) {
+    var toast = document.createElement('div');
+    toast.className = 'badge-toast';
+    toast.innerHTML =
+      '<div class="badge-toast-icon">' + (badge.icon || '🏅') + '</div>' +
+      '<div class="badge-toast-body">' +
+        '<div class="badge-toast-tag">Badge débloqué !</div>' +
+        '<div class="badge-toast-name">' + (badge.name || '') + '</div>' +
+        '<div class="badge-toast-desc">' + (badge.desc || '') + '</div>' +
+      '</div>';
+    document.body.appendChild(toast);
+    setTimeout(function () { toast.remove(); }, 3400);
+  }
+
+  // ============================================================
+  //  QUIZ DE CONSOLIDATION
+  // ============================================================
+
+  window.startConsolidation = async function () {
+    if (state.wrongQuestions.length === 0) return;
+    const btnConsolidate = document.getElementById('btn-consolidate');
+    if (btnConsolidate) { btnConsolidate.disabled = true; btnConsolidate.textContent = 'Génération…'; }
+
+    try {
+      const res  = await fetch('/api/consolidation-quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wrongConcepts: state.wrongQuestions, topic: state.currentTopic }),
+      });
+      const data = await res.json();
+      if (!res.ok || !Array.isArray(data.questions)) {
+        showToast('❌ ' + (data.error || 'Erreur génération'), 'error');
+        if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = '🎯 Renforcer les points faibles'; }
+        return;
+      }
+      // Remplace les questions et relance le quiz
+      state.quizQuestions  = data.questions;
+      state.wrongQuestions = [];
+      state.currentContentId = null; // consolidation n'est pas sauvegardée
+      startQuiz();
+    } catch {
+      showToast('❌ Connexion impossible.', 'error');
+      if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = '🎯 Renforcer les points faibles'; }
+    }
+  };
+
+  // Chargement d'un item depuis l'historique
+  window.loadFromHistory = function (item) {
+    state.currentContentId = item.id;
+    showResults(item);
+  };
+
+  // ============================================================
+  //  NAVIGATION
+  // ============================================================
+
+  function showSection(name) {
+    sectionInput.classList.toggle('hidden', name !== 'input');
+    sectionLoading.classList.toggle('hidden', name !== 'loading');
+    sectionResults.classList.toggle('hidden', name !== 'results');
+    sectionQuiz.classList.toggle('hidden', name !== 'quiz');
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t.dataset.tab === name);
+    });
+    document.querySelectorAll('.tab-content').forEach(function (c) {
+      const active = c.id === 'tab-' + name;
+      c.classList.toggle('active', active);
+      c.classList.toggle('hidden', !active);
+    });
+  }
+
+  function resetToInput() {
+    courseInput.value = '';
+    charCount.textContent = '0 / 10 000';
+    showSection('input');
+    courseInput.focus();
+  }
+
+  // ============================================================
+  //  COPIER
+  // ============================================================
+
+  window.copyText = function (id) {
+    const el = document.getElementById(id);
+    if (el) navigator.clipboard.writeText(el.textContent).then(function () {
+      showToast('✓ Résumé copié !', 'success');
+    });
+  };
+
+  window.copyFlashcard = function () {
+    const txt = state.flashcardData.map(function (p) { return '• ' + p; }).join('\n');
+    navigator.clipboard.writeText(txt).then(function () {
+      showToast('✓ Fiche copiée !', 'success');
+    });
+  };
+
+  // ============================================================
+  //  USAGE / FREEMIUM
+  // ============================================================
+
+  async function refreshUsage() {
+    try {
+      const headers = {};
+      if (state.premiumToken) headers['x-premium-token'] = state.premiumToken;
+      const res  = await fetch('/api/usage', { headers });
+      const data = await res.json();
+      updateUsage(data.remaining, data.isPremium);
+    } catch (_) {}
+  }
+
+  function updateUsage(remaining, isPremium) {
+    usageBadge.classList.remove('hidden');
+    if (isPremium) {
+      usageText.textContent        = '✨ Premium — illimité';
+      usageText.style.color        = '';
+      btnPremium.textContent       = '✨ Premium actif';
+      btnPremium.style.opacity     = '0.6';
+      btnPremium.style.cursor      = 'default';
+      btnPremium.onclick           = null;
+    } else if (remaining !== null && remaining !== undefined) {
+      usageText.textContent = remaining + ' génération' + (remaining > 1 ? 's' : '') + ' restante' + (remaining > 1 ? 's' : '');
+      usageText.style.color = remaining === 0 ? 'var(--error)' : '';
+    }
+  }
+
+  // ============================================================
+  //  MODAL PREMIUM
+  // ============================================================
+
+  function showModal() {
+    modalPremium.classList.remove('hidden');
+    // Mémorise le texte original des boutons pour pouvoir le restaurer après erreur
+    document.querySelectorAll('.btn-checkout').forEach(function (b) {
+      if (!b.dataset.originalText) b.dataset.originalText = b.textContent;
+    });
+  }
+  window.hidePremiumModal = function () { modalPremium.classList.add('hidden'); };
+  window.closeModal = function (e)  { if (e.target === modalPremium) modalPremium.classList.add('hidden'); };
+
+  // plan = 'monthly' | 'yearly' | 'lifetime'
+  window.startCheckout = async function (plan) {
+    if (!plan) return;
+
+    // Désactive tous les boutons de checkout pendant la redirection
+    const btns = document.querySelectorAll('.btn-checkout');
+    btns.forEach(function (b) { b.disabled = true; b.textContent = 'Redirection…'; });
+
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (window.auth?.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
+
+      // Envoie le pays → le serveur détermine la devise et charge en monnaie locale
+      const res  = await fetch('/api/create-checkout/' + plan, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ country: state.country || null }),
+      });
+      const data = await res.json();
+      if (data.url) { window.location.href = data.url; return; }
+      showToast('❌ ' + (data.error || 'Erreur Stripe'), 'error');
+    } catch (_) {
+      showToast('❌ Connexion impossible au serveur', 'error');
+    }
+
+    // Restaure les boutons en cas d'erreur
+    btns.forEach(function (b) { b.disabled = false; b.textContent = b.dataset.originalText || 'Recommencer'; });
+  };
+
+  // ============================================================
+  //  VÉRIFICATION PAIEMENT
+  // ============================================================
+
+  async function verifyPayment(sid) {
+    try {
+      const res  = await fetch('/api/verify-payment?session_id=' + sid);
+      const data = await res.json();
+      if (data.success && data.token) {
+        state.premiumToken = data.token;
+        localStorage.setItem('studyai_premium_token', data.token);
+        showToast('🎉 Accès Premium activé !', 'success');
+        updateUsage(null, true);
+      }
+    } catch (_) {}
+  }
+
+  // ============================================================
+  //  TOAST
+  // ============================================================
+
+  let toastTimer;
+  function showToast(msg, type) {
+    clearTimeout(toastTimer);
+    toast.textContent  = msg;
+    toast.className    = 'toast' + (type ? ' ' + type : '');
+    toast.classList.remove('hidden');
+    toastTimer = setTimeout(function () { toast.classList.add('hidden'); }, 4000);
+  }
+
+  // Expose showToast globalement pour les boutons onclick inline
+  window.showToast = showToast;
+
+}); // fin DOMContentLoaded

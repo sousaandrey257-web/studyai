@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090f" />
+  <title>Study Duel — StudyAI</title>
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/premium.css" />
+  <link rel="stylesheet" href="css/battle.css" />
+</head>
+<body class="battle-body">
+
+  <header class="upload-header">
+    <a href="/" class="dash-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">StudyAI</span>
+    </a>
+    <nav class="upload-header-nav">
+      <a href="/dashboard" class="btn-secondary-small">Mon espace</a>
+    </nav>
+  </header>
+
+  <!-- ===== LOBBY ===== -->
+  <section class="battle-section" id="section-lobby">
+    <div class="battle-inner">
+      <div class="battle-hero-badge">⚔️ Study Duel</div>
+      <h1 class="battle-title">Défie tes amis<br /><span class="battle-gradient">en temps réel</span></h1>
+      <p class="battle-sub">Réponds le plus vite possible. Vitesse + précision = victoire.</p>
+
+      <!-- Join or Create -->
+      <div class="battle-lobby-cards">
+        <div class="battle-lobby-card" id="card-create">
+          <div class="lobby-card-icon">🎮</div>
+          <h3>Créer un duel</h3>
+          <p>Génère un code de partie et invite un ami</p>
+          <div class="create-info hidden" id="create-info">
+            <div class="battle-code-display" id="battle-code-display">——</div>
+            <p class="create-share-hint">Partage ce code avec ton adversaire</p>
+            <button class="btn-secondary-small" id="btn-copy-code">📋 Copier le code</button>
+          </div>
+          <div class="create-waiting hidden" id="create-waiting">
+            <div class="waiting-pulse"></div>
+            <p>En attente de l'adversaire…</p>
+          </div>
+        </div>
+
+        <div class="battle-lobby-divider">VS</div>
+
+        <div class="battle-lobby-card" id="card-join">
+          <div class="lobby-card-icon">🔗</div>
+          <h3>Rejoindre un duel</h3>
+          <p>Saisis le code reçu de ton ami</p>
+          <div class="join-form" id="join-form">
+            <input type="text" id="join-code-input" class="battle-code-input" placeholder="CODE" maxlength="6" />
+            <button class="btn-primary" id="btn-join">Rejoindre →</button>
+          </div>
+          <p class="join-error hidden" id="join-error"></p>
+        </div>
+      </div>
+
+      <p class="battle-no-battle">Tu dois d'abord <a href="/upload">générer un quiz</a> pour créer un duel depuis la page Auto Study.</p>
+    </div>
+  </section>
+
+  <!-- ===== COUNTDOWN ===== -->
+  <section class="battle-section hidden" id="section-countdown">
+    <div class="battle-inner battle-center">
+      <div class="countdown-vs">
+        <div class="countdown-player" id="cd-player1">
+          <div class="player-avatar">🧠</div>
+          <div class="player-name" id="cd-name1">Toi</div>
+        </div>
+        <div class="countdown-number" id="countdown-num">3</div>
+        <div class="countdown-player" id="cd-player2">
+          <div class="player-avatar">🤖</div>
+          <div class="player-name" id="cd-name2">Adversaire</div>
+        </div>
+      </div>
+      <p class="countdown-sub">Le duel commence dans…</p>
+    </div>
+  </section>
+
+  <!-- ===== GAME ===== -->
+  <section class="battle-section hidden" id="section-game">
+    <div class="battle-inner">
+
+      <!-- Scoreboard -->
+      <div class="battle-scoreboard">
+        <div class="sb-player" id="sb-me">
+          <span class="sb-name" id="sb-name-me">Moi</span>
+          <span class="sb-score" id="sb-score-me">0</span>
+        </div>
+        <div class="sb-center">
+          <div class="sb-timer" id="sb-timer">30</div>
+          <div class="sb-qnum" id="sb-qnum">Q1/6</div>
+        </div>
+        <div class="sb-player sb-player-right" id="sb-opp">
+          <span class="sb-score" id="sb-score-opp">0</span>
+          <span class="sb-name" id="sb-name-opp">Adversaire</span>
+        </div>
+      </div>
+
+      <!-- Question -->
+      <div class="battle-question-card" id="battle-qcard">
+        <div class="bq-meta">
+          <span class="bq-diff" id="bq-diff">Moyen</span>
+          <span class="bq-speed-bonus" id="bq-speed-bonus">⚡ Bonus vitesse actif</span>
+        </div>
+        <p class="bq-text" id="bq-text">Chargement de la question…</p>
+        <div class="bq-choices" id="bq-choices"></div>
+        <div class="bq-feedback hidden" id="bq-feedback"></div>
+      </div>
+
+      <!-- Opp status -->
+      <div class="opp-status" id="opp-status">
+        <div class="opp-thinking" id="opp-thinking">
+          <span class="opp-dot"></span><span class="opp-dot"></span><span class="opp-dot"></span>
+          <span>Adversaire répond…</span>
+        </div>
+        <div class="opp-answered hidden" id="opp-answered">✓ Adversaire a répondu</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS ===== -->
+  <section class="battle-section hidden" id="section-results">
+    <div class="battle-inner battle-center">
+      <div class="battle-result-crown" id="result-crown">🏆</div>
+      <h2 class="battle-result-title" id="result-title">Résultats</h2>
+      <p class="battle-result-sub" id="result-sub"></p>
+
+      <div class="battle-final-scores">
+        <div class="final-score-card" id="final-me">
+          <div class="final-score-avatar">🧠</div>
+          <div class="final-score-name" id="final-name-me">Moi</div>
+          <div class="final-score-pts" id="final-pts-me">0 pts</div>
+          <div class="final-score-acc" id="final-acc-me">0% précision</div>
+        </div>
+        <div class="final-vs">VS</div>
+        <div class="final-score-card" id="final-opp">
+          <div class="final-score-avatar">🤖</div>
+          <div class="final-score-name" id="final-name-opp">Adversaire</div>
+          <div class="final-score-pts" id="final-pts-opp">0 pts</div>
+          <div class="final-score-acc" id="final-acc-opp">0% précision</div>
+        </div>
+      </div>
+
+      <div class="battle-result-breakdown" id="result-breakdown"></div>
+
+      <div class="battle-result-actions">
+        <button class="btn-primary" id="btn-rematch">↻ Revanche</button>
+        <a href="/upload" class="btn-secondary-small">+ Nouveau quiz</a>
+        <a href="/dashboard" class="btn-secondary-small">Mon espace</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav" aria-label="Navigation">
+    <div class="bottom-nav-inner">
+      <a href="/" class="bottom-nav-item">
+        <span class="bottom-nav-icon">⚡</span>
+        <span>Réviser</span>
+      </a>
+      <a href="/upload" class="bottom-nav-item">
+        <span class="bottom-nav-icon">📄</span>
+        <span>Auto Study</span>
+      </a>
+      <a href="/dashboard" class="bottom-nav-item">
+        <span class="bottom-nav-icon">📊</span>
+        <span>Espace</span>
+      </a>
+    </div>
+  </nav>
+
+  <script src="js/battle.js?v=1"></script>
+  <script src="js/ui.js?v=1"></script>
+</body>
+</html>

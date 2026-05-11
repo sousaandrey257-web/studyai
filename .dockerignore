@@ -1,0 +1,33 @@
+# Development
+node_modules
+npm-debug.log
+.npm
+
+# Environment — NEVER include in image
+.env
+.env.*
+
+# Data files — use volumes in production
+data/*.json
+data/backups/
+data/*.log
+
+# Version control
+.git
+.gitignore
+
+# Dev tooling
+.vscode
+.idea
+*.md
+README*
+
+# Tests
+tests/
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

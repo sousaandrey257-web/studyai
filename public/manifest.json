@@ -1,0 +1,41 @@
+{
+  "name": "StudyAI — Révise plus vite avec l'IA",
+  "short_name": "StudyAI",
+  "description": "Transforme n'importe quel cours en résumé, fiche de révision et quiz interactif en quelques secondes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#09090f",
+  "theme_color": "#09090f",
+  "lang": "fr",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nouveau cours",
+      "url": "/",
+      "description": "Analyser un nouveau cours"
+    },
+    {
+      "name": "Mon espace",
+      "url": "/dashboard",
+      "description": "Voir mes statistiques"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

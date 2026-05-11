@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /privacy
+Allow: /terms
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /app
+Disallow: /upload
+Disallow: /brain
+Disallow: /battle
+Disallow: /reset-password
+
+Sitemap: https://studyai.app/sitemap.xml

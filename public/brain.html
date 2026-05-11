@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090f" />
+  <title>Second Brain — StudyAI</title>
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/premium.css" />
+  <link rel="stylesheet" href="css/brain.css" />
+</head>
+<body class="brain-body">
+
+  <header class="upload-header">
+    <a href="/" class="dash-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">StudyAI</span>
+    </a>
+    <nav class="upload-header-nav">
+      <a href="/dashboard" class="btn-secondary-small">Mon espace</a>
+    </nav>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="brain-hero">
+    <div class="brain-hero-inner">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Second Brain — Graphe de connaissance
+      </div>
+      <h1 class="brain-hero-title">Ton cerveau numérique</h1>
+      <p class="brain-hero-sub">
+        Chaque concept que tu étudies est automatiquement lié aux autres.<br />
+        Visualise comment tes connaissances se connectent.
+      </p>
+
+      <!-- Stats bar -->
+      <div class="brain-stats-bar" id="brain-stats-bar">
+        <div class="brain-stat">
+          <span class="brain-stat-value" id="stat-nodes">—</span>
+          <span class="brain-stat-label">Concepts</span>
+        </div>
+        <div class="brain-stat">
+          <span class="brain-stat-value" id="stat-edges">—</span>
+          <span class="brain-stat-label">Connexions</span>
+        </div>
+        <div class="brain-stat">
+          <span class="brain-stat-value" id="stat-subjects">—</span>
+          <span class="brain-stat-label">Matières</span>
+        </div>
+        <div class="brain-stat">
+          <span class="brain-stat-value" id="stat-sessions">—</span>
+          <span class="brain-stat-label">Sessions</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GRAPH + SIDEBAR ===== -->
+  <section class="brain-workspace">
+
+    <!-- Controls -->
+    <div class="brain-controls">
+      <div class="brain-search-wrap">
+        <input type="text" id="brain-search" class="brain-search" placeholder="🔍 Rechercher un concept…" />
+      </div>
+      <div class="brain-filter-pills" id="brain-filters">
+        <button class="brain-pill active" data-filter="all">Tout</button>
+      </div>
+      <div class="brain-view-btns">
+        <button class="brain-view-btn active" id="btn-view-graph" title="Graphe">⬡</button>
+        <button class="brain-view-btn" id="btn-view-list" title="Liste">☰</button>
+      </div>
+    </div>
+
+    <!-- Graph canvas -->
+    <div class="brain-graph-wrap" id="brain-graph-wrap">
+      <canvas id="brain-canvas"></canvas>
+      <div class="brain-empty hidden" id="brain-empty">
+        <div class="brain-empty-icon">🧠</div>
+        <h3>Ton Second Brain est vide</h3>
+        <p>Génère ton premier pack d'étude pour commencer à construire ton graphe de connaissances.</p>
+        <a href="/upload" class="btn-primary">📄 Analyser un cours</a>
+      </div>
+      <div class="brain-loading" id="brain-loading">
+        <div class="brain-spinner"></div>
+        <p>Chargement du graphe…</p>
+      </div>
+    </div>
+
+    <!-- List view (hidden by default) -->
+    <div class="brain-list-wrap hidden" id="brain-list-wrap">
+      <div id="brain-list"></div>
+    </div>
+
+    <!-- Concept sidebar -->
+    <div class="brain-sidebar hidden" id="brain-sidebar">
+      <button class="brain-sidebar-close" id="btn-sidebar-close">✕</button>
+      <div class="brain-sidebar-inner">
+        <div class="sidebar-concept-badge" id="sidebar-subject"></div>
+        <h2 class="sidebar-concept-name" id="sidebar-name">—</h2>
+        <p class="sidebar-concept-def" id="sidebar-def">—</p>
+
+        <div class="sidebar-section">
+          <h4>📡 Connexions</h4>
+          <div class="sidebar-connections" id="sidebar-connections"></div>
+        </div>
+
+        <div class="sidebar-section">
+          <h4>📚 Sessions</h4>
+          <div class="sidebar-sessions" id="sidebar-sessions"></div>
+        </div>
+
+        <div class="sidebar-section hidden" id="sidebar-mastery-section">
+          <h4>🎯 Maîtrise</h4>
+          <div class="mastery-mini-bar">
+            <div class="mastery-mini-fill" id="sidebar-mastery-fill" style="width:0%"></div>
+          </div>
+          <p class="sidebar-mastery-label" id="sidebar-mastery-label"></p>
+        </div>
+
+        <button class="btn-secondary-small sidebar-deepen-btn" id="btn-deepen">💡 Approfondir</button>
+        <div class="sidebar-deepen-result hidden" id="sidebar-deepen-result"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===== INSIGHTS ===== -->
+  <section class="brain-insights-section" id="brain-insights-section">
+    <div class="brain-insights-inner">
+      <h2 class="brain-insights-title">Insights de ton apprentissage</h2>
+      <div class="brain-insights-grid" id="brain-insights-grid">
+        <div class="brain-insight-card skeleton"></div>
+        <div class="brain-insight-card skeleton"></div>
+        <div class="brain-insight-card skeleton"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav" aria-label="Navigation">
+    <div class="bottom-nav-inner">
+      <a href="/" class="bottom-nav-item">
+        <span class="bottom-nav-icon">⚡</span>
+        <span>Réviser</span>
+      </a>
+      <a href="/upload" class="bottom-nav-item">
+        <span class="bottom-nav-icon">📄</span>
+        <span>Auto Study</span>
+      </a>
+      <a href="/dashboard" class="bottom-nav-item">
+        <span class="bottom-nav-icon">📊</span>
+        <span>Espace</span>
+      </a>
+    </div>
+  </nav>
+
+  <script src="js/brain.js?v=1"></script>
+  <script src="js/ui.js?v=1"></script>
+</body>
+</html>
