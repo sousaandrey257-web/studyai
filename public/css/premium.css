@@ -929,12 +929,34 @@ body::after {
 }
 
 /* ============================================================
-   SHARE BUTTON — enhanced
+   SHARE BUTTON — base + enhanced
    ============================================================ */
-.share-btn {
-  transition: background var(--transition-fast), transform var(--transition-fast) var(--ease-spring);
+.share-btn-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
 }
-.share-btn:hover { transform: translateY(-2px); }
+.share-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast) var(--ease-spring);
+}
+.share-btn:hover {
+  background: rgba(124,58,237,0.1);
+  border-color: rgba(124,58,237,0.35);
+  color: var(--primary-light);
+  transform: translateY(-2px);
+}
 
 /* ============================================================
    PROGRESS FILL — pulsing glow for 100%

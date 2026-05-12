@@ -45,7 +45,7 @@ const Workspace = (() => {
     const nextIdx = PANEL_IDS.indexOf(panelId);
     const forward = nextIdx >= prevIdx;
 
-    /* Animate old panel out */
+    /* Animate old panel out — clear any lingering transition states first */
     if (prevEl && prevId !== panelId) {
       prevEl.classList.remove('panel--active');
       prevEl.classList.add('panel--exit');
@@ -55,12 +55,14 @@ const Workspace = (() => {
       }, 220);
     }
 
-    /* Set directional enter offset via inline var */
+    /* Reset any lingering pointer-events or transform from previous state */
     nextEl.style.setProperty('--enter-x', forward ? '14px' : '-14px');
-    nextEl.style.removeProperty('transform'); /* reset any inline from swipe */
+    nextEl.style.removeProperty('transform');
+    nextEl.style.removeProperty('pointer-events');
+
     nextEl.classList.add('panel--active');
 
-    /* Sync nav items */
+    /* Sync ALL nav items (both sidebar and bottom nav) */
     $$('[data-nav]').forEach(e => e.classList.toggle('active', e.dataset.nav === panelId));
 
     /* Breadcrumb */
@@ -69,10 +71,12 @@ const Workspace = (() => {
     setTxt('#breadcrumb-section', meta.label);
 
     /* URL hash */
-    if (!opts.silent) history.pushState({ panel: panelId }, '', `#${panelId}`);
+    if (!opts.silent) {
+      try { history.pushState({ panel: panelId }, '', `#${panelId}`); } catch {}
+    }
 
     /* Lazy init */
-    lazyInit(panelId);
+    try { lazyInit(panelId); } catch (err) { console.warn('[Workspace] lazyInit error:', err); }
 
     /* Mobile: close sidebar */
     closeSidebar();
@@ -223,9 +227,7 @@ const Workspace = (() => {
   /* ── Battle panel ────────────────────────────────── */
   function initBattle() {
     if (window._battleAPI) window._battleAPI.init();
-    $$('#section-results [data-nav]').forEach(btn => {
-      btn.addEventListener('click', () => navigate(btn.dataset.nav));
-    });
+    // Note: [data-nav] buttons are already wired globally in init() — no re-binding needed
   }
 
   /* ── User ────────────────────────────────────────── */
@@ -417,12 +419,16 @@ const Workspace = (() => {
 
   /* ── Boot ─────────────────────────────────────────── */
   function init() {
-    /* Wire all [data-nav] elements */
-    $$('[data-nav]').forEach(e => {
-      e.addEventListener('click', () => {
-        const t = e.dataset.nav;
-        if (PANEL_IDS.includes(t)) navigate(t);
-      });
+    /* Event delegation for [data-nav] — catches statically-rendered AND
+       dynamically-injected nav buttons (e.g. home empty-state CTA). */
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-nav]');
+      if (!btn) return;
+      const t = btn.dataset.nav;
+      if (PANEL_IDS.includes(t)) {
+        e.preventDefault();
+        navigate(t);
+      }
     });
 
     /* Topbar controls */
@@ -430,10 +436,10 @@ const Workspace = (() => {
     $('.app-overlay')?.addEventListener('click', closeSidebar);
     el('btn-topbar-study')?.addEventListener('click', () => navigate('study'));
 
-    /* Hash routing */
-    window.addEventListener('popstate', () => {
-      const h = location.hash.replace('#', '');
-      navigate(PANEL_IDS.includes(h) ? h : 'home', { silent: true });
+    /* Hash routing — back/forward browser support */
+    window.addEventListener('popstate', e => {
+      const panel = (e.state && e.state.panel) || location.hash.replace('#', '');
+      navigate(PANEL_IDS.includes(panel) ? panel : 'home', { silent: true });
     });
     const initHash = location.hash.replace('#', '');
     navigate(PANEL_IDS.includes(initHash) ? initHash : 'home', { silent: true });
@@ -447,14 +453,13 @@ const Workspace = (() => {
       savePack({ jobId, title, subject, cards: cards || 0, concepts: concepts || 0 });
       bumpStreak();
       toast(`Pack prêt : ${title || 'Sans titre'} — ${cards || 0} flashcards`, 'success');
-      /* Refresh home stats if visible */
       if (current === 'home') { loadPacks(); loadStats(); }
     });
 
     /* Load user */
     loadUser();
 
-    /* Expose globals */
+    /* Expose globals — includes navigate so inline onclicks in dynamic HTML work */
     window.Workspace = { navigate, toast, savePack, bumpStreak };
   }
 

@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="css/brain.css" />
   <link rel="stylesheet" href="css/battle.css" />
   <!-- Unified shell — loads last to override panel defaults -->
-  <link rel="stylesheet" href="css/app.css?v=4" />
+  <link rel="stylesheet" href="css/app.css?v=5" />
 </head>
 <body class="app-body">
 
@@ -27,7 +27,7 @@
 
 <!-- ===== SIDEBAR ===== -->
 <aside class="app-sidebar" id="app-sidebar">
-  <a href="/app" class="app-sidebar-logo">
+  <a href="/app" class="app-sidebar-logo" data-nav="home" aria-label="Accueil StudyAI">
     <div class="sidebar-logo-icon">⚡</div>
     <span class="sidebar-logo-text">StudyAI</span>
     <span class="sidebar-logo-badge">Beta</span>
@@ -525,7 +525,7 @@
         </div>
       </section>
 
-      <section class="battle-section hidden" id="section-results">
+      <section class="battle-section hidden" id="section-battle-results">
         <div class="battle-inner battle-center">
           <div class="battle-result-crown" id="result-crown">🏆</div>
           <h2 class="battle-result-title" id="result-title">Résultats</h2>
@@ -585,10 +585,10 @@
 <div class="app-toast-wrap" aria-live="polite"></div>
 
 <!-- ===== SCRIPTS ===== -->
-<script src="js/upload.js?v=4" defer></script>
-<script src="js/brain.js?v=4" defer></script>
-<script src="js/battle.js?v=4" defer></script>
-<script src="js/workspace.js?v=4" defer></script>
+<script src="js/upload.js?v=5" defer></script>
+<script src="js/brain.js?v=5" defer></script>
+<script src="js/battle.js?v=5" defer></script>
+<script src="js/workspace.js?v=5" defer></script>
 
 </body>
 </html>

@@ -18,9 +18,10 @@ const state = {
   premiumToken:     localStorage.getItem('studyai_premium_token') || null,
   currentContentId: null,
   country: null,
-  wrongQuestions:        [],  // questions ratées (texte) pour le quiz de consolidation
-  currentTopic:          '',  // sujet du cours courant
-  correctByDifficulty:   {},  // { "1": n, "2": n, "3": n } — correct par difficulté
+  wrongQuestions:        [],
+  currentTopic:          '',
+  correctByDifficulty:   {},
+  isPremium:             false,  // flag to guard premium modal
 };
 
 // ============================================================
@@ -147,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnNext)       btnNext.addEventListener('click', nextQuestion);
   if (btnRetry)      btnRetry.addEventListener('click', startQuiz);
   if (btnBack)       btnBack.addEventListener('click', function () { showSection('results'); switchTab('flashcard'); });
-  if (btnPremium)    btnPremium.addEventListener('click', showModal);
+  if (btnPremium)    btnPremium.addEventListener('click', function() { showModal(); });
 
   // ============================================================
   //  GÉNÉRATION
@@ -167,6 +168,10 @@ document.addEventListener('DOMContentLoaded', function () {
       courseInput.focus();
       return;
     }
+
+    // Guard against double-clicks
+    if (btnGenerate.disabled) return;
+    btnGenerate.disabled = true;
 
     showSection('loading');
 
@@ -198,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
       clearInterval(ticker);
 
       if (!res.ok) {
+        btnGenerate.disabled = false;
         if (data.error === 'limit_reached') { showSection('input'); showModal(); return; }
         showSection('input');
         showToast('❌ ' + (data.error || 'Erreur serveur'), 'error');
@@ -210,11 +216,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
       state.currentContentId = data.contentId || null;
       state.currentTopic     = text.slice(0, 100);
+      btnGenerate.disabled = false;
       showResults(data);
 
     } catch (err) {
       clearTimeout(fetchTimeout);
       clearInterval(ticker);
+      btnGenerate.disabled = false;
       showSection('input');
       if (err.name === 'AbortError') {
         showToast('❌ Délai dépassé — réessaie avec un texte plus court.', 'error');
@@ -729,6 +737,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function resetToInput() {
     courseInput.value = '';
     charCount.textContent = '0 / 10 000';
+    btnGenerate.disabled = false;
     showSection('input');
     courseInput.focus();
   }
@@ -768,12 +777,16 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateUsage(remaining, isPremium) {
     usageBadge.classList.remove('hidden');
     if (isPremium) {
+      state.isPremium              = true;
       usageText.textContent        = '✨ Premium — illimité';
       usageText.style.color        = '';
-      btnPremium.textContent       = '✨ Premium actif';
-      btnPremium.style.opacity     = '0.6';
-      btnPremium.style.cursor      = 'default';
-      btnPremium.onclick           = null;
+      if (btnPremium) {
+        btnPremium.textContent     = '✨ Premium actif';
+        btnPremium.style.opacity   = '0.6';
+        btnPremium.style.cursor    = 'default';
+        btnPremium.setAttribute('aria-disabled', 'true');
+        btnPremium.title           = 'Vous êtes déjà Premium';
+      }
     } else if (remaining !== null && remaining !== undefined) {
       usageText.textContent = remaining + ' génération' + (remaining > 1 ? 's' : '') + ' restante' + (remaining > 1 ? 's' : '');
       usageText.style.color = remaining === 0 ? 'var(--error)' : '';
@@ -785,12 +798,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
 
   function showModal() {
+    // Guard: never show "upgrade" modal to already-premium users
+    if (state.isPremium) return;
     modalPremium.classList.remove('hidden');
-    // Mémorise le texte original des boutons pour pouvoir le restaurer après erreur
     document.querySelectorAll('.btn-checkout').forEach(function (b) {
       if (!b.dataset.originalText) b.dataset.originalText = b.textContent;
     });
   }
+  // Expose globally so any button on the page can open the premium modal
+  window.showPremiumModal = showModal;
   window.hidePremiumModal = function () { modalPremium.classList.add('hidden'); };
   window.closeModal = function (e)  { if (e.target === modalPremium) modalPremium.classList.add('hidden'); };
 

@@ -60,10 +60,10 @@
   <!-- ===== HEADER ===== -->
   <header class="header">
     <div class="header-inner">
-      <div class="logo">
+      <a href="/" class="logo" aria-label="Accueil StudyAI">
         <span class="logo-icon">⚡</span>
         <span class="logo-text">StudyAI</span>
-      </div>
+      </a>
       <div id="usage-badge" class="usage-badge hidden">
         <span id="usage-text"></span>
       </div>
@@ -239,35 +239,35 @@
         <h2 class="faq-title">Questions fréquentes</h2>
         <div class="faq-list">
           <div class="faq-item">
-            <button class="faq-question">
+            <button type="button" class="faq-question">
               Est-ce vraiment gratuit ?
               <span class="faq-arrow">▼</span>
             </button>
             <div class="faq-answer"><p>Oui ! Le plan gratuit inclut 3 analyses par jour — sans carte bancaire, sans engagement. Le Premium débloque les générations illimitées et l'XP ×2.</p></div>
           </div>
           <div class="faq-item">
-            <button class="faq-question">
+            <button type="button" class="faq-question">
               Quelles matières sont supportées ?
               <span class="faq-arrow">▼</span>
             </button>
             <div class="faq-answer"><p>Toutes. Histoire, biologie, droit, mathématiques, langues, informatique… StudyAI analyse n'importe quel texte dans 13 langues différentes.</p></div>
           </div>
           <div class="faq-item">
-            <button class="faq-question">
+            <button type="button" class="faq-question">
               Comment fonctionne le quiz adaptatif ?
               <span class="faq-arrow">▼</span>
             </button>
             <div class="faq-answer"><p>L'IA génère 10 questions selon la taxonomie de Bloom — du plus simple au plus complexe. Les points faibles sont identifiés pour une révision ciblée.</p></div>
           </div>
           <div class="faq-item">
-            <button class="faq-question">
+            <button type="button" class="faq-question">
               Mes données sont-elles sécurisées ?
               <span class="faq-arrow">▼</span>
             </button>
             <div class="faq-answer"><p>Absolument. Ton cours n'est pas stocké après génération. Ton historique est chiffré côté serveur et jamais partagé. Tu peux supprimer ton compte à tout moment.</p></div>
           </div>
           <div class="faq-item">
-            <button class="faq-question">
+            <button type="button" class="faq-question">
               Puis-je annuler le Premium à tout moment ?
               <span class="faq-arrow">▼</span>
             </button>
@@ -304,7 +304,7 @@
               <li class="compare-ok compare-highlight">🔥 Streak protégé + missions bonus</li>
               <li class="compare-ok">✓ Quiz de consolidation</li>
             </ul>
-            <button class="btn-primary btn-full compare-cta" onclick="document.getElementById('btn-premium-header').click()">
+            <button type="button" class="btn-primary btn-full compare-cta" onclick="window.showPremiumModal && window.showPremiumModal()">
               Commencer — dès <span data-price-key="yearly">69,99 €</span>/an
             </button>
           </div>
@@ -570,9 +570,9 @@
   <script src="js/pow.js?v=1"></script>
   <!-- i18n doit être chargé AVANT app.js — ?v= force le rechargement du cache -->
   <script src="js/i18n.js?v=9"></script>
-  <script src="js/auth.js?v=4"></script>
-  <script src="js/app.js?v=15"></script>
-  <script src="js/ui.js?v=1"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/app.js?v=16"></script>
+  <script src="js/ui.js?v=2"></script>
   <script>
     // PWA Service Worker registration
     if ('serviceWorker' in navigator) {

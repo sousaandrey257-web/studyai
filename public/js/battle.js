@@ -351,7 +351,7 @@ async function finishGame() {
 function showFinalResults(state) {
   clearInterval(pollTimer);
   clearInterval(timerInterval);
-  showSection('section-results');
+  showSection('section-battle-results');
 
   const players = state.players || [];
   const me = players.find(p => p.id === myUserId) || { name: 'Moi', score: myScore, accuracy: 0 };
