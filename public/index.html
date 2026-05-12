@@ -479,9 +479,9 @@
   </div>
 
   <!-- ===== MODAL PREMIUM ===== -->
-  <div id="modal-premium" class="modal-overlay hidden" onclick="closeModal(event)">
+  <div id="modal-premium" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Offres Premium">
     <div class="modal-card modal-card-wide">
-      <button class="modal-close" onclick="hidePremiumModal()">✕</button>
+      <button class="modal-close" type="button">✕</button>
       <div class="modal-icon">✨</div>
       <h2 class="modal-title">Passez Premium</h2>
       <p class="modal-sub">Débloquez un accès illimité à StudyAI</p>
@@ -499,7 +499,7 @@
             <li>✅ XP ×2 + missions quotidiennes</li>
             <li>✅ Historique & statistiques</li>
           </ul>
-          <button class="btn-secondary btn-full btn-checkout" onclick="startCheckout('monthly')">
+          <button class="btn-secondary btn-full btn-checkout" type="button" data-plan="monthly">
             Commencer — 9,99€/mois
           </button>
         </div>
@@ -516,7 +516,7 @@
             <li>✅ XP ×2 + missions quotidiennes</li>
             <li>✅ Streak protégé + priorité nouveautés</li>
           </ul>
-          <button class="btn-primary btn-full btn-checkout" onclick="startCheckout('yearly')">
+          <button class="btn-primary btn-full btn-checkout" type="button" data-plan="yearly">
             Meilleur prix — 69,99€/an
           </button>
         </div>
@@ -558,7 +558,7 @@
         <span class="bottom-nav-icon">📊</span>
         <span>Espace</span>
       </button>
-      <button class="bottom-nav-item" onclick="document.getElementById('btn-premium-header').click()">
+      <button class="bottom-nav-item" onclick="window.showPremiumModal && window.showPremiumModal()">
         <span class="bottom-nav-icon">✨</span>
         <span>Premium</span>
       </button>

@@ -29,7 +29,80 @@ const state = {
   currentTopic:          '',
   correctByDifficulty:   {},
   isPremium:             false,
-  _generating:           false,  // race-condition guard for generate()
+  _generating:           false,
+};
+
+// ============================================================
+//  MODAL PREMIUM — défini au niveau module pour survivre aux erreurs DOMContentLoaded
+// ============================================================
+(function () {
+  var _open = false, _esc = null;
+  function _el() { return document.getElementById('modal-premium'); }
+
+  window.showPremiumModal = function () {
+    var modal = _el();
+    if (!modal || state.isPremium || _open) return;
+    _open = true;
+    window.lockBodyScroll && window.lockBodyScroll();
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.querySelectorAll('.btn-checkout').forEach(function (b) {
+      if (!b.dataset.originalText) b.dataset.originalText = b.textContent.trim();
+    });
+    _esc = function (e) { if (e.key === 'Escape') window.hidePremiumModal(); };
+    document.addEventListener('keydown', _esc);
+    requestAnimationFrame(function () {
+      var btn = modal.querySelector('.modal-close');
+      if (btn) btn.focus();
+    });
+  };
+
+  window.hidePremiumModal = function () {
+    var modal = _el();
+    if (!modal) return;
+    _open = false;
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    window.unlockBodyScroll && window.unlockBodyScroll();
+    if (_esc) { document.removeEventListener('keydown', _esc); _esc = null; }
+    modal.querySelectorAll('.btn-checkout').forEach(function (b) {
+      b.disabled = false;
+      if (b.dataset.originalText) b.textContent = b.dataset.originalText;
+    });
+  };
+
+  // Compat legacy — appelé depuis les onclick inline restants
+  window.closeModal = function (e) {
+    if (e && e.target === _el()) window.hidePremiumModal();
+  };
+}());
+
+// startCheckout au niveau module — toujours appelable même si DOMContentLoaded échoue
+window.startCheckout = async function (plan) {
+  if (!plan) return;
+  var modal = document.getElementById('modal-premium');
+  var btns  = modal ? Array.from(modal.querySelectorAll('.btn-checkout')) : [];
+  btns.forEach(function (b) { b.disabled = true; b.textContent = 'Redirection…'; });
+  try {
+    var headers = { 'Content-Type': 'application/json' };
+    if (window.auth && window.auth.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
+    var res  = await fetch('/api/create-checkout/' + plan, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ country: state.country || null }),
+    });
+    var data = await res.json();
+    if (data.url) { window.location.href = data.url; return; }
+    if (window.showToast) window.showToast('❌ ' + (data.error || 'Erreur Stripe'), 'error');
+    else alert(data.error || 'Erreur Stripe');
+  } catch (_) {
+    if (window.showToast) window.showToast('❌ Connexion impossible au serveur', 'error');
+    else alert('Connexion impossible');
+  }
+  btns.forEach(function (b) {
+    b.disabled = false;
+    if (b.dataset.originalText) b.textContent = b.dataset.originalText;
+  });
 };
 
 // ============================================================
@@ -158,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnNext)       btnNext.addEventListener('click', nextQuestion);
   if (btnRetry)      btnRetry.addEventListener('click', startQuiz);
   if (btnBack)       btnBack.addEventListener('click', function () { showSection('results'); switchTab('flashcard'); });
-  if (btnPremium)    btnPremium.addEventListener('click', function() { showModal(); });
+  if (btnPremium)    btnPremium.addEventListener('click', function() { window.showPremiumModal(); });
 
   // ============================================================
   //  GÉNÉRATION
@@ -216,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!res.ok) {
         state._generating = false;
         btnGenerate.disabled = false;
-        if (data.error === 'limit_reached') { showSection('input'); showModal(); return; }
+        if (data.error === 'limit_reached') { showSection('input'); window.showPremiumModal(); return; }
         showSection('input');
         showToast('❌ ' + (data.error || 'Erreur serveur'), 'error');
         return;
@@ -808,50 +881,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ============================================================
-  //  MODAL PREMIUM
+  //  MODAL PREMIUM — event wiring (logique définie au niveau module)
   // ============================================================
-
-  function showModal() {
-    // Guard: never show "upgrade" modal to already-premium users
-    if (state.isPremium) return;
-    modalPremium.classList.remove('hidden');
-    document.querySelectorAll('.btn-checkout').forEach(function (b) {
-      if (!b.dataset.originalText) b.dataset.originalText = b.textContent;
+  (function () {
+    if (!modalPremium) return;
+    var card = modalPremium.querySelector('.modal-card');
+    if (!card) return;
+    modalPremium.addEventListener('click', function (e) {
+      if (e.target === modalPremium) window.hidePremiumModal();
     });
-  }
-  // Expose globally so any button on the page can open the premium modal
-  window.showPremiumModal = showModal;
-  window.hidePremiumModal = function () { modalPremium.classList.add('hidden'); };
-  window.closeModal = function (e)  { if (e.target === modalPremium) modalPremium.classList.add('hidden'); };
-
-  // plan = 'monthly' | 'yearly' | 'lifetime'
-  window.startCheckout = async function (plan) {
-    if (!plan) return;
-
-    // Désactive tous les boutons de checkout pendant la redirection
-    const btns = document.querySelectorAll('.btn-checkout');
-    btns.forEach(function (b) { b.disabled = true; b.textContent = 'Redirection…'; });
-
-    try {
-      const headers = { 'Content-Type': 'application/json' };
-      if (window.auth?.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
-
-      // Envoie le pays → le serveur détermine la devise et charge en monnaie locale
-      const res  = await fetch('/api/create-checkout/' + plan, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ country: state.country || null }),
-      });
-      const data = await res.json();
-      if (data.url) { window.location.href = data.url; return; }
-      showToast('❌ ' + (data.error || 'Erreur Stripe'), 'error');
-    } catch (_) {
-      showToast('❌ Connexion impossible au serveur', 'error');
-    }
-
-    // Restaure les boutons en cas d'erreur
-    btns.forEach(function (b) { b.disabled = false; b.textContent = b.dataset.originalText || 'Recommencer'; });
-  };
+    card.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (e.target.closest('.modal-close')) { window.hidePremiumModal(); return; }
+      var btn = e.target.closest('.btn-checkout');
+      if (btn && !btn.disabled) {
+        var plan = btn.dataset.plan;
+        if (plan) window.startCheckout(plan);
+      }
+    });
+  }());
 
   // ============================================================
   //  VÉRIFICATION PAIEMENT
