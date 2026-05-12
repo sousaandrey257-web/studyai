@@ -49,7 +49,7 @@
    RESET
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
+button, a, [role="button"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 /* ============================================================
    SKIP LINK
@@ -873,6 +873,8 @@ body::before {
 
 /* Pricing grid */
 .pricing-grid-3 {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 12px;
@@ -1271,6 +1273,8 @@ body::before {
    LANDING PAGE — STATS STRIP
    ============================================================ */
 .stats-strip {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1354,7 +1358,7 @@ body::before {
 /* ============================================================
    LANDING PAGE — TESTIMONIALS / USE CASES
    ============================================================ */
-.testimonials-section { margin-top: 68px; text-align: center; }
+.testimonials-section { content-visibility: auto; contain-intrinsic-size: 0 320px; margin-top: 68px; text-align: center; }
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

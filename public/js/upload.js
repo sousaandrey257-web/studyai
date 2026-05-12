@@ -11,7 +11,10 @@
     fcIndex: 0, fcCards: [],
   };
 
-  var AUTH_TOKEN = localStorage.getItem('studyai_auth_token') || localStorage.getItem('token') || '';
+  var _ss = window.safeStore || {
+    get: function (k, fb) { try { var v = localStorage.getItem(k); return v === null ? fb : v; } catch { return fb; } },
+  };
+  var AUTH_TOKEN = _ss.get('studyai_auth_token', null) || _ss.get('token', null) || '';
 
   // ── DOM references ───────────────────────────────────────────
   var $ = function (id) { return document.getElementById(id); };
@@ -60,10 +63,13 @@
     show('upload-zone'); hide('paste-area');
   });
 
-  $('text-input').addEventListener('input', function () {
-    var len = this.value.length;
+  var _updateCharCount = function () {
+    var len = $('text-input').value.length;
     $('char-count').textContent = len.toLocaleString('fr') + ' caractères';
-  });
+  };
+  $('text-input').addEventListener('input',
+    window.debounce ? window.debounce(_updateCharCount, 80) : _updateCharCount
+  );
 
   $('btn-analyze-text').addEventListener('click', function () {
     var text = $('text-input').value.trim();
@@ -612,13 +618,15 @@
       var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
     }
   }
+  var _flashTimer = null;
   function flash(msg) {
     var t = document.getElementById('toast') || document.createElement('div');
     if (!t.id) { t.id = 'toast'; document.body.appendChild(t); }
     t.textContent = msg;
     t.className = 'toast';
     t.classList.remove('hidden');
-    setTimeout(function () { t.classList.add('hidden'); }, 4000);
+    clearTimeout(_flashTimer);
+    _flashTimer = setTimeout(function () { t.classList.add('hidden'); }, 4000);
   }
 
   // ── Public API for workspace.js integration ──────────────────
@@ -626,9 +634,14 @@
     if (!jobId) return;
     state.jobId = jobId;
     showSection('section-progress');
-    pollResult();
+    startPolling();
   }
 
   window._uploadAPI = { restoreJob };
+
+  window.registerCleanup && window.registerCleanup(function () {
+    clearInterval(state.pollTimer);
+    clearTimeout(_flashTimer);
+  });
 
 })();

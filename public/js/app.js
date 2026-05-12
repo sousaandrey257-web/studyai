@@ -8,6 +8,13 @@ function t(key, vars) {
   return window.i18n.t(key, vars);
 }
 
+// Safe token read — uses safeStore if available (loaded by perf.js), else raw
+const _safeGet = function (k) {
+  return window.safeStore ? window.safeStore.get(k, null) : (function () {
+    try { return localStorage.getItem(k); } catch { return null; }
+  }());
+};
+
 // État global
 const state = {
   quizQuestions:    [],
@@ -15,13 +22,14 @@ const state = {
   score:            0,
   answered:         false,
   flashcardData:    [],
-  premiumToken:     localStorage.getItem('studyai_premium_token') || null,
+  premiumToken:     _safeGet('studyai_premium_token'),
   currentContentId: null,
   country: null,
   wrongQuestions:        [],
   currentTopic:          '',
   correctByDifficulty:   {},
-  isPremium:             false,  // flag to guard premium modal
+  isPremium:             false,
+  _generating:           false,  // race-condition guard for generate()
 };
 
 // ============================================================
@@ -80,19 +88,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // --- Tarification régionale ---
-  fetch('/api/country').then(function (r) { return r.json(); }).then(function (pricing) {
-    state.country = pricing.country || null;
-    document.querySelectorAll('[data-price-key]').forEach(function (el) {
-      const val = pricing[el.dataset.priceKey];
-      if (val) el.textContent = val;
-    });
-    // Note de facturation si devise locale ≠ EUR
-    if (pricing.currency && pricing.currency !== 'EUR') {
-      const note = document.querySelector('.modal-free-note');
-      if (note) note.textContent = (note.textContent || '') + ' · Facturation en EUR';
-    }
-  }).catch(function () {});
+  // --- Tarification régionale — avec retry silencieux ---
+  (window.fetchRetry || fetch)('/api/country', {}, 1)
+    .then(function (r) { return r.json(); })
+    .then(function (pricing) {
+      state.country = pricing.country || null;
+      document.querySelectorAll('[data-price-key]').forEach(function (el) {
+        const val = pricing[el.dataset.priceKey];
+        if (val) el.textContent = val;
+      });
+      if (pricing.currency && pricing.currency !== 'EUR') {
+        const note = document.querySelector('.modal-free-note');
+        if (note) note.textContent = (note.textContent || '') + ' · Facturation en EUR';
+      }
+    }).catch(function () {});
 
   // --- URL params ---
   const params    = new URLSearchParams(window.location.search);
@@ -123,12 +132,13 @@ document.addEventListener('DOMContentLoaded', function () {
   //  EVENTS
   // ============================================================
 
-  // Compteur de caractères
-  courseInput.addEventListener('input', function () {
+  // Compteur de caractères — debounced pour éviter les reflows répétés
+  const _updateCharCount = function () {
     const len = courseInput.value.length;
     charCount.textContent = len + ' / 10 000';
     charCount.style.color = len > 9000 ? 'var(--warning)' : 'var(--text-subtle)';
-  });
+  };
+  courseInput.addEventListener('input', window.debounce ? window.debounce(_updateCharCount, 80) : _updateCharCount);
 
   // Bouton Générer
   btnGenerate.addEventListener('click', generate);
@@ -169,8 +179,9 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Guard against double-clicks
-    if (btnGenerate.disabled) return;
+    // Guard against double-clicks and race conditions
+    if (btnGenerate.disabled || state._generating) return;
+    state._generating = true;
     btnGenerate.disabled = true;
 
     showSection('loading');
@@ -203,6 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
       clearInterval(ticker);
 
       if (!res.ok) {
+        state._generating = false;
         btnGenerate.disabled = false;
         if (data.error === 'limit_reached') { showSection('input'); showModal(); return; }
         showSection('input');
@@ -216,12 +228,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
       state.currentContentId = data.contentId || null;
       state.currentTopic     = text.slice(0, 100);
+      state._generating = false;
       btnGenerate.disabled = false;
       showResults(data);
 
     } catch (err) {
       clearTimeout(fetchTimeout);
       clearInterval(ticker);
+      state._generating = false;
       btnGenerate.disabled = false;
       showSection('input');
       if (err.name === 'AbortError') {

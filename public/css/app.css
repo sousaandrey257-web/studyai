@@ -152,6 +152,7 @@
   cursor: pointer;
   border: none; background: none;
   width: 100%; text-align: left; text-decoration: none;
+  touch-action: manipulation;
   /* GPU layer for hover */
   transform: translateZ(0);
   transition: background 0.12s, color 0.12s, transform 0.12s var(--ease-spring);

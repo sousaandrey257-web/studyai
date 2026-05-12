@@ -20,6 +20,7 @@ let nodePositions = new Map();
 let hoveredNode = null;
 let tooltip = null;
 let animFrame = null;
+let layoutFrame = null;
 
 // ── Colour palette for subjects ──────────────────────────────
 const SUBJECT_COLORS = [
@@ -35,7 +36,11 @@ function getSubjectColor(subject) {
 }
 
 // ── Auth ─────────────────────────────────────────────────────
-function getToken() { return localStorage.getItem('studyai_auth_token') || localStorage.getItem('token') || ''; }
+function getToken() {
+  const ss = window.safeStore;
+  if (ss) return ss.get('studyai_auth_token', null) || ss.get('token', null) || '';
+  try { return localStorage.getItem('studyai_auth_token') || localStorage.getItem('token') || ''; } catch { return ''; }
+}
 function authHeaders() {
   const t = getToken();
   return t ? { Authorization: `Bearer ${t}` } : {};
@@ -134,8 +139,7 @@ function applyFilters() {
   document.getElementById('brain-empty').classList.add('hidden');
 
   if (viewMode === 'graph') {
-    layoutGraph();
-    renderGraph();
+    layoutGraph(renderGraph);
   } else {
     renderList();
   }
@@ -143,13 +147,14 @@ function applyFilters() {
   renderInsights();
 }
 
-// ── Force-directed layout ────────────────────────────────────
-function layoutGraph() {
+// ── Force-directed layout (RAF-chunked — does not block main thread) ─
+function layoutGraph(onDone) {
+  if (layoutFrame) cancelAnimationFrame(layoutFrame);
+
   const W = canvas.width / window.devicePixelRatio;
   const H = canvas.height / window.devicePixelRatio;
   const cx = W / 2, cy = H / 2;
 
-  // Initialize positions
   filteredNodes.forEach((node, i) => {
     if (!nodePositions.has(node.id)) {
       const angle = (i / filteredNodes.length) * Math.PI * 2;
@@ -162,57 +167,52 @@ function layoutGraph() {
     }
   });
 
-  // Run force simulation steps
-  const K = 80;
-  const REPULSION = 3000;
-  const ATTRACTION = 0.08;
+  const K = 80, REPULSION = 3000, ATTRACTION = 0.08;
+  const TOTAL_ITERS = 80, PER_FRAME = 8;
+  let iter = 0;
 
-  for (let iter = 0; iter < 80; iter++) {
-    // Repulsion
-    for (let i = 0; i < filteredNodes.length; i++) {
-      for (let j = i + 1; j < filteredNodes.length; j++) {
-        const a = nodePositions.get(filteredNodes[i].id);
-        const b = nodePositions.get(filteredNodes[j].id);
-        if (!a || !b) continue;
+  function runChunk() {
+    const end = Math.min(iter + PER_FRAME, TOTAL_ITERS);
+    for (; iter < end; iter++) {
+      for (let i = 0; i < filteredNodes.length; i++) {
+        for (let j = i + 1; j < filteredNodes.length; j++) {
+          const a = nodePositions.get(filteredNodes[i].id);
+          const b = nodePositions.get(filteredNodes[j].id);
+          if (!a || !b) continue;
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const force = REPULSION / (dist * dist);
+          const fx = (dx / dist) * force, fy = (dy / dist) * force;
+          a.vx -= fx; a.vy -= fy; b.vx += fx; b.vy += fy;
+        }
+      }
+      filteredEdges.forEach(e => {
+        const a = nodePositions.get(e.source), b = nodePositions.get(e.target);
+        if (!a || !b) return;
         const dx = b.x - a.x, dy = b.y - a.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const force = REPULSION / (dist * dist);
-        const fx = (dx / dist) * force;
-        const fy = (dy / dist) * force;
-        a.vx -= fx; a.vy -= fy;
-        b.vx += fx; b.vy += fy;
-      }
+        const force = (dist - K) * ATTRACTION;
+        const fx = (dx / dist) * force, fy = (dy / dist) * force;
+        a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+      });
+      filteredNodes.forEach(n => {
+        const p = nodePositions.get(n.id);
+        if (!p) return;
+        p.vx += (cx - p.x) * 0.005;
+        p.vy += (cy - p.y) * 0.005;
+        p.x = Math.max(40, Math.min(W - 40, p.x + p.vx));
+        p.y = Math.max(40, Math.min(H - 40, p.y + p.vy));
+        p.vx *= 0.85; p.vy *= 0.85;
+      });
     }
-    // Attraction (edges)
-    filteredEdges.forEach(e => {
-      const a = nodePositions.get(e.source);
-      const b = nodePositions.get(e.target);
-      if (!a || !b) return;
-      const dx = b.x - a.x, dy = b.y - a.y;
-      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      const force = (dist - K) * ATTRACTION;
-      const fx = (dx / dist) * force;
-      const fy = (dy / dist) * force;
-      a.vx += fx; a.vy += fy;
-      b.vx -= fx; b.vy -= fy;
-    });
-    // Centre gravity
-    filteredNodes.forEach(n => {
-      const p = nodePositions.get(n.id);
-      if (!p) return;
-      p.vx += (cx - p.x) * 0.005;
-      p.vy += (cy - p.y) * 0.005;
-    });
-    // Integrate
-    filteredNodes.forEach(n => {
-      const p = nodePositions.get(n.id);
-      if (!p) return;
-      p.x = Math.max(40, Math.min(W - 40, p.x + p.vx));
-      p.y = Math.max(40, Math.min(H - 40, p.y + p.vy));
-      p.vx *= 0.85;
-      p.vy *= 0.85;
-    });
+    if (iter < TOTAL_ITERS) {
+      layoutFrame = requestAnimationFrame(runChunk);
+    } else {
+      layoutFrame = null;
+      if (onDone) onDone();
+    }
   }
+  layoutFrame = requestAnimationFrame(runChunk);
 }
 
 // ── Canvas rendering ─────────────────────────────────────────
@@ -313,7 +313,14 @@ function initCanvas() {
   document.body.appendChild(tooltip);
 
   resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  const _resizeCanvas = window.throttle ? window.throttle(resizeCanvas, 150) : resizeCanvas;
+  window.addEventListener('resize', _resizeCanvas);
+  window.registerCleanup && window.registerCleanup(() => {
+    window.removeEventListener('resize', _resizeCanvas);
+    if (animFrame)  cancelAnimationFrame(animFrame);
+    if (layoutFrame) cancelAnimationFrame(layoutFrame);
+    if (tooltip) tooltip.remove();
+  });
 
   // Mouse
   canvas.addEventListener('mousedown', e => {
@@ -594,11 +601,11 @@ function renderInsights() {
 document.addEventListener('DOMContentLoaded', () => {
   initCanvas();
 
-  // Search
-  document.getElementById('brain-search').addEventListener('input', e => {
-    searchQuery = e.target.value;
-    applyFilters();
-  });
+  // Search (debounced — avoids re-layout on every keypress)
+  const _onSearch = e => { searchQuery = e.target.value; applyFilters(); };
+  document.getElementById('brain-search').addEventListener('input',
+    window.debounce ? window.debounce(_onSearch, 200) : _onSearch
+  );
 
   // View toggle
   document.getElementById('btn-view-graph').addEventListener('click', () => {

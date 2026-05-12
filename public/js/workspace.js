@@ -28,6 +28,12 @@ const Workspace = (() => {
   const el = id => document.getElementById(id);
   const setTxt = (sel, v) => { const e = $(sel); if (e) e.textContent = v; };
 
+  /* ── Safe storage ───────────────────────────────── */
+  const _ss = window.safeStore || {
+    get: (k, fb = null) => { try { const v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch { return fb; } },
+    set: (k, v)         => { try { localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)); } catch {} },
+  };
+
   /* ── Panel router ───────────────────────────────── */
   function navigate(panelId, opts = {}) {
     if (!PANEL_IDS.includes(panelId)) return;
@@ -114,7 +120,8 @@ const Workspace = (() => {
   }
 
   function loadPacks() {
-    try { packs = JSON.parse(localStorage.getItem('ws_packs') || '[]'); } catch { packs = []; }
+    packs = _ss.get('ws_packs', []);
+    if (!Array.isArray(packs)) packs = [];
 
     /* Show skeletons while "loading" */
     const container = el('home-packs');
@@ -163,9 +170,10 @@ const Workspace = (() => {
     countUp('#hs-cards', totalCards, 700);
     countUp('#hs-concepts', totalConcepts, 800);
 
-    /* Brain stats (async — best-effort) */
+    /* Brain stats (async — best-effort, skip on slow connections) */
     try {
-      const token = localStorage.getItem('studyai_auth_token') || localStorage.getItem('token');
+      if (window.__slowNetwork) return;
+      const token = _ss.get('studyai_auth_token', null) || _ss.get('token', null);
       if (!token) return;
       const r = await fetch('/api/ai/brain?limit=1', {
         headers: { Authorization: `Bearer ${token}` },
@@ -179,12 +187,13 @@ const Workspace = (() => {
   }
 
   function syncStreak() {
-    const streak = parseInt(localStorage.getItem('ws_streak') || '0', 10);
+    const streak = parseInt(_ss.get('ws_streak', 0), 10) || 0;
     $$('.ws-streak-num').forEach(e => { e.textContent = streak; });
     setTxt('#hs-streak', '🔥 ' + streak);
   }
 
   function animateHomeEntrance() {
+    if (window.__slowDevice) return;
     /* Stagger stat cards */
     $$('.home-stat').forEach((el, i) => {
       el.style.opacity = '0';
@@ -233,7 +242,7 @@ const Workspace = (() => {
   /* ── User ────────────────────────────────────────── */
   async function loadUser() {
     try {
-      const token = localStorage.getItem('studyai_auth_token') || localStorage.getItem('token');
+      const token = _ss.get('studyai_auth_token', null) || _ss.get('token', null);
       if (!token) return;
       const r = await fetch('/api/me', { headers: { 'x-auth-token': token } });
       if (!r.ok) return;
@@ -265,33 +274,33 @@ const Workspace = (() => {
 
   /* ── Pack persistence ────────────────────────────── */
   function savePack(pack) {
-    try {
-      let stored = JSON.parse(localStorage.getItem('ws_packs') || '[]');
-      stored = stored.filter(p => p.jobId !== pack.jobId);
-      stored.unshift({ ...pack, date: new Date().toISOString() });
-      stored = stored.slice(0, 20);
-      localStorage.setItem('ws_packs', JSON.stringify(stored));
-      packs = stored;
-    } catch {}
+    let stored = _ss.get('ws_packs', []);
+    if (!Array.isArray(stored)) stored = [];
+    stored = stored.filter(p => p.jobId !== pack.jobId);
+    stored.unshift({ ...pack, date: new Date().toISOString() });
+    stored = stored.slice(0, 20);
+    _ss.set('ws_packs', stored);
+    packs = stored;
   }
 
   function bumpStreak() {
     const today     = new Date().toDateString();
-    const last      = localStorage.getItem('ws_streak_date');
+    const last      = _ss.get('ws_streak_date', null);
     if (last === today) return;
-    const cur       = parseInt(localStorage.getItem('ws_streak') || '0', 10);
+    const cur       = parseInt(_ss.get('ws_streak', 0), 10) || 0;
     const yesterday = new Date(Date.now() - 86400000).toDateString();
     const next      = last === yesterday ? cur + 1 : 1;
-    localStorage.setItem('ws_streak', next);
-    localStorage.setItem('ws_streak_date', today);
+    _ss.set('ws_streak', String(next));
+    _ss.set('ws_streak_date', today);
     $$('.ws-streak-num').forEach(e => { e.textContent = next; });
     setTxt('#hs-streak', '🔥 ' + next);
-    /* Bump animation */
-    $$('.home-streak-badge .streak-num').forEach(e => {
-      e.classList.remove('bump');
-      void e.offsetWidth; // force reflow for animation restart
-      e.classList.add('bump');
-    });
+    if (!window.__slowDevice) {
+      $$('.home-streak-badge .streak-num').forEach(e => {
+        e.classList.remove('bump');
+        void e.offsetWidth; // intentional reflow to restart CSS animation
+        e.classList.add('bump');
+      });
+    }
   }
 
   /* ── Sidebar (mobile) ────────────────────────────── */
@@ -372,6 +381,7 @@ const Workspace = (() => {
     const e = $(sel);
     if (!e || !target) return;
     const prefix = e.textContent.match(/^[^\d]*/)?.[0] || '';
+    if (window.__slowDevice) { e.textContent = prefix + target; return; }
     let start = null;
     const step = ts => {
       if (!start) start = ts;
@@ -458,6 +468,12 @@ const Workspace = (() => {
 
     /* Load user */
     loadUser();
+
+    /* Register teardown for timers */
+    window.registerCleanup && window.registerCleanup(() => {
+      clearTimeout(exitTimer);
+      if (_typeCancel) _typeCancel();
+    });
 
     /* Expose globals — includes navigate so inline onclicks in dynamic HTML work */
     window.Workspace = { navigate, toast, savePack, bumpStreak };

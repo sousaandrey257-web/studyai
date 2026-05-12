@@ -45,8 +45,12 @@
     ]
   }
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- Resource hints — DNS + connections before any fetch fires -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://js.stripe.com" />
+  <link rel="preload" href="css/style.css" as="style" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/gamification.css" />
@@ -565,10 +569,12 @@
     </div>
   </nav>
 
-  <!-- fingerprint + PoW chargés en premier (collecte passive, non-bloquant) -->
-  <script src="js/fingerprint.js?v=1"></script>
-  <script src="js/pow.js?v=1"></script>
-  <!-- i18n doit être chargé AVANT app.js — ?v= force le rechargement du cache -->
+  <!-- perf.js: error boundary, debounce, throttle, safe-store — FIRST -->
+  <script src="js/perf.js?v=1"></script>
+  <!-- fingerprint + PoW: passive, non-blocking -->
+  <script src="js/fingerprint.js?v=1" defer></script>
+  <script src="js/pow.js?v=1" defer></script>
+  <!-- i18n must load BEFORE app.js -->
   <script src="js/i18n.js?v=9"></script>
   <script src="js/auth.js?v=5"></script>
   <script src="js/app.js?v=16"></script>

@@ -16,7 +16,7 @@
     var els = document.querySelectorAll('.reveal');
     if (!els.length) return;
 
-    if (prefersReducedMotion || !window.IntersectionObserver) {
+    if (prefersReducedMotion || window.__slowDevice || !window.IntersectionObserver) {
       els.forEach(function (el) { el.classList.add('visible'); });
       return;
     }
@@ -163,9 +163,9 @@
         if (!entry.isIntersecting) return;
         io.unobserve(entry.target);
         // Strip values are not purely numeric so we just do a pop
-        if (!prefersReducedMotion) {
+        if (!prefersReducedMotion && !window.__slowDevice) {
           entry.target.style.animation = 'none';
-          entry.target.offsetHeight; // reflow
+          entry.target.offsetHeight; // intentional reflow to reset animation
           entry.target.style.animation = 'fadeUp 0.4s ease both';
         }
       });
@@ -279,22 +279,6 @@
   }
 
   // ============================================================
-  //  LOADING DOTS — animated dots on loading message
-  // ============================================================
-  function initLoadingDots() {
-    var msgEl = document.getElementById('loading-msg');
-    if (!msgEl) return;
-    // Observe visibility changes
-    var mo = new MutationObserver(function () {
-      var section = document.getElementById('section-loading');
-      if (section && !section.classList.contains('hidden')) {
-        // Spinner is visible — nothing extra to do (app.js manages messages)
-      }
-    });
-    mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-  }
-
-  // ============================================================
   //  HAPTIC FEEDBACK — subtle vibration on mobile (correct answer)
   // ============================================================
   function addHapticToQuiz() {
@@ -303,23 +287,21 @@
     document.addEventListener('click', function (e) {
       var opt = e.target.closest('.quiz-option:not(:disabled)');
       if (!opt) return;
-      // Short tap
       navigator.vibrate(8);
     });
 
-    // Observe correct/incorrect class additions for stronger haptic
+    // Body-level observer with attributeFilter catches dynamically-injected quiz options
     var mo = new MutationObserver(function (mutations) {
       mutations.forEach(function (m) {
-        if (m.type === 'attributes' && m.attributeName === 'class') {
-          var el = m.target;
-          if (el.classList.contains('correct'))   navigator.vibrate([10, 30, 60]);
-          if (el.classList.contains('incorrect'))  navigator.vibrate([80, 20, 80]);
-        }
+        if (m.type !== 'attributes' || m.attributeName !== 'class') return;
+        var el = m.target;
+        if (!el.classList || !el.classList.contains('quiz-option')) return;
+        if (el.classList.contains('correct'))    navigator.vibrate([10, 30, 60]);
+        if (el.classList.contains('incorrect'))  navigator.vibrate([80, 20, 80]);
       });
     });
-    document.querySelectorAll('.quiz-option').forEach(function (el) {
-      mo.observe(el, { attributes: true });
-    });
+    mo.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    window.registerCleanup && window.registerCleanup(function () { mo.disconnect(); });
   }
 
   // ============================================================
@@ -327,7 +309,11 @@
   // ============================================================
   function initCookieBanner() {
     var STORAGE_KEY = 'studyai_cookie_ok';
-    if (localStorage.getItem(STORAGE_KEY)) return;
+    var _store = window.safeStore || {
+      get: function (k, fb) { try { var v = localStorage.getItem(k); return v === null ? fb : v; } catch { return fb; } },
+      set: function (k, v) { try { localStorage.setItem(k, v); } catch {} }
+    };
+    if (_store.get(STORAGE_KEY, null)) return;
 
     var banner = document.createElement('div');
     banner.id  = 'cookie-banner';
@@ -350,7 +336,7 @@
     setTimeout(function () { banner.classList.add('cookie-visible'); }, 800);
 
     document.getElementById('cookie-accept').addEventListener('click', function () {
-      localStorage.setItem(STORAGE_KEY, '1');
+      _store.set(STORAGE_KEY, '1');
       banner.classList.remove('cookie-visible');
       setTimeout(function () { banner.remove(); }, 400);
     });
