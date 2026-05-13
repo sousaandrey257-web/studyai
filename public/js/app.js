@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Topic pré-rempli depuis un lien partagé
   const topicParam = params.get('topic');
   if (topicParam && courseInput) {
-    courseInput.value = decodeURIComponent(topicParam).slice(0, 10000);
+    courseInput.value = decodeURIComponent(topicParam).slice(0, 20000);
     courseInput.dispatchEvent(new Event('input'));
   }
   if (refCode || topicParam) window.history.replaceState({}, '', '/');
@@ -208,8 +208,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Compteur de caractères — debounced pour éviter les reflows répétés
   const _updateCharCount = function () {
     const len = courseInput.value.length;
-    charCount.textContent = len + ' / 10 000';
-    charCount.style.color = len > 9000 ? 'var(--warning)' : 'var(--text-subtle)';
+    charCount.textContent = len + ' / 20 000';
+    charCount.style.color = len > 18000 ? 'var(--warning)' : 'var(--text-subtle)';
   };
   courseInput.addEventListener('input', window.debounce ? window.debounce(_updateCharCount, 80) : _updateCharCount);
 
@@ -865,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function resetToInput() {
     courseInput.value = '';
-    charCount.textContent = '0 / 10 000';
+    charCount.textContent = '0 / 20 000';
     btnGenerate.disabled = false;
     showSection('input');
     courseInput.focus();

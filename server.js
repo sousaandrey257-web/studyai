@@ -1619,8 +1619,8 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
   const { text, country, lang } = req.body;
   if (!text || text.trim().length < 10)
     return res.status(400).json({ error: 'Écris au moins quelques mots pour que je puisse t\'aider.' });
-  if (text.length > 10000)
-    return res.status(400).json({ error: 'Texte trop long (maximum 10 000 caractères).' });
+  if (text.length > 20000)
+    return res.status(400).json({ error: 'Texte trop long (maximum 20 000 caractères).' });
 
   const curriculumLine = buildCurriculumCtx(country)
     ? `\n- Système éducatif : ${buildCurriculumCtx(country)} — adapte les exemples et le niveau.`
