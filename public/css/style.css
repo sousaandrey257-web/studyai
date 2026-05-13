@@ -319,6 +319,21 @@ body::before {
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.example-chip:hover {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.4);
+  color: var(--text);
+}
+.example-chip:active {
+  transform: scale(0.95);
+  background: rgba(124, 58, 237, 0.25);
+  border-color: rgba(124, 58, 237, 0.6);
+  color: #fff;
 }
 
 /* ============================================================
