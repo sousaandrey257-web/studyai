@@ -208,7 +208,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // Compteur de caractères — debounced pour éviter les reflows répétés
   const _updateCharCount = function () {
     const len = courseInput.value.length;
-    charCount.textContent = len + ' / 20 000';
+    const fmt = t('char_count_of') !== 'char_count_of'
+      ? t('char_count_of').replace('{n}', len.toLocaleString())
+      : len + ' / 20 000';
+    charCount.textContent = fmt;
     charCount.style.color = len > 18000 ? 'var(--warning)' : 'var(--text-subtle)';
   };
   courseInput.addEventListener('input', window.debounce ? window.debounce(_updateCharCount, 80) : _updateCharCount);
@@ -248,6 +251,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (text.length < 10) {
       showToast('⚠️ Écris au moins quelques mots.', 'error');
+      courseInput.focus();
+      return;
+    }
+
+    if (text.length > 20000) {
+      const msg = t('text_too_long') !== 'text_too_long' ? t('text_too_long') : 'Texte trop long — maximum 20 000 caractères.';
+      showToast('⚠️ ' + msg, 'error');
       courseInput.focus();
       return;
     }
@@ -865,7 +875,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function resetToInput() {
     courseInput.value = '';
-    charCount.textContent = '0 / 20 000';
+    charCount.textContent = t('char_count_of') !== 'char_count_of' ? t('char_count_of').replace('{n}', '0') : '0 / 20 000';
     btnGenerate.disabled = false;
     showSection('input');
     courseInput.focus();

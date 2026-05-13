@@ -150,6 +150,8 @@ const translations = {
     file_drop_sub:          "ou glisse-dépose ici",
     file_drop_formats:      "PDF · DOCX · TXT · max 10 Mo",
     file_hint:              "✨ L'IA lit ton document et génère résumé + quiz + flashcards en 45s",
+    text_too_long:          "Texte trop long — maximum 20 000 caractères.",
+    char_count_of:          "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
@@ -297,6 +299,8 @@ const translations = {
     file_drop_sub:          "or drag & drop here",
     file_drop_formats:      "PDF · DOCX · TXT · max 10 MB",
     file_hint:              "✨ AI reads your document and generates summary + quiz + flashcards in 45s",
+    text_too_long:          "Text too long — maximum 20,000 characters.",
+    char_count_of:          "{n} / 20,000",
   },
 
   // ----------------------------------------------------------
@@ -433,6 +437,8 @@ const translations = {
     file_drop_sub:          "o arrastra y suelta aquí",
     file_drop_formats:      "PDF · DOCX · TXT · máx 10 MB",
     file_hint:              "✨ La IA lee tu documento y genera resumen + quiz + tarjetas en 45s",
+    text_too_long:          "Texto demasiado largo — máximo 20 000 caracteres.",
+    char_count_of:          "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
@@ -569,6 +575,8 @@ const translations = {
     file_drop_sub:          "oder hierher ziehen",
     file_drop_formats:      "PDF · DOCX · TXT · max 10 MB",
     file_hint:              "✨ KI liest dein Dokument und generiert Zusammenfassung + Quiz + Karteikarten in 45s",
+    text_too_long:          "Text zu lang — maximal 20.000 Zeichen.",
+    char_count_of:          "{n} / 20.000",
   },
 
   // ----------------------------------------------------------
@@ -705,6 +713,8 @@ const translations = {
     file_drop_sub:          "ou arraste e solte aqui",
     file_drop_formats:      "PDF · DOCX · TXT · máx 10 MB",
     file_hint:              "✨ A IA lê seu documento e gera resumo + quiz + flashcards em 45s",
+    text_too_long:          "Texto muito longo — máximo 20 000 caracteres.",
+    char_count_of:          "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
@@ -841,6 +851,8 @@ const translations = {
     file_drop_sub:          "o trascina qui",
     file_drop_formats:      "PDF · DOCX · TXT · max 10 MB",
     file_hint:              "✨ L'IA legge il tuo documento e genera riassunto + quiz + flashcard in 45s",
+    text_too_long:          "Testo troppo lungo — massimo 20 000 caratteri.",
+    char_count_of:          "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
@@ -977,9 +989,13 @@ const translations = {
     file_drop_sub:          "或拖拽到此处",
     file_drop_formats:      "PDF · DOCX · TXT · 最大10MB",
     file_hint:              "✨ AI读取文档并在45秒内生成摘要+测验+闪卡",
+    text_too_long:          "文本太长 — 最多20,000个字符。",
+    char_count_of:          "{n} / 20,000",
     file_drop_sub:           "またはここにドラッグ＆ドロップ",
     file_drop_formats:       "PDF · DOCX · TXT · 最大10MB",
     file_hint:               "✨ AIがドキュメントを読み取り、45秒で要約+クイズ+フラッシュカードを生成",
+    text_too_long:           "テキストが長すぎます — 最大20,000文字。",
+    char_count_of:           "{n} / 20,000",
   },
 
   // ----------------------------------------------------------
@@ -1116,6 +1132,8 @@ const translations = {
     file_drop_sub:           "또는 여기에 드래그 앤 드롭",
     file_drop_formats:       "PDF · DOCX · TXT · 최대 10MB",
     file_hint:               "✨ AI가 문서를 읽고 45초 내에 요약+퀴즈+플래시카드를 생성",
+    text_too_long:           "텍스트가 너무 깁니다 — 최대 20,000자.",
+    char_count_of:           "{n} / 20,000",
   },
 
   // ----------------------------------------------------------
@@ -1252,6 +1270,8 @@ const translations = {
     file_drop_sub:           "atau seret dan lepas di sini",
     file_drop_formats:       "PDF · DOCX · TXT · maks 10 MB",
     file_hint:               "✨ AI membaca dokumen Anda dan menghasilkan ringkasan + kuis + flashcard dalam 45 detik",
+    text_too_long:           "Teks terlalu panjang — maksimal 20.000 karakter.",
+    char_count_of:           "{n} / 20.000",
   },
 
   // ----------------------------------------------------------
@@ -1388,6 +1408,8 @@ const translations = {
     file_drop_sub:           "أو اسحب وأفلت هنا",
     file_drop_formats:       "PDF · DOCX · TXT · بحد أقصى 10 ميجابايت",
     file_hint:               "✨ يقرأ الذكاء الاصطناعي مستندك ويُنشئ ملخصًا + أسئلة + بطاقات في 45 ثانية",
+    text_too_long:           "النص طويل جداً — الحد الأقصى 20,000 حرف.",
+    char_count_of:           "{n} / 20,000",
   },
 
   // ----------------------------------------------------------
@@ -1524,6 +1546,8 @@ const translations = {
     file_drop_sub:           "หรือลากและวางที่นี่",
     file_drop_formats:       "PDF · DOCX · TXT · สูงสุด 10 MB",
     file_hint:               "✨ AI อ่านเอกสารของคุณและสร้างสรุป + แบบทดสอบ + แฟลชการ์ดใน 45 วินาที",
+    text_too_long:           "ข้อความยาวเกินไป — สูงสุด 20,000 ตัวอักษร",
+    char_count_of:           "{n} / 20,000",
   },
 
   // ----------------------------------------------------------
@@ -1660,6 +1684,8 @@ const translations = {
     file_drop_sub:           "veya buraya sürükle bırak",
     file_drop_formats:       "PDF · DOCX · TXT · maks 10 MB",
     file_hint:               "✨ AI belgenizi okur ve 45 saniyede özet + quiz + flash kart oluşturur",
+    text_too_long:           "Metin çok uzun — maksimum 20.000 karakter.",
+    char_count_of:           "{n} / 20.000",
   },
 
   // ----------------------------------------------------------
@@ -1796,6 +1822,8 @@ const translations = {
     file_drop_sub:           "of sleep hier naartoe",
     file_drop_formats:       "PDF · DOCX · TXT · max 10 MB",
     file_hint:               "✨ AI leest je document en genereert samenvatting + quiz + flashcards in 45s",
+    text_too_long:           "Tekst te lang — maximum 20.000 tekens.",
+    char_count_of:           "{n} / 20.000",
   },
 
   // ----------------------------------------------------------
@@ -1932,6 +1960,8 @@ const translations = {
     file_drop_sub:           "или перетащите сюда",
     file_drop_formats:       "PDF · DOCX · TXT · макс 10 МБ",
     file_hint:               "✨ ИИ читает документ и создаёт резюме + тест + карточки за 45 сек",
+    text_too_long:           "Текст слишком длинный — максимум 20 000 символов.",
+    char_count_of:           "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
@@ -2068,6 +2098,8 @@ const translations = {
     file_drop_sub:           "lub przeciągnij i upuść tutaj",
     file_drop_formats:       "PDF · DOCX · TXT · maks 10 MB",
     file_hint:               "✨ AI czyta dokument i generuje streszczenie + quiz + fiszki w 45s",
+    text_too_long:           "Tekst zbyt długi — maksymalnie 20 000 znaków.",
+    char_count_of:           "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
@@ -2204,6 +2236,8 @@ const translations = {
     file_drop_sub:           "hoặc kéo thả vào đây",
     file_drop_formats:       "PDF · DOCX · TXT · tối đa 10 MB",
     file_hint:               "✨ AI đọc tài liệu và tạo tóm tắt + câu hỏi + thẻ học trong 45 giây",
+    text_too_long:           "Văn bản quá dài — tối đa 20 000 ký tự.",
+    char_count_of:           "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
@@ -2340,6 +2374,8 @@ const translations = {
     file_drop_sub:           "या यहाँ खींचें और छोड़ें",
     file_drop_formats:       "PDF · DOCX · TXT · अधिकतम 10 MB",
     file_hint:               "✨ AI आपका दस्तावेज़ पढ़ता है और 45 सेकंड में सारांश + क्विज़ + फ्लैशकार्ड बनाता है",
+    text_too_long:           "पाठ बहुत लंबा है — अधिकतम 20,000 वर्ण।",
+    char_count_of:           "{n} / 20,000",
   },
 
   // ----------------------------------------------------------
@@ -2603,6 +2639,8 @@ const translations = {
     file_drop_sub:           "або перетягніть сюди",
     file_drop_formats:       "PDF · DOCX · TXT · макс 10 МБ",
     file_hint:               "✨ ШІ читає документ і створює резюме + тест + картки за 45 сек",
+    text_too_long:           "Текст задовгий — максимум 20 000 символів.",
+    char_count_of:           "{n} / 20 000",
   },
 
   // ----------------------------------------------------------
