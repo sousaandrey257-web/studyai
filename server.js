@@ -392,7 +392,7 @@ const AiRoutes      = require('./routes/ai');
 const supportRoutes = require('./routes/support');
 // Own JSON parser at 25MB for this router (runs before global 100kb limit)
 app.use('/api/ai', express.json({ limit: '25mb' }), AiRoutes);
-app.use('/api/support', supportRoutes);
+app.use('/api/support', express.json({ limit: '50kb' }), supportRoutes);
 
 // Static routes for new pages
 app.get('/app',    (_req, res) => res.sendFile(path.join(__dirname, 'public/app.html')));
