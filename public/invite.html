@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090f" />
+  <meta name="description" content="Tu es invité à rejoindre StudyAI — révise 10× plus vite avec l'IA. Quiz, flashcards, battle mode. Gratuit." />
+  <meta property="og:title" content="Rejoins-moi sur StudyAI !" />
+  <meta property="og:description" content="Révise 10× plus vite avec l'IA. Quiz adaptatif, flashcards, battle mode. Gratuit, sans carte bancaire." />
+  <meta property="og:image" content="https://studyai-production-5202.up.railway.app/og-image.svg" />
+  <title>Tu es invité à rejoindre StudyAI</title>
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #07070e; --surface: #0e0e19; --border: #252535;
+      --primary: #7c3aed; --primary-light: #a78bfa;
+      --text: #eeeef8; --text-muted: #8888a8;
+      --success: #10b981; --warning: #f59e0b;
+      --radius: 14px; --radius-lg: 20px;
+    }
+    html { font-family: 'Inter', system-ui, sans-serif; font-size: 16px; }
+    body { background: var(--bg); color: var(--text); min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 48px; }
+
+    /* Header */
+    .inv-logo { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: flex; align-items: center; padding: 0 24px; background: rgba(7,7,14,0.8); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); z-index: 10; }
+    .inv-logo a { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 800; font-size: 1.05rem; color: var(--primary-light); }
+
+    /* Hero */
+    .inv-hero { max-width: 560px; width: 100%; text-align: center; margin-top: 80px; }
+    .inv-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg,#7c3aed,#a78bfa); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px; border: 3px solid rgba(124,58,237,0.4); }
+    .inv-from { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 8px; }
+    .inv-from strong { color: var(--primary-light); }
+    .inv-title { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 16px; }
+    .inv-title span { background: linear-gradient(135deg,#a78bfa,#7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .inv-sub { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 32px; }
+
+    /* XP bonus badge */
+    .inv-bonus { display: inline-flex; align-items: center; gap: 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 99px; padding: 10px 20px; margin-bottom: 32px; }
+    .inv-bonus-icon { font-size: 1.3rem; }
+    .inv-bonus-text { font-size: 0.95rem; font-weight: 600; color: #10b981; }
+
+    /* CTA */
+    .inv-cta { display: block; width: 100%; max-width: 400px; margin: 0 auto 16px; padding: 16px 24px; background: var(--primary); color: #fff; font-weight: 800; font-size: 1.1rem; border-radius: var(--radius); text-decoration: none; text-align: center; border: none; cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s; box-shadow: 0 0 24px rgba(124,58,237,0.4); }
+    .inv-cta:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 0 40px rgba(124,58,237,0.6); }
+    .inv-no-cc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 40px; }
+
+    /* Features grid */
+    .inv-features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 480px; width: 100%; margin: 0 auto 48px; }
+    .inv-feature { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: left; }
+    .inv-feature-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .inv-feature-title { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
+    .inv-feature-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* Trust */
+    .inv-trust { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; }
+
+    /* Loading overlay (hidden by default) */
+    .inv-loading { display: none; color: var(--primary-light); font-size: 0.9rem; margin-bottom: 8px; }
+
+    @media (max-width: 480px) {
+      .inv-title { font-size: 1.7rem; }
+      .inv-features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="inv-logo">
+    <a href="/">
+      <span>⚡</span>
+      <span>StudyAI</span>
+    </a>
+  </header>
+
+  <!-- Hero -->
+  <div class="inv-hero">
+    <div class="inv-avatar" id="inv-avatar">🧑‍🎓</div>
+    <p class="inv-from">
+      <strong id="inv-name">Ton ami</strong> t'invite à réviser avec l'IA
+    </p>
+    <h1 class="inv-title">
+      Maîtrise n'importe quel cours<br />
+      <span>en 45 secondes</span>
+    </h1>
+    <p class="inv-sub">
+      Dépose ton cours → l'IA génère automatiquement un quiz adaptatif,
+      des flashcards, une synthèse et un plan de révision.
+      Utilisé par des milliers d'étudiants dans 20 pays.
+    </p>
+
+    <!-- XP bonus -->
+    <div class="inv-bonus">
+      <span class="inv-bonus-icon">🎁</span>
+      <span class="inv-bonus-text">+50 XP bonus à ton inscription · ton ami aussi</span>
+    </div>
+
+    <!-- CTA -->
+    <p class="inv-loading" id="inv-loading">⚡ Création du compte…</p>
+    <a href="/" class="inv-cta" id="inv-cta-btn">
+      🚀 Créer mon compte gratuit — 0€
+    </a>
+    <p class="inv-no-cc">✅ Sans carte bancaire · Gratuit pour toujours</p>
+
+    <!-- Features -->
+    <div class="inv-features">
+      <div class="inv-feature">
+        <div class="inv-feature-icon">🎯</div>
+        <div class="inv-feature-title">Quiz adaptatif IA</div>
+        <div class="inv-feature-desc">MCQ, Vrai/Faux, questions ouvertes. S'adapte à ton niveau.</div>
+      </div>
+      <div class="inv-feature">
+        <div class="inv-feature-icon">🗂️</div>
+        <div class="inv-feature-title">Flashcards Anki</div>
+        <div class="inv-feature-desc">Répétition espacée intelligente pour mémoriser durablement.</div>
+      </div>
+      <div class="inv-feature">
+        <div class="inv-feature-icon">⚔️</div>
+        <div class="inv-feature-title">Battle Mode</div>
+        <div class="inv-feature-desc">Duel en temps réel contre tes amis. Addictif et efficace.</div>
+      </div>
+      <div class="inv-feature">
+        <div class="inv-feature-icon">🧠</div>
+        <div class="inv-feature-title">Second Brain</div>
+        <div class="inv-feature-desc">Graphe visuel de tes connaissances qui grandit à chaque session.</div>
+      </div>
+    </div>
+
+    <!-- Trust -->
+    <div class="inv-trust">
+      <span>🔒 Données sécurisées</span>
+      <span>⚡ Résultats en 45 secondes</span>
+      <span>🌍 20 langues</span>
+      <span>🎮 XP + Badges</span>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    /* Extract code from URL path: /invite/ABCDEF */
+    var pathParts = window.location.pathname.split('/');
+    var code      = pathParts[pathParts.length - 1] || '';
+
+    if (!code) return;
+
+    /* Store referral code for auth.js to pick up on registration */
+    try { sessionStorage.setItem('studyai_ref', code.toUpperCase()); } catch {}
+
+    /* Fetch referrer first name */
+    fetch('/api/referral/info/' + encodeURIComponent(code))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.found && d.firstName) {
+          document.getElementById('inv-name').textContent = d.firstName;
+          document.getElementById('inv-avatar').textContent = d.firstName.charAt(0).toUpperCase();
+        }
+      })
+      .catch(function () {});
+
+    /* CTA → redirect to home with ref param + open auth modal */
+    var ctaBtn = document.getElementById('inv-cta-btn');
+    ctaBtn.href = '/?ref=' + encodeURIComponent(code) + '#register';
+  }());
+  </script>
+
+</body>
+</html>

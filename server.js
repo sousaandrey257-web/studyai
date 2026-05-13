@@ -399,6 +399,8 @@ app.get('/app',    (_req, res) => res.sendFile(path.join(__dirname, 'public/app.
 app.get('/upload', (_req, res) => res.sendFile(path.join(__dirname, 'public/upload.html')));
 app.get('/battle', (_req, res) => res.sendFile(path.join(__dirname, 'public/battle.html')));
 app.get('/brain',  (_req, res) => res.sendFile(path.join(__dirname, 'public/brain.html')));
+// Invite / referral landing page
+app.get('/invite/:code', (_req, res) => res.sendFile(path.join(__dirname, 'public/invite.html')));
 // Modal routes — auth/premium are inline modals on the homepage
 app.get('/login',    (_req, res) => res.redirect('/#login'));
 app.get('/register', (_req, res) => res.redirect('/#register'));
@@ -1431,6 +1433,19 @@ app.get('/api/leaderboard', requireAuth, async (req, res) => {
 //  REFERRAL — viral loop
 // ============================================================
 
+// GET /api/referral/info/:code — public, returns referrer first name for invite page
+app.get('/api/referral/info/:code', (req, res) => {
+  const code = (req.params.code || '').trim().toUpperCase().slice(0, 10);
+  if (!code) return res.json({ found: false });
+  const users = loadJSON(USERS_FILE);
+  const entry = Object.entries(users).find(([, u]) => u.referral?.code === code);
+  if (!entry) return res.json({ found: false });
+  const [email] = entry;
+  const rawName  = email.split('@')[0].split(/[._-]/)[0];
+  const firstName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+  res.json({ found: true, firstName });
+});
+
 // GET /api/referral — code + stats du parrainage
 app.get('/api/referral', requireAuth, (req, res) => {
   const users = loadJSON(USERS_FILE);
@@ -1438,9 +1453,12 @@ app.get('/api/referral', requireAuth, (req, res) => {
   if (!user) return res.status(404).json({ error: 'Utilisateur introuvable.' });
   ReferralService.ensureReferralCode(user);
   saveJSON(USERS_FILE, users);
+  const host = req.get('host');
+  const proto = req.protocol;
   res.json({
     ...ReferralService.getReferralStats(user),
-    shareUrl: `${req.protocol}://${req.get('host')}/?ref=${user.referral.code}`,
+    shareUrl:  `${proto}://${host}/invite/${user.referral.code}`,
+    shareUrlLegacy: `${proto}://${host}/?ref=${user.referral.code}`,
   });
 });
 

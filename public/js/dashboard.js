@@ -290,13 +290,14 @@
           '<span class="dash-referral-title">🔗 Invite tes amis</span>' +
           '<span class="dash-referral-count">' + (data.referredCount || 0) + ' invité' + ((data.referredCount || 0) > 1 ? 's' : '') + '</span>' +
         '</div>' +
-        '<p class="dash-referral-desc">Ton ami gagne <strong>+50 XP</strong> à l\'inscription · toi aussi</p>' +
+        '<p class="dash-referral-desc">Ton ami gagne <strong>+50 XP</strong> à l\'inscription · toi aussi 🎁</p>' +
         '<div class="dash-referral-link-row">' +
           '<input class="dash-referral-input" id="ref-link-input" readonly value="' + esc(data.shareUrl || '') + '" />' +
           '<button class="dash-referral-copy" onclick="copyReferralLink()">Copier</button>' +
         '</div>' +
+        '<p class="dash-referral-hint">💡 Partage ce lien — ton ami atterrit sur une page dédiée avec ton prénom</p>' +
         (data.totalXPEarned > 0
-          ? '<div class="dash-referral-earned">+' + data.totalXPEarned + ' XP gagnés via parrainage</div>'
+          ? '<div class="dash-referral-earned">🏆 +' + data.totalXPEarned + ' XP gagnés via parrainage (' + (data.referredCount || 0) + ' ami' + ((data.referredCount || 0) > 1 ? 's' : '') + ')</div>'
           : '') +
       '</div>';
   }
