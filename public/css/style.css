@@ -1719,7 +1719,115 @@ body::before {
   border-left:2px solid var(--primary); border-right:2px solid var(--primary);
 }
 
-/* — Input mode tabs (YouTube / PDF) — */
+/* ── Input mode tabs — Sprint UX refactor ── */
+
+/* Tab bar */
+.imode-bar {
+  display:flex; gap:2px; margin-bottom:16px;
+  border-bottom:1px solid var(--border); padding-bottom:0;
+}
+.imode-tab {
+  display:flex; align-items:center; gap:6px;
+  padding:10px 16px; background:transparent; border:none;
+  color:var(--text-muted); font-size:0.85rem; font-weight:600;
+  cursor:pointer; border-bottom:2px solid transparent;
+  margin-bottom:-1px; transition:color 0.15s, border-color 0.15s;
+  border-radius:0; white-space:nowrap;
+}
+.imode-tab:hover { color:var(--text); }
+.imode-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+.imode-tab-icon { font-size:1rem; }
+
+/* Panels */
+.imode-panel { animation:imFadeIn 0.22s ease; }
+.imode-panel.hidden { display:none; }
+@keyframes imFadeIn {
+  from { opacity:0; transform:translateY(5px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Char row */
+.imode-char-row {
+  display:flex; justify-content:flex-end;
+  margin-top:4px; margin-bottom:8px;
+}
+
+/* YouTube URL field */
+.imode-yt-field {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px;
+  background:var(--surface-2); border:1px solid var(--border);
+  border-radius:var(--radius); transition:border-color 0.2s, box-shadow 0.2s;
+  margin-bottom:10px;
+}
+.imode-yt-field:focus-within {
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(124,58,237,0.15);
+}
+.imode-yt-icon { font-size:1.5rem; flex-shrink:0; }
+.imode-yt-input {
+  flex:1; background:transparent; border:none; outline:none;
+  color:var(--text); font-size:0.95rem; min-width:0;
+}
+.imode-yt-input::placeholder { color:var(--text-muted); font-size:0.88rem; }
+
+/* Shared hint bar */
+.imode-hint {
+  font-size:0.78rem; color:var(--text-muted);
+  padding:8px 12px; background:rgba(245,158,11,0.07);
+  border-left:3px solid rgba(245,158,11,0.5);
+  border-radius:0 6px 6px 0; line-height:1.5;
+  margin-bottom:10px;
+}
+
+/* File dropzone */
+.imode-dropzone {
+  border:2px dashed var(--border-light);
+  border-radius:var(--radius); padding:28px 20px;
+  text-align:center; background:var(--surface-2);
+  transition:border-color 0.2s, background 0.2s;
+  margin-bottom:10px; cursor:pointer;
+}
+.imode-dropzone:hover,
+.imode-dropzone.imode-dz-over {
+  border-color:var(--primary);
+  background:rgba(124,58,237,0.06);
+}
+.imode-dz-label { display:block; cursor:pointer; }
+.imode-dz-icon { font-size:2.4rem; margin-bottom:10px; }
+.imode-dz-title {
+  display:flex; flex-direction:column; gap:4px;
+  font-size:0.9rem; color:var(--text);
+}
+.imode-dz-title strong { font-size:0.95rem; color:var(--text); }
+.imode-dz-title span { color:var(--text-muted); font-size:0.82rem; }
+.imode-dz-formats {
+  margin-top:10px; font-size:0.75rem; color:var(--text-muted);
+  padding:4px 10px; background:var(--surface-3);
+  border-radius:20px; display:inline-block;
+}
+
+/* File selected state */
+.imode-file-selected {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 14px; background:rgba(124,58,237,0.1);
+  border-radius:8px; font-size:0.88rem; color:var(--text);
+}
+.imode-file-selected.hidden { display:none; }
+.imode-file-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.imode-file-clear {
+  background:transparent; border:none; color:var(--text-muted);
+  cursor:pointer; font-size:1rem; padding:2px 6px; border-radius:4px;
+  flex-shrink:0;
+}
+.imode-file-clear:hover { color:var(--text); background:var(--surface-3); }
+
+@media (max-width:480px) {
+  .imode-tab { padding:8px 10px; font-size:0.78rem; }
+  .imode-tab-icon { display:none; }
+}
+
+/* Legacy compat — kept for upload.html which still uses these */
 .input-mode-bar {
   display:flex; gap:6px; margin-bottom:12px; padding:4px;
   background:var(--surface-2); border-radius:var(--radius); width:fit-content;

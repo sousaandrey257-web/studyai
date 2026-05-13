@@ -162,42 +162,85 @@
 
       <div class="input-card">
 
-        <!-- Input mode tabs -->
-        <div class="input-mode-bar">
-          <button class="input-mode-btn active" id="tab-text-mode">📝 Texte</button>
-          <button class="input-mode-btn" id="tab-yt-mode">🎬 YouTube</button>
-          <a href="/upload" class="input-mode-btn">📄 PDF / Fichier</a>
-        </div>
-
-        <!-- YouTube URL zone (hidden by default) -->
-        <div id="yt-url-wrap" class="yt-url-wrap hidden">
-          <input type="url" id="yt-url-input" class="yt-url-input" placeholder="https://youtube.com/watch?v=… — copie le lien de la vidéo" />
-          <p class="yt-hint">🎬 L'IA extrait le transcript de la vidéo et génère résumé, quiz et flashcards. Vidéo publique avec sous-titres requise.</p>
-        </div>
-
-        <textarea
-          id="course-input"
-          class="course-textarea"
-          data-i18n-ph="textarea_ph"
-          placeholder="Exemple : « Fais-moi un quiz sur la photosynthèse » ou colle ton cours ici…"
-          maxlength="10000"
-        ></textarea>
-
-        <!-- Exemples cliquables -->
-        <div class="example-chips" ontouchstart="">
-          <span class="example-chip-label" data-i18n="try_label">Essaie :</span>
-          <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_1">Quiz sur la photosynthèse</button>
-          <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_2">Résume la Révolution française</button>
-          <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_3">Explique-moi les fractions</button>
-          <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_4">Quiz sur la Seconde Guerre mondiale</button>
-        </div>
-
-        <div class="input-footer">
-          <span id="char-count" class="char-count">0 / 10 000</span>
-          <button id="btn-generate" class="btn-primary btn-generate-hero">
-            <span data-i18n="btn_generate">Générer gratuitement ⚡</span>
+        <!-- ── Mode tabs ── -->
+        <div class="imode-bar">
+          <button class="imode-tab active" data-imode="text" id="tab-text-mode">
+            <span class="imode-tab-icon">✏️</span> <span data-i18n="tab_text">Texte</span>
+          </button>
+          <button class="imode-tab" data-imode="youtube" id="tab-yt-mode">
+            <span class="imode-tab-icon">🎬</span> <span data-i18n="tab_youtube">YouTube</span>
+          </button>
+          <button class="imode-tab" data-imode="file" id="tab-file-mode">
+            <span class="imode-tab-icon">📄</span> <span data-i18n="tab_file">PDF / Fichier</span>
           </button>
         </div>
+
+        <!-- ── Panel : Texte ── -->
+        <div class="imode-panel" id="imode-text">
+          <textarea
+            id="course-input"
+            class="course-textarea"
+            data-i18n-ph="textarea_ph"
+            placeholder="Exemple : « Fais-moi un quiz sur la photosynthèse » ou colle ton cours ici…"
+            maxlength="10000"
+          ></textarea>
+          <div class="example-chips" ontouchstart="">
+            <span class="example-chip-label" data-i18n="try_label">Essaie :</span>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_1">Quiz sur la photosynthèse</button>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_2">Résume la Révolution française</button>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_3">Explique-moi les fractions</button>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_4">Quiz sur la Seconde Guerre mondiale</button>
+          </div>
+          <div class="imode-char-row">
+            <span id="char-count" class="char-count">0 / 10 000</span>
+          </div>
+        </div>
+
+        <!-- ── Panel : YouTube ── -->
+        <div class="imode-panel hidden" id="imode-youtube">
+          <div class="imode-yt-field">
+            <span class="imode-yt-icon" aria-hidden="true">📺</span>
+            <input
+              type="url"
+              id="yt-url-input"
+              class="imode-yt-input"
+              data-i18n-ph="yt_placeholder"
+              placeholder="https://www.youtube.com/watch?v=…"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+          <p class="imode-hint" id="yt-hint-text">
+            🎬 <span data-i18n="yt_hint">L'IA extrait automatiquement le transcript et génère résumé, quiz et flashcards. La vidéo doit être publique avec sous-titres.</span>
+          </p>
+        </div>
+
+        <!-- ── Panel : Fichier / PDF ── -->
+        <div class="imode-panel hidden" id="imode-file">
+          <div class="imode-dropzone" id="imode-dropzone">
+            <input type="file" id="imode-file-input" accept=".pdf,.docx,.doc,.txt,.md" hidden />
+            <label for="imode-file-input" class="imode-dz-label" id="imode-dz-label">
+              <div class="imode-dz-icon">📄</div>
+              <div class="imode-dz-title">
+                <strong data-i18n="file_drop_title">Clique pour choisir un fichier</strong>
+                <span data-i18n="file_drop_sub">ou glisse-dépose ici</span>
+              </div>
+              <div class="imode-dz-formats" data-i18n="file_drop_formats">PDF · DOCX · TXT · max 10 Mo</div>
+            </label>
+            <div class="imode-file-selected hidden" id="imode-file-selected">
+              <span class="imode-file-icon">📄</span>
+              <span id="imode-file-name" class="imode-file-name"></span>
+              <button class="imode-file-clear" id="imode-file-clear" type="button">✕</button>
+            </div>
+          </div>
+          <p class="imode-hint" data-i18n="file_hint">✨ L'IA lit ton document et génère résumé + quiz + flashcards en 45s</p>
+        </div>
+
+        <!-- ── Bouton générer (toujours visible) ── -->
+        <button id="btn-generate" class="btn-primary btn-generate-hero">
+          <span id="btn-generate-label" data-i18n="btn_generate">Analyser avec l'IA ⚡</span>
+        </button>
+
       </div>
 
       <div class="features-row">
@@ -775,55 +818,136 @@
       }
     }).catch(function() {});
 
-    /* 4. YouTube tab toggle */
-    var tabText = document.getElementById('tab-text-mode');
-    var tabYt   = document.getElementById('tab-yt-mode');
-    var ytWrap  = document.getElementById('yt-url-wrap');
-    var textarea = document.getElementById('course-input');
-    var exChips  = document.querySelector('.example-chips');
-    if (tabYt && ytWrap) {
-      tabText && tabText.addEventListener('click', function() {
-        tabText.classList.add('active'); tabYt.classList.remove('active');
-        ytWrap.classList.add('hidden');
-        if (textarea) textarea.style.display = '';
-        if (exChips) exChips.style.display = '';
+    /* 4. Input mode tabs — Texte / YouTube / Fichier */
+    (function() {
+      var panels  = {
+        text:    document.getElementById('imode-text'),
+        youtube: document.getElementById('imode-youtube'),
+        file:    document.getElementById('imode-file'),
+      };
+      var tabs = document.querySelectorAll('.imode-tab');
+      var textarea = document.getElementById('course-input');
+      var currentMode = 'text';
+
+      function switchMode(mode) {
+        currentMode = mode;
+        // Tabs
+        tabs.forEach(function(t) { t.classList.toggle('active', t.dataset.imode === mode); });
+        // Panels
+        Object.keys(panels).forEach(function(k) {
+          if (panels[k]) panels[k].classList.toggle('hidden', k !== mode);
+        });
+        // Auto-focus + label updates
+        if (mode === 'youtube') {
+          var inp = document.getElementById('yt-url-input');
+          if (inp) setTimeout(function() { inp.focus(); }, 50);
+        } else if (mode === 'text') {
+          if (textarea) setTimeout(function() { textarea.focus(); }, 50);
+        }
+      }
+
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() { switchMode(tab.dataset.imode); });
       });
-      tabYt.addEventListener('click', function() {
-        tabYt.classList.add('active'); tabText && tabText.classList.remove('active');
-        ytWrap.classList.remove('hidden');
-        if (textarea) textarea.style.display = 'none';
-        if (exChips) exChips.style.display = 'none';
-      });
-      /* On YouTube generate: fetch real transcript then inject */
+
+      /* File dropzone — drag-and-drop */
+      var dropzone  = document.getElementById('imode-dropzone');
+      var fileInput = document.getElementById('imode-file-input');
+      var fileSelEl = document.getElementById('imode-file-selected');
+      var fileNameEl = document.getElementById('imode-file-name');
+      var fileClearBtn = document.getElementById('imode-file-clear');
+
+      function showSelectedFile(name) {
+        if (fileNameEl) fileNameEl.textContent = name;
+        if (fileSelEl)  fileSelEl.classList.remove('hidden');
+        var lbl = document.getElementById('imode-dz-label');
+        if (lbl) lbl.classList.add('hidden');
+      }
+      function clearSelectedFile() {
+        if (fileInput) fileInput.value = '';
+        if (fileSelEl)  fileSelEl.classList.add('hidden');
+        var lbl = document.getElementById('imode-dz-label');
+        if (lbl) lbl.classList.remove('hidden');
+      }
+
+      if (fileInput) {
+        fileInput.addEventListener('change', function() {
+          if (this.files && this.files[0]) showSelectedFile(this.files[0].name);
+          else clearSelectedFile();
+        });
+      }
+      if (fileClearBtn) fileClearBtn.addEventListener('click', function(e) { e.preventDefault(); clearSelectedFile(); });
+
+      if (dropzone) {
+        ['dragenter','dragover'].forEach(function(ev) {
+          dropzone.addEventListener(ev, function(e) { e.preventDefault(); dropzone.classList.add('imode-dz-over'); });
+        });
+        ['dragleave','drop'].forEach(function(ev) {
+          dropzone.addEventListener(ev, function(e) { e.preventDefault(); dropzone.classList.remove('imode-dz-over'); });
+        });
+        dropzone.addEventListener('drop', function(e) {
+          var file = e.dataTransfer.files[0];
+          if (!file) return;
+          // Transfer to file input (DataTransfer trick)
+          try {
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput.files = dt.files;
+          } catch(_) {}
+          showSelectedFile(file.name);
+        });
+      }
+
+      /* Generate button — mode-aware logic */
       var btnGen = document.getElementById('btn-generate');
       if (btnGen) {
         btnGen.addEventListener('click', async function(e) {
-          var ytInput = document.getElementById('yt-url-input');
-          if (ytInput && !ytWrap.classList.contains('hidden') && ytInput.value.trim()) {
+
+          /* ── YouTube mode ── */
+          if (currentMode === 'youtube') {
+            var ytInput = document.getElementById('yt-url-input');
+            var url = (ytInput && ytInput.value.trim()) || '';
+            if (!url) { ytInput && ytInput.focus(); return; }
             e.stopImmediatePropagation();
-            var url = ytInput.value.trim();
-            var hint = document.querySelector('#yt-url-wrap .yt-hint');
-            if (hint) { hint.textContent = '⏳ Récupération du transcript…'; }
+            var hintEl = document.getElementById('yt-hint-text');
+            if (hintEl) hintEl.innerHTML = '⏳ Récupération du transcript…';
+            btnGen.disabled = true;
             try {
               var r = await fetch('/api/youtube-transcript?url=' + encodeURIComponent(url));
               var d = await r.json();
               if (!r.ok || !d.transcript) throw new Error(d.error || 'Transcript indisponible');
-              if (textarea) {
-                textarea.value = d.transcript;
-                textarea.dispatchEvent(new Event('input'));
-              }
+              if (textarea) { textarea.value = d.transcript; textarea.dispatchEvent(new Event('input')); }
             } catch(err) {
               if (textarea) {
                 textarea.value = 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + url;
                 textarea.dispatchEvent(new Event('input'));
               }
-              if (hint) hint.textContent = '⚠️ Transcript auto indisponible — génération à partir du titre/sujet.';
+              if (hintEl) hintEl.innerHTML = '⚠️ Transcript auto indisponible — génération basée sur le sujet.';
+            } finally {
+              btnGen.disabled = false;
             }
-            tabText && tabText.click();
+            switchMode('text');
+            return;
           }
+
+          /* ── File mode ── */
+          if (currentMode === 'file') {
+            e.stopImmediatePropagation();
+            var selFile = fileInput && fileInput.files && fileInput.files[0];
+            if (selFile) {
+              // Redirect to upload page — the full-featured file processor
+              window.location.href = '/upload';
+            } else {
+              // No file yet → trigger file picker
+              if (fileInput) fileInput.click();
+            }
+            return;
+          }
+
+          /* ── Text mode: default app.js flow handles it ── */
         }, true);
       }
-    }
+    }());
 
   }());
   </script>
