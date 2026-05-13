@@ -507,10 +507,12 @@ document.addEventListener('DOMContentLoaded', function () {
     btns[correct].classList.add('correct');
     if (selected !== correct) {
       btns[selected].classList.add('incorrect');
+      window.SFX && SFX.wrong();
       const q = state.quizQuestions[state.currentQuestion];
       state.wrongQuestions.push(q.question);
     } else {
       state.score++;
+      window.SFX && SFX.correct();
       const q = state.quizQuestions[state.currentQuestion];
       const d = String(q.difficulty || 1);
       state.correctByDifficulty[d] = (state.correctByDifficulty[d] || 0) + 1;
@@ -633,6 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
       popup.style.left  = (rect.left + rect.width / 2) + 'px';
       popup.style.top   = (rect.top + window.scrollY + 10) + 'px';
       document.body.appendChild(popup);
+      window.SFX && SFX.xp();
       setTimeout(function () { popup.remove(); }, 2000);
     }
 
@@ -786,6 +789,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function showBadgeToast(badge) {
+    window.SFX && SFX.badge();
     var toast = document.createElement('div');
     toast.className = 'badge-toast';
     toast.innerHTML =
