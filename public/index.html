@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta property="og:title" content="StudyAI — Quiz & Flashcards IA en 45 secondes | Gratuit" />
-  <meta property="og:description" content="Dépose ton cours → quiz, flashcards, synthèse et roadmap en 45s. Battle mode temps réel, Second Brain, gamification. Utilisé par des milliers d'étudiants. Gratuit." />
+  <meta property="og:description" content="Dépose ton cours → quiz, flashcards, synthèse et roadmap en 45s. Battle mode temps réel, Second Brain, gamification. Gratuit." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="StudyAI — Quiz & Flashcards IA en 45 secondes" />
@@ -41,12 +41,6 @@
       "price": "0",
       "priceCurrency": "EUR",
       "description": "Gratuit — 3 analyses par jour"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "bestRating": "5",
-      "ratingCount": "2400"
     },
     "featureList": [
       "Quiz adaptatif IA (MCQ, Vrai/Faux, ouvert)",
@@ -127,14 +121,6 @@
   <!-- ===== HERO / INPUT ===== -->
   <main class="main">
     <section id="section-input" class="section-input">
-
-      <!-- Live counter -->
-      <div class="hero-live-wrap">
-        <div class="hero-live-badge">
-          <span class="hero-live-dot"></span>
-          <span id="hero-live-count">1 284</span>&nbsp;étudiants en train de réviser
-        </div>
-      </div>
 
       <div class="hero-text">
         <div class="hero-badge">
@@ -253,13 +239,8 @@
       <!-- ===== STATS ANIMÉES ===== -->
       <div class="stats-v2 reveal" id="stats-v2">
         <div class="stat-v2">
-          <span class="stat-v2-num" data-count="50000" data-suffix="+">—</span>
-          <span class="stat-v2-label">Quiz générés</span>
-        </div>
-        <div class="stat-v2-sep"></div>
-        <div class="stat-v2">
           <span class="stat-v2-num" data-count="45" data-suffix="s">—</span>
-          <span class="stat-v2-label">Temps de génération</span>
+          <span class="stat-v2-label">Génération complète</span>
         </div>
         <div class="stat-v2-sep"></div>
         <div class="stat-v2">
@@ -270,6 +251,11 @@
         <div class="stat-v2">
           <span class="stat-v2-num" data-count="20" data-suffix="">—</span>
           <span class="stat-v2-label">Langues supportées</span>
+        </div>
+        <div class="stat-v2-sep"></div>
+        <div class="stat-v2">
+          <span class="stat-v2-num">Gratuit</span>
+          <span class="stat-v2-label">pour commencer</span>
         </div>
       </div>
 
@@ -315,50 +301,6 @@
             <div class="usecase-icon">🌍</div>
             <h3 class="usecase-title" data-i18n="who_3_title">International</h3>
             <p class="testimonial-text" data-i18n="who_3_desc">Fonctionne dans 20 langues. L'IA génère le contenu dans la langue de ton cours, automatiquement.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== TÉMOIGNAGES ÉTUDIANTS ===== -->
-      <div class="testimonials-real reveal" id="testimonials-real">
-        <div class="tr-rating-bar">
-          <span class="tr-stars-row">⭐⭐⭐⭐⭐</span>
-          <span class="tr-rating-score">4.9/5</span>
-          <span class="tr-rating-count">— avis vérifiés</span>
-        </div>
-        <div class="testimonials-real-grid">
-          <div class="testimonial-real-card">
-            <div class="tr-header">
-              <div class="tr-avatar">S</div>
-              <div class="tr-info">
-                <span class="tr-name">Sofia M.</span>
-                <span class="tr-role">Droit L2 · Paris</span>
-              </div>
-              <div class="tr-card-stars">⭐⭐⭐⭐⭐</div>
-            </div>
-            <p class="tr-text">"J'ai eu 17/20 à mon partiel grâce aux quiz StudyAI. J'avais 3 jours pour réviser tout le semestre — impossible sans ça."</p>
-          </div>
-          <div class="testimonial-real-card">
-            <div class="tr-header">
-              <div class="tr-avatar tr-b">T</div>
-              <div class="tr-info">
-                <span class="tr-name">Théo K.</span>
-                <span class="tr-role">Médecine P1 · Lyon</span>
-              </div>
-              <div class="tr-card-stars">⭐⭐⭐⭐⭐</div>
-            </div>
-            <p class="tr-text">"Le Battle Mode est ADDICTIF. Je révise l'anatomie en duel avec mon binôme tous les soirs. On a progressé de 2 points tous les deux."</p>
-          </div>
-          <div class="testimonial-real-card">
-            <div class="tr-header">
-              <div class="tr-avatar tr-c">A</div>
-              <div class="tr-info">
-                <span class="tr-name">Amira B.</span>
-                <span class="tr-role">BTS Commerce · Marseille</span>
-              </div>
-              <div class="tr-card-stars">⭐⭐⭐⭐⭐</div>
-            </div>
-            <p class="tr-text">"J'ai testé 5 applis de révision. StudyAI est la seule qui génère vraiment du contenu utile — pas des trucs génériques. Le Second Brain est bluffant."</p>
           </div>
         </div>
       </div>
@@ -771,21 +713,7 @@
   <script>
   (function() {
 
-    /* 1. Live counter */
-    var liveEl = document.getElementById('hero-live-count');
-    if (liveEl) {
-      var liveCount = 1100 + Math.floor(Math.random() * 900);
-      liveEl.textContent = liveCount.toLocaleString('fr-FR');
-      function tickLive() {
-        var delta = Math.random() < 0.65 ? 1 : -1;
-        liveCount = Math.max(700, Math.min(4000, liveCount + delta));
-        liveEl.textContent = liveCount.toLocaleString('fr-FR');
-        setTimeout(tickLive, 5000 + Math.random() * 10000);
-      }
-      setTimeout(tickLive, 6000 + Math.random() * 6000);
-    }
-
-    /* 2. Rotating words */
+    /* 1. Rotating words */
     var rotEl = document.getElementById('hero-rotating');
     if (rotEl) {
       var words = ['réviser 10× plus vite', 'maîtriser n\'importe quelle matière', 'réussir ses examens', 'réviser sans s\'ennuyer', 'apprendre en jouant'];
