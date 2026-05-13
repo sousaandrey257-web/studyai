@@ -383,49 +383,29 @@ body::after {
 }
 
 /* ============================================================
-   SOCIAL PROOF — avatars + text
+   PRODUCT HIGHLIGHTS — faits objectifs sur le produit
    ============================================================ */
-.social-proof {
+.product-highlights {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 20px;
   justify-content: center;
   animation: fadeIn 0.6s var(--ease-out) 0.2s both;
 }
-.avatars-row {
-  display: flex;
-}
-.avatar-item {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 2px solid var(--bg);
-  background: linear-gradient(135deg, var(--primary), var(--cyan));
-  margin-left: -9px;
-  display: flex;
+.highlight-chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-.avatar-item:first-child { margin-left: 0; }
-.avatar-item:nth-child(2) { background: linear-gradient(135deg, #10b981, #06b6d4); }
-.avatar-item:nth-child(3) { background: linear-gradient(135deg, #f59e0b, #ef4444); }
-.avatar-item:nth-child(4) { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
-
-.social-proof-text {
-  font-size: 0.82rem;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  line-height: 1.4;
+  white-space: nowrap;
 }
-.social-proof-text strong { color: var(--text); }
-
-/* Stars rating */
-.stars { color: #fbbf24; font-size: 0.75rem; margin-bottom: 1px; }
+.highlight-icon { font-size: 0.85rem; line-height: 1; }
 
 /* ============================================================
    TRUST STRIP — below hero
@@ -970,8 +950,8 @@ body::after {
    ============================================================ */
 @media (max-width: 540px) {
   .hero-badge { font-size: 0.72rem; padding: 4px 12px 4px 8px; }
-  .social-proof { gap: 8px; }
-  .social-proof-text { font-size: 0.76rem; }
+  .product-highlights { gap: 6px; }
+  .highlight-chip { font-size: 0.72rem; padding: 4px 10px; }
   .trust-strip { gap: 10px; }
   .trust-item  { font-size: 0.7rem; }
   .faq-title   { font-size: 1.25rem; }
