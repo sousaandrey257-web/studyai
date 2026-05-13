@@ -12,7 +12,7 @@
 // ============================================================
 
 const jwt       = require('jsonwebtoken');
-const rateLimit = require('express-rate-limit');
+const { default: rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const fs        = require('fs');
 const path      = require('path');
 
@@ -103,7 +103,7 @@ const adminRateLimiter = rateLimit({
   max: 30,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: req => `sadmin:${_getIP(req)}`,
+  keyGenerator: req => `sadmin:${ipKeyGenerator(req)}`,
   message: { error: 'Trop de requêtes admin. Réessayez dans quelques minutes.' },
 });
 

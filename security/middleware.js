@@ -7,7 +7,7 @@
 //  3. createDiffLimiter — adaptive rate limit by auth tier
 // ============================================================
 
-const rateLimit = require('express-rate-limit');
+const { default: rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 // ── 1. Body sanitizer ────────────────────────────────────────────────────────
 // Removes script tags and inline event handlers from string values.
@@ -106,17 +106,17 @@ function createDiffLimiter() {
   const guestLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, max: 60,
     standardHeaders: true, legacyHeaders: false, message,
-    keyGenerator: req => `g:${_getIP(req)}`,
+    keyGenerator: req => `g:${ipKeyGenerator(req)}`,
   });
   const userLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, max: 200,
     standardHeaders: true, legacyHeaders: false, message,
-    keyGenerator: req => `u:${_getIP(req)}`,
+    keyGenerator: req => `u:${ipKeyGenerator(req)}`,
   });
   const premiumLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, max: 500,
     standardHeaders: true, legacyHeaders: false, message,
-    keyGenerator: req => `p:${_getIP(req)}`,
+    keyGenerator: req => `p:${ipKeyGenerator(req)}`,
   });
 
   return function diffLimiter(req, res, next) {
