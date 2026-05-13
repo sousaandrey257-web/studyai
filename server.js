@@ -18,6 +18,9 @@ const rateLimit  = require('express-rate-limit');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// ── /healthz : Railway healthcheck — répond AVANT tout autre middleware ──
+app.get('/healthz', (_req, res) => res.status(200).send('ok'));
+
 // ============================================================
 //  NETTOYAGE CLÉ API
 // ============================================================
@@ -2235,10 +2238,11 @@ app.get('/api/public-stats', (req, res) => {
 // ============================================================
 //  YOUTUBE TRANSCRIPT — Sprint 3
 // ============================================================
+const { ipKeyGenerator } = require('express-rate-limit');
 const ytTranscriptLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, max: 30,
   standardHeaders: true, legacyHeaders: false,
-  keyGenerator: require('./middleware/ipKeyGenerator'),
+  keyGenerator: (req) => `yt:${ipKeyGenerator(req)}`,
   message: { error: 'Trop de requêtes transcript. Réessaie dans une heure.' },
 });
 
@@ -2296,7 +2300,7 @@ const upload_multer = multer({
 const visionLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, max: 20,
   standardHeaders: true, legacyHeaders: false,
-  keyGenerator: require('./middleware/ipKeyGenerator'),
+  keyGenerator: (req) => `vision:${ipKeyGenerator(req)}`,
   message: { error: 'Limite vision atteinte. Réessaie dans une heure.' },
 });
 
