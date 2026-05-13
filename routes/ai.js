@@ -1,6 +1,6 @@
 'use strict';
 const express      = require('express');
-const rateLimit    = require('express-rate-limit');
+const { default: rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const router       = express.Router();
 
 const AutoStudy    = require('../services/ai/autoStudyEngine');
@@ -18,7 +18,7 @@ const analyzeLimiter = rateLimit({
   windowMs: 60 * 60_000, max: parseInt(process.env.ANALYZE_LIMIT_HOUR || '20', 10),
   standardHeaders: true, legacyHeaders: false,
   message: { error: 'Trop de générations. Réessayez dans 1 heure.' },
-  keyGenerator: (req) => req.user?.userId || (req.ip || '').replace(/^::ffff:/, ''),
+  keyGenerator: (req) => req.user?.userId || ipKeyGenerator(req),
 });
 const apiLimiter = rateLimit({
   windowMs: 15 * 60_000, max: 100,
