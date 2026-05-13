@@ -216,10 +216,16 @@ async function handleStripeWebhook(req, res) {
     deactivateSubscription(event.data.object.id);
   }
 
-  // Paiement récurrent échoué → désactive
+  // Paiement récurrent échoué → suspend après PAYMENT_FAILURE_THRESHOLD tentatives
   if (event.type === 'invoice.payment_failed') {
     const subId = event.data.object.subscription;
-    if (subId) deactivateSubscription(subId);
+    if (subId) recordPaymentFailure(subId);
+  }
+
+  // Paiement récurrent réussi → remet à zéro le compteur et réactive si suspendu pour échecs
+  if (event.type === 'invoice.paid') {
+    const subId = event.data.object.subscription;
+    if (subId) resetPaymentFailures(subId);
   }
 
   res.json({ received: true });
@@ -466,6 +472,38 @@ function deactivateSubscription(subId) {
       console.log(`[premium] Abonnement ${subId} désactivé`);
       break;
     }
+  }
+}
+
+const PAYMENT_FAILURE_THRESHOLD = 3;
+
+function recordPaymentFailure(subId) {
+  for (const [, user] of premiumUsers.entries()) {
+    if (user.subId !== subId) continue;
+    user.paymentFailures = (user.paymentFailures || 0) + 1;
+    console.log(`[premium] Échec paiement #${user.paymentFailures}/${PAYMENT_FAILURE_THRESHOLD} — sub: ${subId}`);
+    if (user.paymentFailures >= PAYMENT_FAILURE_THRESHOLD) {
+      user.active = false;
+      console.warn(`[premium] Accès suspendu après ${PAYMENT_FAILURE_THRESHOLD} échecs — sub: ${subId}`);
+    }
+    savePremiums();
+    break;
+  }
+}
+
+function resetPaymentFailures(subId) {
+  for (const [, user] of premiumUsers.entries()) {
+    if (user.subId !== subId) continue;
+    if (!user.paymentFailures) break;
+    const wasSuspendedForFailures = !user.active && user.paymentFailures >= PAYMENT_FAILURE_THRESHOLD;
+    user.paymentFailures = 0;
+    if (wasSuspendedForFailures) {
+      user.active = true;
+      console.log(`[premium] Accès réactivé après paiement réussi — sub: ${subId}`);
+    }
+    savePremiums();
+    console.log(`[premium] Compteur d'échecs remis à zéro — sub: ${subId}`);
+    break;
   }
 }
 
