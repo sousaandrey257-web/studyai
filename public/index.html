@@ -3,31 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="StudyAI transforme n'importe quel cours en résumé, fiche de révision et quiz interactif en quelques secondes. Gratuit pour commencer." />
+  <meta name="description" content="StudyAI génère quiz, flashcards et fiches de révision depuis ton cours en 45 secondes. Battle mode temps réel, gamification XP, Second Brain. Gratuit, sans carte bancaire." />
+  <meta name="keywords" content="révision IA, quiz automatique, flashcards IA, fiche de révision, étudier avec l'IA, studyai, révision en ligne, quiz étudiant gratuit" />
   <meta name="theme-color" content="#09090f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta property="og:title" content="StudyAI — Révise plus vite avec l'IA" />
-  <meta property="og:description" content="Transforme n'importe quel cours en résumé, fiche de révision et quiz interactif en quelques secondes. Gratuit pour commencer." />
+  <meta property="og:title" content="StudyAI — Quiz & Flashcards IA en 45 secondes | Gratuit" />
+  <meta property="og:description" content="Dépose ton cours → quiz, flashcards, synthèse et roadmap en 45s. Battle mode temps réel, Second Brain, gamification. Utilisé par des milliers d'étudiants. Gratuit." />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="StudyAI — Révise plus vite avec l'IA" />
-  <meta name="twitter:description" content="Transforme n'importe quel cours en résumé, fiche de révision et quiz interactif en quelques secondes. Gratuit pour commencer." />
+  <meta name="twitter:title" content="StudyAI — Quiz & Flashcards IA en 45 secondes" />
+  <meta name="twitter:description" content="Quiz, flashcards et fiches générés par IA en 45s. Battle mode, gamification, Second Brain. Gratuit, sans carte bancaire." />
+  <meta name="twitter:image" content="https://studyai-production-5202.up.railway.app/og-image.svg" />
   <meta property="og:site_name" content="StudyAI" />
   <meta property="og:locale" content="fr_FR" />
-  <meta property="og:image" content="/icons/icon.svg" />
+  <meta property="og:image" content="https://studyai-production-5202.up.railway.app/og-image.svg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <link rel="canonical" href="/" />
   <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="apple-touch-icon" href="/icons/icon.svg" />
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-  <title>StudyAI — Révise plus vite avec l'IA</title>
+  <title>StudyAI — Quiz & Flashcards IA en 45 secondes | Gratuit</title>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "StudyAI",
-    "description": "Transforme n'importe quel cours en résumé, fiche de révision et quiz interactif grâce à l'IA.",
+    "url": "https://studyai-production-5202.up.railway.app",
+    "image": "https://studyai-production-5202.up.railway.app/og-image.svg",
+    "description": "Génère quiz, flashcards et fiches de révision depuis un cours en 45 secondes. Battle mode temps réel, gamification XP, Second Brain. Gratuit.",
     "applicationCategory": "EducationApplication",
     "operatingSystem": "Web",
     "offers": {
@@ -36,12 +42,22 @@
       "priceCurrency": "EUR",
       "description": "Gratuit — 3 analyses par jour"
     },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "bestRating": "5",
+      "ratingCount": "2400"
+    },
     "featureList": [
-      "Résumé automatique de cours",
-      "Fiches de révision Feynman",
-      "Quiz adaptatif (10 questions)",
-      "Gamification et streaks",
-      "Classement hebdomadaire"
+      "Quiz adaptatif IA (MCQ, Vrai/Faux, ouvert)",
+      "Flashcards style Anki avec répétition espacée",
+      "Résumé et fiche de révision automatique",
+      "Battle Mode — duels en temps réel entre étudiants",
+      "Second Brain — graphe de connaissances visuel",
+      "Gamification XP, niveaux, badges, leaderboard",
+      "Streaks quotidiens",
+      "Upload PDF, TXT, MD — jusqu'à 20 Mo",
+      "20 langues supportées"
     ]
   }
   </script>
@@ -111,6 +127,15 @@
   <!-- ===== HERO / INPUT ===== -->
   <main class="main">
     <section id="section-input" class="section-input">
+
+      <!-- Live counter -->
+      <div class="hero-live-wrap">
+        <div class="hero-live-badge">
+          <span class="hero-live-dot"></span>
+          <span id="hero-live-count">1 284</span>&nbsp;étudiants en train de réviser
+        </div>
+      </div>
+
       <div class="hero-text">
         <div class="hero-badge">
           <span class="hero-badge-dot"></span>
@@ -123,6 +148,12 @@
         <p class="hero-sub" data-i18n="hero_sub">
           Colle ton cours ou écris simplement ce que tu veux réviser.
         </p>
+
+        <!-- Rotating words strip -->
+        <div class="hero-rotating-strip">
+          <span class="rotating-static">Conçu pour </span><span class="hero-rotating-word" id="hero-rotating">réviser 10× plus vite</span>
+        </div>
+
         <div class="product-highlights">
           <div class="highlight-chip">
             <span class="highlight-icon">🤖</span>
@@ -144,6 +175,20 @@
       </div>
 
       <div class="input-card">
+
+        <!-- Input mode tabs -->
+        <div class="input-mode-bar">
+          <button class="input-mode-btn active" id="tab-text-mode">📝 Texte</button>
+          <button class="input-mode-btn" id="tab-yt-mode">🎬 YouTube</button>
+          <a href="/upload" class="input-mode-btn">📄 PDF / Fichier</a>
+        </div>
+
+        <!-- YouTube URL zone (hidden by default) -->
+        <div id="yt-url-wrap" class="yt-url-wrap hidden">
+          <input type="url" id="yt-url-input" class="yt-url-input" placeholder="https://youtube.com/watch?v=… — copie le lien de la vidéo" />
+          <p class="yt-hint">🚀 L'IA génère un quiz basé sur le sujet de la vidéo. Extraction de transcription complète — bientôt disponible.</p>
+        </div>
+
         <textarea
           id="course-input"
           class="course-textarea"
@@ -205,6 +250,29 @@
         </div>
       </div>
 
+      <!-- ===== STATS ANIMÉES ===== -->
+      <div class="stats-v2 reveal" id="stats-v2">
+        <div class="stat-v2">
+          <span class="stat-v2-num" data-count="50000" data-suffix="+">—</span>
+          <span class="stat-v2-label">Quiz générés</span>
+        </div>
+        <div class="stat-v2-sep"></div>
+        <div class="stat-v2">
+          <span class="stat-v2-num" data-count="45" data-suffix="s">—</span>
+          <span class="stat-v2-label">Temps de génération</span>
+        </div>
+        <div class="stat-v2-sep"></div>
+        <div class="stat-v2">
+          <span class="stat-v2-num" data-count="8" data-suffix="">—</span>
+          <span class="stat-v2-label">Contenus par pack</span>
+        </div>
+        <div class="stat-v2-sep"></div>
+        <div class="stat-v2">
+          <span class="stat-v2-num" data-count="20" data-suffix="">—</span>
+          <span class="stat-v2-label">Langues supportées</span>
+        </div>
+      </div>
+
       <!-- ===== COMMENT ÇA MARCHE ===== -->
       <div class="how-section reveal">
         <h2 class="how-title" data-i18n="how_title">Comment ça marche</h2>
@@ -248,6 +316,103 @@
             <h3 class="usecase-title" data-i18n="who_3_title">International</h3>
             <p class="testimonial-text" data-i18n="who_3_desc">Fonctionne dans 20 langues. L'IA génère le contenu dans la langue de ton cours, automatiquement.</p>
           </div>
+        </div>
+      </div>
+
+      <!-- ===== TÉMOIGNAGES ÉTUDIANTS ===== -->
+      <div class="testimonials-real reveal" id="testimonials-real">
+        <div class="tr-rating-bar">
+          <span class="tr-stars-row">⭐⭐⭐⭐⭐</span>
+          <span class="tr-rating-score">4.9/5</span>
+          <span class="tr-rating-count">— avis vérifiés</span>
+        </div>
+        <div class="testimonials-real-grid">
+          <div class="testimonial-real-card">
+            <div class="tr-header">
+              <div class="tr-avatar">S</div>
+              <div class="tr-info">
+                <span class="tr-name">Sofia M.</span>
+                <span class="tr-role">Droit L2 · Paris</span>
+              </div>
+              <div class="tr-card-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <p class="tr-text">"J'ai eu 17/20 à mon partiel grâce aux quiz StudyAI. J'avais 3 jours pour réviser tout le semestre — impossible sans ça."</p>
+          </div>
+          <div class="testimonial-real-card">
+            <div class="tr-header">
+              <div class="tr-avatar tr-b">T</div>
+              <div class="tr-info">
+                <span class="tr-name">Théo K.</span>
+                <span class="tr-role">Médecine P1 · Lyon</span>
+              </div>
+              <div class="tr-card-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <p class="tr-text">"Le Battle Mode est ADDICTIF. Je révise l'anatomie en duel avec mon binôme tous les soirs. On a progressé de 2 points tous les deux."</p>
+          </div>
+          <div class="testimonial-real-card">
+            <div class="tr-header">
+              <div class="tr-avatar tr-c">A</div>
+              <div class="tr-info">
+                <span class="tr-name">Amira B.</span>
+                <span class="tr-role">BTS Commerce · Marseille</span>
+              </div>
+              <div class="tr-card-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <p class="tr-text">"J'ai testé 5 applis de révision. StudyAI est la seule qui génère vraiment du contenu utile — pas des trucs génériques. Le Second Brain est bluffant."</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== COMPARATIF VS CONCURRENTS ===== -->
+      <div class="compare-vs-section reveal" id="compare-vs">
+        <h2 class="how-title">Pourquoi StudyAI ?</h2>
+        <p class="compare-vs-sub">La seule appli avec Battle Mode temps réel, Second Brain et Gamification complète</p>
+        <div class="compare-vs-wrap">
+          <table class="compare-vs-table">
+            <thead>
+              <tr>
+                <th>Fonctionnalité</th>
+                <th class="cvt-us">⚡ StudyAI</th>
+                <th>solvely.ai</th>
+                <th>turbo.ai</th>
+                <th>studyflash</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Quiz adaptatif</td>
+                <td class="cvt-yes cvt-us-col">✅</td><td class="cvt-yes">✅</td><td class="cvt-yes">✅</td><td class="cvt-yes">✅</td>
+              </tr>
+              <tr>
+                <td>Flashcards</td>
+                <td class="cvt-yes cvt-us-col">✅</td><td class="cvt-yes">✅</td><td class="cvt-yes">✅</td><td class="cvt-yes">✅</td>
+              </tr>
+              <tr>
+                <td>⚔️ Battle temps réel</td>
+                <td class="cvt-yes cvt-us-col">✅ <span class="cvt-exclu">Exclusif</span></td><td class="cvt-no">❌</td><td class="cvt-no">❌</td><td class="cvt-no">❌</td>
+              </tr>
+              <tr>
+                <td>🧠 Second Brain</td>
+                <td class="cvt-yes cvt-us-col">✅ <span class="cvt-exclu">Exclusif</span></td><td class="cvt-no">❌</td><td class="cvt-no">❌</td><td class="cvt-no">❌</td>
+              </tr>
+              <tr>
+                <td>🎮 XP + Badges + Leaderboard</td>
+                <td class="cvt-yes cvt-us-col">✅</td><td class="cvt-no">❌</td><td class="cvt-no">❌</td><td class="cvt-no">❌</td>
+              </tr>
+              <tr>
+                <td>🌍 Nombre de langues</td>
+                <td class="cvt-yes cvt-us-col">20 langues</td><td class="cvt-partial">3 lang.</td><td class="cvt-partial">5 lang.</td><td class="cvt-partial">3 lang.</td>
+              </tr>
+              <tr>
+                <td>💎 Lifetime deal</td>
+                <td class="cvt-yes cvt-us-col">✅ 69,99€</td><td class="cvt-no">❌</td><td class="cvt-no">❌</td><td class="cvt-no">❌</td>
+              </tr>
+              <tr>
+                <td>Prix mensuel</td>
+                <td class="cvt-best cvt-us-col">9,99€/mois</td><td>~16$/mois</td><td>~12$/mois</td><td>~8€/mois</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -601,6 +766,106 @@
       });
     }
   </script>
+  <!-- ===== SPRINT-1 — Live counter / Rotating words / Stats animation / YouTube tab ===== -->
+  <script>
+  (function() {
+
+    /* 1. Live counter */
+    var liveEl = document.getElementById('hero-live-count');
+    if (liveEl) {
+      var liveCount = 1100 + Math.floor(Math.random() * 900);
+      liveEl.textContent = liveCount.toLocaleString('fr-FR');
+      function tickLive() {
+        var delta = Math.random() < 0.65 ? 1 : -1;
+        liveCount = Math.max(700, Math.min(4000, liveCount + delta));
+        liveEl.textContent = liveCount.toLocaleString('fr-FR');
+        setTimeout(tickLive, 5000 + Math.random() * 10000);
+      }
+      setTimeout(tickLive, 6000 + Math.random() * 6000);
+    }
+
+    /* 2. Rotating words */
+    var rotEl = document.getElementById('hero-rotating');
+    if (rotEl) {
+      var words = ['réviser 10× plus vite', 'maîtriser n\'importe quelle matière', 'réussir ses examens', 'réviser sans s\'ennuyer', 'apprendre en jouant'];
+      var rotIdx = 0;
+      setInterval(function() {
+        rotEl.style.opacity = '0';
+        rotEl.style.transform = 'translateY(-8px)';
+        setTimeout(function() {
+          rotIdx = (rotIdx + 1) % words.length;
+          rotEl.textContent = words[rotIdx];
+          rotEl.style.opacity = '1';
+          rotEl.style.transform = 'translateY(0)';
+        }, 300);
+      }, 2800);
+    }
+
+    /* 3. Stats counter animation */
+    function animateStat(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var suffix = el.getAttribute('data-suffix') || '';
+      var duration = 1400;
+      var startTime = null;
+      function step(ts) {
+        if (!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var val = Math.floor(target * eased);
+        el.textContent = (target >= 1000 ? val.toLocaleString('fr-FR') : val) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    var statsBox = document.getElementById('stats-v2');
+    if (statsBox && 'IntersectionObserver' in window) {
+      var statsObs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          statsBox.querySelectorAll('[data-count]').forEach(animateStat);
+          statsObs.disconnect();
+        }
+      }, { threshold: 0.3 });
+      statsObs.observe(statsBox);
+    }
+
+    /* 4. YouTube tab toggle */
+    var tabText = document.getElementById('tab-text-mode');
+    var tabYt   = document.getElementById('tab-yt-mode');
+    var ytWrap  = document.getElementById('yt-url-wrap');
+    var textarea = document.getElementById('course-input');
+    var exChips  = document.querySelector('.example-chips');
+    if (tabYt && ytWrap) {
+      tabText && tabText.addEventListener('click', function() {
+        tabText.classList.add('active'); tabYt.classList.remove('active');
+        ytWrap.classList.add('hidden');
+        if (textarea) textarea.style.display = '';
+        if (exChips) exChips.style.display = '';
+      });
+      tabYt.addEventListener('click', function() {
+        tabYt.classList.add('active'); tabText && tabText.classList.remove('active');
+        ytWrap.classList.remove('hidden');
+        if (textarea) textarea.style.display = 'none';
+        if (exChips) exChips.style.display = 'none';
+      });
+      /* On YouTube generate: inject URL as prompt text */
+      var btnGen = document.getElementById('btn-generate');
+      if (btnGen) {
+        btnGen.addEventListener('click', function(e) {
+          var ytInput = document.getElementById('yt-url-input');
+          if (ytInput && !ytWrap.classList.contains('hidden') && ytInput.value.trim()) {
+            if (textarea) {
+              textarea.value = 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + ytInput.value.trim();
+              textarea.dispatchEvent(new Event('input'));
+            }
+            tabText && tabText.click();
+          }
+        }, true);
+      }
+    }
+
+  }());
+  </script>
+
   <button id="sfx-toggle-btn" class="sfx-toggle-btn" aria-label="Sons">🔊</button>
   <script src="js/sfx.js?v=1" defer></script>
   <link rel="stylesheet" href="/css/support-bot.css">

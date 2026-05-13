@@ -1,0 +1,73 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#07070e"/>
+      <stop offset="100%" style="stop-color:#13131f"/>
+    </linearGradient>
+    <linearGradient id="purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(124,58,237,0.4)"/>
+      <stop offset="100%" style="stop-color:rgba(124,58,237,0)"/>
+    </linearGradient>
+    <filter id="blur-glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Glow orbs -->
+  <circle cx="200" cy="200" r="300" fill="rgba(124,58,237,0.12)" filter="url(#blur-glow)"/>
+  <circle cx="1000" cy="450" r="250" fill="rgba(124,58,237,0.08)" filter="url(#blur-glow)"/>
+
+  <!-- Grid lines (subtle) -->
+  <g stroke="rgba(255,255,255,0.03)" stroke-width="1">
+    <line x1="0" y1="157" x2="1200" y2="157"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="473" x2="1200" y2="473"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+  </g>
+
+  <!-- Logo -->
+  <text x="100" y="120" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="36" fill="url(#purple)">⚡ StudyAI</text>
+
+  <!-- Badge -->
+  <rect x="100" y="148" width="230" height="32" rx="16" fill="rgba(16,185,129,0.15)" stroke="rgba(16,185,129,0.4)" stroke-width="1"/>
+  <circle cx="122" cy="164" r="6" fill="#10b981"/>
+  <text x="138" y="169" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="14" fill="#10b981">IA des étudiants</text>
+
+  <!-- Main headline -->
+  <text x="100" y="255" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="72" fill="#eeeef8" letter-spacing="-3">Quiz &amp; Flashcards IA</text>
+  <text x="100" y="340" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="72" fill="url(#purple)" letter-spacing="-3">en 45 secondes</text>
+
+  <!-- Sub -->
+  <text x="100" y="400" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="26" fill="rgba(238,238,248,0.6)">Dépose ton cours → quiz, flashcards, synthèse, roadmap. Gratuit.</text>
+
+  <!-- Feature pills -->
+  <rect x="100" y="450" width="180" height="44" rx="22" fill="rgba(124,58,237,0.2)" stroke="rgba(124,58,237,0.4)" stroke-width="1"/>
+  <text x="190" y="478" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="16" fill="#a78bfa" text-anchor="middle">⚔️ Battle Mode</text>
+
+  <rect x="300" y="450" width="200" height="44" rx="22" fill="rgba(124,58,237,0.2)" stroke="rgba(124,58,237,0.4)" stroke-width="1"/>
+  <text x="400" y="478" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="16" fill="#a78bfa" text-anchor="middle">🧠 Second Brain</text>
+
+  <rect x="520" y="450" width="190" height="44" rx="22" fill="rgba(124,58,237,0.2)" stroke="rgba(124,58,237,0.4)" stroke-width="1"/>
+  <text x="615" y="478" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="16" fill="#a78bfa" text-anchor="middle">🎮 XP + Badges</text>
+
+  <rect x="730" y="450" width="140" height="44" rx="22" fill="rgba(124,58,237,0.2)" stroke="rgba(124,58,237,0.4)" stroke-width="1"/>
+  <text x="800" y="478" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="16" fill="#a78bfa" text-anchor="middle">🌍 20 langues</text>
+
+  <!-- Bottom bar -->
+  <rect x="100" y="540" width="1000" height="1" fill="rgba(255,255,255,0.06)"/>
+  <text x="100" y="580" font-family="Inter, system-ui, sans-serif" font-weight="500" font-size="18" fill="rgba(238,238,248,0.4)">Gratuit · Sans carte bancaire · studyai-production-5202.up.railway.app</text>
+
+  <!-- Stars -->
+  <text x="950" y="255" font-family="Inter, system-ui, sans-serif" font-size="32" fill="#f59e0b">⭐⭐⭐⭐⭐</text>
+  <text x="950" y="295" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="40" fill="#eeeef8">4.9/5</text>
+  <text x="950" y="325" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="16" fill="rgba(238,238,248,0.5)">avis vérifiés</text>
+</svg>
