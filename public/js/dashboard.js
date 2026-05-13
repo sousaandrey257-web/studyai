@@ -80,6 +80,11 @@
         const g = await gamiRes.value.json();
         renderGami(g);
         if (g.streakWarning && g.streak > 0) showStreakWarning(g.streak);
+        // Toast positif "comeback" — une seule fois par session, streak ≥ 2
+        if (g.streak >= 2 && !sessionStorage.getItem('studyai_comeback_shown')) {
+          sessionStorage.setItem('studyai_comeback_shown', '1');
+          setTimeout(function () { showStreakComeback(g.streak); }, 1200);
+        }
       } catch {}
     }
 
@@ -334,6 +339,22 @@
       '<a href="/" class="streak-warning-cta">Générer une fiche →</a>';
     var container = document.querySelector('.dash-container');
     if (container) container.insertBefore(banner, container.firstChild);
+  }
+
+  // Toast positif "comeback" — slide depuis le haut, auto-disparaît
+  function showStreakComeback(streak) {
+    if (document.getElementById('streak-comeback-toast')) return;
+    window.SFX && SFX.streak();
+    var toast = document.createElement('div');
+    toast.id = 'streak-comeback-toast';
+    toast.className = 'streak-comeback-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML =
+      '<span class="streak-comeback-icon">🔥</span>' +
+      '<span>Bon retour ! Tu maintiens ton streak de <strong>' + streak + ' jour' +
+      (streak > 1 ? 's' : '') + '</strong> !</span>';
+    document.body.appendChild(toast);
+    setTimeout(function () { if (toast.parentNode) toast.remove(); }, 3700);
   }
 
   // ============================================================
