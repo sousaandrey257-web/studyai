@@ -227,6 +227,7 @@
         <div class="results-actions">
           <button class="btn-secondary-small" id="btn-new-study">+ Nouveau cours</button>
           <button class="btn-secondary-small" id="btn-regen">↻ Regénérer</button>
+          <button class="btn-secondary-small" id="btn-print">🖨️ Imprimer</button>
           <button class="btn-primary btn-start-exam" id="btn-exam">🎯 Simuler un examen</button>
         </div>
       </div>
@@ -296,6 +297,9 @@
           <div class="fc-dots" id="fc-dots"></div>
           <button class="fc-nav-btn" id="btn-fc-next">›</button>
         </div>
+        <p class="fc-keyboard-hint">
+          <kbd>←</kbd> Préc · <kbd>→</kbd> Suiv · <kbd>Espace</kbd> Retourner · Glisse sur mobile
+        </p>
       </div>
 
       <div class="res-tab-content hidden" id="tab-memo">
@@ -344,9 +348,11 @@
   <script src="js/perf.js?v=1"></script>
   <script src="js/i18n.js?v=12"></script>
   <script src="js/mindmap-canvas.js?v=1"></script>
-  <script src="js/upload.js?v=2"></script>
+  <script src="js/confetti.js?v=1"></script>
+  <script src="js/upload.js?v=3"></script>
   <script src="js/ui.js?v=1"></script>
   <script src="js/audio-study.js?v=1" defer></script>
+  <script src="js/pwa-install.js?v=1" defer></script>
   <link rel="stylesheet" href="/css/support-bot.css">
   <div id="support-bot-container"></div>
   <script src="/js/support-bot.js" defer></script>

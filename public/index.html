@@ -254,8 +254,8 @@
         </div>
         <div class="stat-v2-sep"></div>
         <div class="stat-v2">
-          <span class="stat-v2-num">Gratuit</span>
-          <span class="stat-v2-label">pour commencer</span>
+          <span class="stat-v2-num" id="stat-packs">Gratuit</span>
+          <span class="stat-v2-label" id="stat-packs-label">pour commencer</span>
         </div>
       </div>
 
@@ -733,6 +733,7 @@
     /* 3. Stats counter animation */
     function animateStat(el) {
       var target = parseInt(el.getAttribute('data-count'), 10);
+      if (isNaN(target)) return;
       var suffix = el.getAttribute('data-suffix') || '';
       var duration = 1400;
       var startTime = null;
@@ -748,14 +749,31 @@
     }
     var statsBox = document.getElementById('stats-v2');
     if (statsBox && 'IntersectionObserver' in window) {
+      var _statsAnimated = false;
       var statsObs = new IntersectionObserver(function(entries) {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && !_statsAnimated) {
+          _statsAnimated = true;
           statsBox.querySelectorAll('[data-count]').forEach(animateStat);
           statsObs.disconnect();
         }
       }, { threshold: 0.3 });
       statsObs.observe(statsBox);
     }
+
+    /* 3b. Fetch real public stats and inject if > 0 */
+    fetch('/api/public-stats').then(function(r) { return r.json(); }).then(function(d) {
+      if (!d) return;
+      var packsEl = document.getElementById('stat-packs');
+      var usersEl = document.getElementById('stat-users');
+      if (packsEl && d.totalPacks > 0) {
+        packsEl.setAttribute('data-count', d.totalPacks);
+        packsEl.textContent = d.totalPacks.toLocaleString('fr-FR') + '+';
+      }
+      if (usersEl && d.totalUsers > 0) {
+        usersEl.setAttribute('data-count', d.totalUsers);
+        usersEl.textContent = d.totalUsers.toLocaleString('fr-FR');
+      }
+    }).catch(function() {});
 
     /* 4. YouTube tab toggle */
     var tabText = document.getElementById('tab-text-mode');
@@ -812,6 +830,7 @@
 
   <button id="sfx-toggle-btn" class="sfx-toggle-btn" aria-label="Sons">🔊</button>
   <script src="js/sfx.js?v=1" defer></script>
+  <script src="js/pwa-install.js?v=1" defer></script>
   <link rel="stylesheet" href="/css/support-bot.css">
   <div id="support-bot-container"></div>
   <script src="/js/support-bot.js" defer></script>

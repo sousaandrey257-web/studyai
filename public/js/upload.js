@@ -495,13 +495,22 @@
 
         // Check if all answered
         if (Object.keys(state.quizRevealed).length === total) {
-          var score = q.questions.filter(function (_, i) {
-            return state.quizRevealed[i] && String(q.questions[i].correct).toLowerCase() === String(state.quizAnswers[i]).toLowerCase();
+          var score = q.questions.filter(function (_, idx2) {
+            return state.quizRevealed[idx2] && String(q.questions[idx2].correct).toLowerCase() === String(state.quizAnswers[idx2]).toLowerCase();
           }).length;
+          var pct = Math.round(score / total * 100);
+          var emoji = pct >= 90 ? '🏆' : pct >= 75 ? '⭐' : pct >= 60 ? '👍' : '📚';
+          var msg   = pct >= 90 ? 'Excellent !' : pct >= 75 ? 'Très bien !' : pct >= 60 ? 'Pas mal !' : 'Continue !';
           var scoreEl = $('quiz-score');
-          scoreEl.innerHTML = '<div class="quiz-score-val">' + score + '/' + total + '</div>' +
-            '<div class="quiz-score-label">' + Math.round(score / total * 100) + '% de réussite</div>';
+          scoreEl.innerHTML =
+            '<div class="quiz-score-emoji">' + emoji + '</div>' +
+            '<div class="quiz-score-val">' + score + '/' + total + '</div>' +
+            '<div class="quiz-score-label">' + pct + '% · ' + msg + '</div>';
           scoreEl.classList.remove('hidden');
+          // Confetti on good score
+          if (pct >= 70 && window.StudyConfetti) {
+            setTimeout(function () { window.StudyConfetti.launch({ count: pct >= 90 ? 120 : 80 }); }, 300);
+          }
         }
       });
     });
@@ -737,6 +746,109 @@
   }
 
   window._uploadAPI = { restoreJob };
+
+  // ── Keyboard shortcuts ────────────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    // Ignore when typing in inputs
+    if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    var activeTab = document.querySelector('.res-tab.active');
+    if (!activeTab) return;
+    var tab = activeTab.dataset.tab;
+
+    if (tab === 'flashcards') {
+      if (e.key === 'ArrowLeft')  { $('btn-fc-prev')?.click(); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { $('btn-fc-next')?.click(); e.preventDefault(); }
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('current-fc')?.click();
+      }
+    }
+
+    if (tab === 'quiz') {
+      var n = parseInt(e.key, 10);
+      if (n >= 1 && n <= 4) {
+        // Find the first unanswered question and click its nth option
+        var cards = document.querySelectorAll('.quiz-q-card');
+        for (var i = 0; i < cards.length; i++) {
+          var opts = cards[i].querySelectorAll('.quiz-opt:not([disabled])');
+          if (opts.length && opts[n - 1]) { opts[n - 1].click(); e.preventDefault(); break; }
+        }
+      }
+    }
+  });
+
+  // ── Flashcard swipe gestures (mobile) ─────────────────────────
+  (function () {
+    var stack = $('flashcard-stack');
+    if (!stack) return;
+    var _tx = null;
+
+    stack.addEventListener('touchstart', function (e) {
+      _tx = e.touches[0].clientX;
+    }, { passive: true });
+
+    stack.addEventListener('touchend', function (e) {
+      if (_tx === null) return;
+      var dx = e.changedTouches[0].clientX - _tx;
+      _tx = null;
+      if (Math.abs(dx) < 50) return;
+      if (dx < 0) $('btn-fc-next')?.click();
+      else         $('btn-fc-prev')?.click();
+    }, { passive: true });
+  }());
+
+  // ── Copy buttons (injected after render) ─────────────────────
+  function _injectCopyBtn(targetId, getTextFn) {
+    var el = $(targetId);
+    if (!el || el.querySelector('.copy-btn')) return;
+    var btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.title = 'Copier';
+    btn.textContent = '📋';
+    btn.addEventListener('click', function () {
+      var text = getTextFn();
+      if (!text) return;
+      navigator.clipboard?.writeText(text).then(function () {
+        btn.textContent = '✅';
+        setTimeout(function () { btn.textContent = '📋'; }, 1800);
+      });
+    });
+    el.style.position = 'relative';
+    el.appendChild(btn);
+  }
+
+  // Called after renderResults to wire copy buttons
+  function _wireCopyButtons(r) {
+    _injectCopyBtn('sum-executive', function () { return $('sum-executive')?.innerText || ''; });
+    _injectCopyBtn('memo-content',  function () { return $('memo-content')?.innerText || ''; });
+  }
+
+  // ── Confetti on high quiz score ───────────────────────────────
+  function _maybeConfetti(scorePct) {
+    if (scorePct >= 70 && window.StudyConfetti) {
+      window.StudyConfetti.launch({ count: scorePct >= 90 ? 120 : 80 });
+    }
+  }
+
+  // Patch quiz score reveal to trigger confetti
+  var _origRenderQuiz = renderQuiz;
+  // (confetti is triggered inside renderQuiz scoreEl block — patched below in-place)
+
+  // ── Print / PDF export ────────────────────────────────────────
+  function _setupPrint() {
+    var btn = document.getElementById('btn-print');
+    if (btn) btn.addEventListener('click', function () { window.print(); });
+  }
+
+  // Re-run setup after results render
+  var _origRenderResults = renderResults;
+  renderResults = function (r) {
+    _origRenderResults(r);
+    _wireCopyButtons(r);
+    _setupPrint();
+  };
 
   window.registerCleanup && window.registerCleanup(function () {
     clearInterval(state.pollTimer);

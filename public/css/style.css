@@ -1811,3 +1811,87 @@ body::before {
   .audio-speed-btns { display:none; }
   .mindmap-canvas { height:300px; }
 }
+
+/* ── Sprint 4 — Copy buttons ── */
+.copy-btn {
+  position:absolute; top:8px; right:8px;
+  padding:4px 8px; border-radius:6px; border:1px solid var(--border);
+  background:var(--surface-3); color:var(--text-muted); font-size:0.8rem;
+  cursor:pointer; opacity:0; transition:opacity 0.15s, background 0.15s;
+  line-height:1;
+}
+.copy-btn:hover { background:var(--primary); border-color:var(--primary); color:#fff; }
+.summary-executive:hover .copy-btn,
+#memo-content:hover .copy-btn { opacity:1; }
+
+/* ── Sprint 4 — Quiz score emoji ── */
+.quiz-score-emoji {
+  font-size:2.8rem; line-height:1; margin-bottom:6px;
+  animation:scorePopIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+@keyframes scorePopIn {
+  0%   { transform:scale(0); opacity:0; }
+  100% { transform:scale(1); opacity:1; }
+}
+
+/* ── Sprint 4 — PWA install banner ── */
+.pwa-install-banner {
+  position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px 16px; width:min(94vw, 480px);
+  background:var(--surface-2); border:1px solid var(--border-light);
+  border-radius:14px; box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  z-index:9998; animation:slideUp 0.3s ease;
+}
+.pwa-install-banner.pwa-banner-hide { animation:slideDown 0.3s ease forwards; }
+@keyframes slideDown { to { transform:translateX(-50%) translateY(120%); opacity:0; } }
+.pwa-banner-left { display:flex; align-items:center; gap:10px; }
+.pwa-banner-icon { font-size:1.6rem; }
+.pwa-banner-text { display:flex; flex-direction:column; }
+.pwa-banner-text strong { font-size:0.88rem; color:var(--text); }
+.pwa-banner-text span   { font-size:0.76rem; color:var(--text-muted); }
+.pwa-banner-btns { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.pwa-install-btn {
+  padding:8px 16px; border-radius:8px; border:none;
+  background:var(--primary); color:#fff; font-size:0.84rem; font-weight:600;
+  cursor:pointer; transition:background 0.15s;
+}
+.pwa-install-btn:hover { background:#6d28d9; }
+.pwa-dismiss-btn {
+  padding:6px 10px; border-radius:8px; border:1px solid var(--border);
+  background:transparent; color:var(--text-muted); font-size:0.8rem;
+  cursor:pointer;
+}
+.ios-pwa-hint {
+  position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+  padding:12px 18px; background:var(--surface-2); border:1px solid var(--border-light);
+  border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  font-size:0.84rem; color:var(--text); white-space:nowrap;
+  z-index:9997; transition:opacity 0.5s;
+}
+
+/* ── Sprint 4 — Print styles ── */
+@media print {
+  .upload-header, .bottom-nav, .results-tabs, .results-actions,
+  .difficulty-card, .brain-links, .btn-print, .btn-battle,
+  .btn-new-study, .btn-regen, .btn-exam,
+  #section-upload, #section-progress,
+  .audio-player, .pwa-install-banner, .support-bot-btn { display:none !important; }
+  body { background:#fff; color:#111; }
+  .results-section { padding:0; }
+  .results-container { max-width:100%; box-shadow:none; border:none; }
+  .res-tab-content { display:block !important; page-break-inside:avoid; }
+  .res-tab-content.hidden { display:block !important; }
+  .quiz-q-card, .concept-card, .trap-card { break-inside:avoid; }
+}
+
+/* ── Sprint 4 — Keyboard shortcut hint on flashcards ── */
+.fc-keyboard-hint {
+  font-size:0.72rem; color:var(--text-muted); text-align:center;
+  margin-top:8px; opacity:0.6;
+}
+.fc-keyboard-hint kbd {
+  display:inline-block; padding:1px 5px; border-radius:4px;
+  border:1px solid var(--border); background:var(--surface-3);
+  font-family:inherit; font-size:0.7rem;
+}

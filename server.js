@@ -2210,6 +2210,29 @@ app.get('/api/admin/memory', adminRateLimiter, requireSuperAdmin, (req, res) => 
 });
 
 // ============================================================
+//  PUBLIC STATS — Sprint 4
+// ============================================================
+app.get('/api/public-stats', (req, res) => {
+  try {
+    const users   = loadJSON(USERS_FILE, {});
+    const content = loadJSON(CONTENT_FILE, {});
+
+    const totalUsers  = Object.keys(users).length;
+    const totalPacks  = Object.values(content).reduce(
+      (sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0
+    );
+    const totalQuizzes = Object.values(users).reduce(
+      (sum, u) => sum + (u.gamification?.totalQuizzes || 0), 0
+    );
+
+    res.set('Cache-Control', 'public, max-age=60');
+    res.json({ totalUsers, totalPacks, totalQuizzes });
+  } catch {
+    res.json({ totalUsers: 0, totalPacks: 0, totalQuizzes: 0 });
+  }
+});
+
+// ============================================================
 //  YOUTUBE TRANSCRIPT — Sprint 3
 // ============================================================
 const ytTranscriptLimiter = rateLimit({
