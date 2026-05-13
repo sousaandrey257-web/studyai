@@ -24,6 +24,7 @@
 
 <!-- perf.js: error boundary, debounce, throttle, safe-store — FIRST -->
 <script src="js/perf.js?v=1"></script>
+<script src="js/i18n.js?v=12"></script>
 <!-- Unified signal: JS files skip auto-init of heavy operations -->
 <script>window.APP_MANAGED = true;</script>
 
@@ -91,6 +92,28 @@
       <span class="breadcrumb-section" id="breadcrumb-section">Accueil</span>
     </div>
     <div class="topbar-actions">
+      <select id="lang-select" class="lang-select">
+        <option value="fr">🇫🇷 FR</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="es">🇪🇸 ES</option>
+        <option value="de">🇩🇪 DE</option>
+        <option value="pt">🇵🇹 PT</option>
+        <option value="it">🇮🇹 IT</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="id">🇮🇩 ID</option>
+        <option value="ar">🇸🇦 AR</option>
+        <option value="tr">🇹🇷 TR</option>
+        <option value="th">🇹🇭 TH</option>
+        <option value="nl">🇳🇱 NL</option>
+        <option value="ru">🇷🇺 RU</option>
+        <option value="pl">🇵🇱 PL</option>
+        <option value="vi">🇻🇳 VI</option>
+        <option value="hi">🇮🇳 HI</option>
+        <option value="pt-BR">🇧🇷 PT-BR</option>
+        <option value="uk">🇺🇦 UK</option>
+      </select>
       <button class="topbar-btn" id="btn-topbar-study">📄 Analyser</button>
       <button class="topbar-avatar-btn" id="topbar-avatar" title="Mon espace" onclick="window.location='/dashboard'">?</button>
     </div>
