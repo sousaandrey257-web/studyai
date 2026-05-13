@@ -646,7 +646,7 @@ app.get('/dashboard', (req, res) => {
 // GET /api/config — expose la clé publique Stripe au frontend (sans risque)
 app.get('/api/config', (req, res) => {
   res.json({
-    stripePublicKey: process.env.STRIPE_PUBLIC_KEY || null,
+    stripePublicKey: process.env.STRIPE_PUBLISHABLE_KEY || null,
     plans: {
       monthly:  { price: PRICE_MONTHLY  / 100, currency: 'EUR' },
       yearly:   { price: PRICE_YEARLY   / 100, currency: 'EUR' },
