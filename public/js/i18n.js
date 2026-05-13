@@ -2637,3 +2637,15 @@ window.i18n = {
   get currentLang() { return currentLang; },
   get langs() { return Object.keys(translations); },
 };
+
+// Attach lang selector and apply saved/detected language on load.
+// Using addEventListener instead of onchange attribute to comply with
+// CSP script-src-attr 'none'.
+(function initI18n() {
+  var sel = document.getElementById('lang-select');
+  if (sel) {
+    sel.value = currentLang;
+    sel.addEventListener('change', function () { window.i18n.setLang(this.value); });
+  }
+  applyTranslations();
+}());
