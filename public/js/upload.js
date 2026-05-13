@@ -28,6 +28,96 @@
     });
   });
 
+  // ── Input mode tabs (Fichier / YouTube / Photo) ─────────────
+  var _uploadZones = {
+    file:    ['upload-zone', 'file-preview', 'btn-analyze-file'],
+    youtube: ['yt-upload-wrap'],
+    photo:   ['photo-upload-wrap'],
+  };
+
+  function _switchUploadMode(mode) {
+    // Hide all zones
+    ['upload-zone', 'yt-upload-wrap', 'photo-upload-wrap', 'file-preview', 'btn-analyze-file', 'paste-area'].forEach(hide);
+    // Show target zones
+    (_uploadZones[mode] || []).forEach(show);
+    document.querySelectorAll('.input-mode-btn').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.umode === mode);
+    });
+  }
+
+  document.querySelectorAll('.input-mode-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { _switchUploadMode(btn.dataset.umode); });
+  });
+
+  // ── YouTube analyze ──────────────────────────────────────────
+  var ytAnalyzeBtn = $('btn-analyze-yt');
+  if (ytAnalyzeBtn) {
+    ytAnalyzeBtn.addEventListener('click', async function () {
+      var url = ($('yt-upload-url')?.value || '').trim();
+      if (!url) { flash('Colle une URL YouTube valide.'); return; }
+      ytAnalyzeBtn.disabled = true;
+      ytAnalyzeBtn.querySelector('.btn-label').textContent = '⏳ Récupération du transcript…';
+      try {
+        var headers = {};
+        if (AUTH_TOKEN) headers['Authorization'] = 'Bearer ' + AUTH_TOKEN;
+        var r = await fetch('/api/youtube-transcript?url=' + encodeURIComponent(url), { headers: headers });
+        var d = await r.json();
+        if (!r.ok) throw new Error(d.error || 'Erreur transcript');
+        if (!d.transcript) throw new Error('Transcript vide.');
+        startAnalysis({ text: d.transcript, filename: 'youtube-' + (d.videoId || 'video') + '.txt', mimeType: 'text/plain' });
+      } catch (err) {
+        flash('Erreur YouTube : ' + err.message);
+        ytAnalyzeBtn.disabled = false;
+        ytAnalyzeBtn.querySelector('.btn-label').textContent = '🎬 Analyser la vidéo';
+      }
+    });
+  }
+
+  // ── Photo / Vision ────────────────────────────────────────────
+  var photoInput = $('photo-file-input');
+  if (photoInput) {
+    $('btn-browse-photo').addEventListener('click', function () { photoInput.click(); });
+    $('photo-drop-label').addEventListener('click', function (e) {
+      if (e.target.tagName !== 'BUTTON') photoInput.click();
+    });
+    photoInput.addEventListener('change', function () {
+      var file = this.files[0];
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) { flash('Image trop grande (max 10 Mo).'); return; }
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        $('photo-preview-img').src = e.target.result;
+        $('photo-preview-name').textContent = file.name;
+        show('photo-preview-wrap');
+      };
+      reader.readAsDataURL(file);
+    });
+    var photoAnalyzeBtn = $('btn-analyze-photo');
+    if (photoAnalyzeBtn) {
+      photoAnalyzeBtn.addEventListener('click', async function () {
+        var file = photoInput.files[0];
+        if (!file) { flash('Sélectionne d\'abord une photo.'); return; }
+        photoAnalyzeBtn.disabled = true;
+        photoAnalyzeBtn.querySelector('.btn-label').textContent = '⏳ Analyse OCR en cours…';
+        try {
+          var formData = new FormData();
+          formData.append('image', file);
+          var headers = {};
+          if (AUTH_TOKEN) headers['Authorization'] = 'Bearer ' + AUTH_TOKEN;
+          var r = await fetch('/api/vision', { method: 'POST', headers: headers, body: formData });
+          var d = await r.json();
+          if (!r.ok) throw new Error(d.error || 'Erreur vision');
+          if (!d.text) throw new Error('Aucun texte détecté dans la photo.');
+          startAnalysis({ text: d.text, filename: file.name, mimeType: 'text/plain' });
+        } catch (err) {
+          flash('Erreur photo : ' + err.message);
+          photoAnalyzeBtn.disabled = false;
+          photoAnalyzeBtn.querySelector('.btn-label').textContent = '📸 Analyser la photo';
+        }
+      });
+    }
+  }
+
   // ── Upload zone drag & drop ───────────────────────────────────
   var zone = $('upload-zone');
   zone.addEventListener('dragover',  function (e) { e.preventDefault(); zone.classList.add('drag-over'); });
@@ -329,6 +419,7 @@
     if (!s.vocabulary || !s.vocabulary.length) $('sum-vocab-col').style.display = 'none';
 
     if (s.mindMap && s.mindMap.root) {
+      // Keep summary text badges as fallback
       $('sum-mindmap').innerHTML =
         '<div class="mindmap-card"><div class="mindmap-title">🗺️ Mind Map</div>' +
         '<div class="mindmap-root">' + esc(s.mindMap.root) + '</div>' +
@@ -336,6 +427,14 @@
         (s.mindMap.branches || []).map(function (b) {
           return '<span class="mindmap-branch">' + esc(b) + '</span>';
         }).join('') + '</div></div>';
+
+      // Render interactive canvas mind map in its own tab
+      setTimeout(function () {
+        var canvas = $('mindmap-canvas');
+        if (canvas && window.StudyMindMap) {
+          window.StudyMindMap(canvas, s.mindMap);
+        }
+      }, 100);
     }
   }
 

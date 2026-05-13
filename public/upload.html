@@ -70,6 +70,13 @@
         <button class="mode-btn" data-mode="exam">🎯 Examen</button>
       </div>
 
+      <!-- Input mode tabs -->
+      <div class="input-mode-bar" id="upload-mode-bar">
+        <button class="input-mode-btn active" data-umode="file">📄 Fichier</button>
+        <button class="input-mode-btn" data-umode="youtube">🎬 YouTube</button>
+        <button class="input-mode-btn" data-umode="photo">📸 Photo</button>
+      </div>
+
       <!-- Upload zone -->
       <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Zone de dépôt de fichier">
         <div class="upload-zone-inner" id="upload-zone-inner">
@@ -84,6 +91,36 @@
           <button class="upload-paste-btn" id="btn-paste-toggle">✏️ Coller du texte</button>
         </div>
         <input type="file" id="file-input" accept=".pdf,.txt,.md,.html,.doc,.docx" style="display:none" />
+      </div>
+
+      <!-- YouTube zone (hidden by default) -->
+      <div id="yt-upload-wrap" class="yt-url-wrap hidden">
+        <input type="url" id="yt-upload-url" class="yt-url-input"
+               placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" />
+        <p class="yt-hint">📌 La vidéo doit être publique et avoir des sous-titres automatiques ou manuels.</p>
+        <button class="btn-primary btn-analyze-main" id="btn-analyze-yt" style="margin-top:10px;width:100%">
+          <span class="btn-label">🎬 Analyser la vidéo</span>
+          <span class="btn-sub">Transcript → Pack d'étude complet</span>
+        </button>
+      </div>
+
+      <!-- Photo zone (hidden by default) -->
+      <div id="photo-upload-wrap" class="yt-url-wrap hidden">
+        <label class="upload-photo-label" id="photo-drop-label" for="photo-file-input">
+          <div class="upload-icon">📸</div>
+          <p class="upload-zone-title">Photo de tes notes manuscrites</p>
+          <p class="upload-zone-sub">JPG, PNG, HEIC — jusqu'à 10 Mo</p>
+          <button class="upload-browse-btn" type="button" id="btn-browse-photo">Choisir une photo</button>
+        </label>
+        <input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none" />
+        <div id="photo-preview-wrap" class="hidden" style="margin-top:12px;text-align:center">
+          <img id="photo-preview-img" src="" alt="preview" style="max-width:100%;max-height:220px;border-radius:8px;border:1px solid var(--border)" />
+          <p id="photo-preview-name" style="font-size:0.8rem;color:var(--text-muted);margin-top:6px"></p>
+          <button class="btn-primary btn-analyze-main" id="btn-analyze-photo" style="margin-top:10px;width:100%">
+            <span class="btn-label">📸 Analyser la photo</span>
+            <span class="btn-sub">OCR IA → texte → pack d'étude</span>
+          </button>
+        </div>
       </div>
 
       <!-- Paste text area (hidden by default) -->
@@ -219,6 +256,7 @@
         <button class="res-tab" data-tab="memo">⚡ Mémo</button>
         <button class="res-tab" data-tab="concepts">💡 Concepts</button>
         <button class="res-tab" data-tab="roadmap">🗺️ Roadmap</button>
+        <button class="res-tab" data-tab="mindmap">🗺️ Mind Map</button>
       </div>
 
       <!-- Tab content -->
@@ -275,6 +313,13 @@
         <div id="mastery-card"></div>
       </div>
 
+      <div class="res-tab-content hidden" id="tab-mindmap">
+        <div class="mindmap-canvas-wrap">
+          <canvas id="mindmap-canvas" class="mindmap-canvas"></canvas>
+          <p class="mindmap-hint">Survole les nœuds pour les mettre en évidence</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -298,8 +343,10 @@
 
   <script src="js/perf.js?v=1"></script>
   <script src="js/i18n.js?v=12"></script>
-  <script src="js/upload.js?v=1"></script>
+  <script src="js/mindmap-canvas.js?v=1"></script>
+  <script src="js/upload.js?v=2"></script>
   <script src="js/ui.js?v=1"></script>
+  <script src="js/audio-study.js?v=1" defer></script>
   <link rel="stylesheet" href="/css/support-bot.css">
   <div id="support-bot-container"></div>
   <script src="/js/support-bot.js" defer></script>

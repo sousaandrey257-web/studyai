@@ -186,7 +186,7 @@
         <!-- YouTube URL zone (hidden by default) -->
         <div id="yt-url-wrap" class="yt-url-wrap hidden">
           <input type="url" id="yt-url-input" class="yt-url-input" placeholder="https://youtube.com/watch?v=… — copie le lien de la vidéo" />
-          <p class="yt-hint">🚀 L'IA génère un quiz basé sur le sujet de la vidéo. Extraction de transcription complète — bientôt disponible.</p>
+          <p class="yt-hint">🎬 L'IA extrait le transcript de la vidéo et génère résumé, quiz et flashcards. Vidéo publique avec sous-titres requise.</p>
         </div>
 
         <textarea
@@ -848,15 +848,30 @@
         if (textarea) textarea.style.display = 'none';
         if (exChips) exChips.style.display = 'none';
       });
-      /* On YouTube generate: inject URL as prompt text */
+      /* On YouTube generate: fetch real transcript then inject */
       var btnGen = document.getElementById('btn-generate');
       if (btnGen) {
-        btnGen.addEventListener('click', function(e) {
+        btnGen.addEventListener('click', async function(e) {
           var ytInput = document.getElementById('yt-url-input');
           if (ytInput && !ytWrap.classList.contains('hidden') && ytInput.value.trim()) {
-            if (textarea) {
-              textarea.value = 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + ytInput.value.trim();
-              textarea.dispatchEvent(new Event('input'));
+            e.stopImmediatePropagation();
+            var url = ytInput.value.trim();
+            var hint = document.querySelector('#yt-url-wrap .yt-hint');
+            if (hint) { hint.textContent = '⏳ Récupération du transcript…'; }
+            try {
+              var r = await fetch('/api/youtube-transcript?url=' + encodeURIComponent(url));
+              var d = await r.json();
+              if (!r.ok || !d.transcript) throw new Error(d.error || 'Transcript indisponible');
+              if (textarea) {
+                textarea.value = d.transcript;
+                textarea.dispatchEvent(new Event('input'));
+              }
+            } catch(err) {
+              if (textarea) {
+                textarea.value = 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + url;
+                textarea.dispatchEvent(new Event('input'));
+              }
+              if (hint) hint.textContent = '⚠️ Transcript auto indisponible — génération à partir du titre/sujet.';
             }
             tabText && tabText.click();
           }

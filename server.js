@@ -2210,6 +2210,114 @@ app.get('/api/admin/memory', adminRateLimiter, requireSuperAdmin, (req, res) => 
 });
 
 // ============================================================
+//  YOUTUBE TRANSCRIPT — Sprint 3
+// ============================================================
+const ytTranscriptLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, max: 30,
+  standardHeaders: true, legacyHeaders: false,
+  keyGenerator: require('./middleware/ipKeyGenerator'),
+  message: { error: 'Trop de requêtes transcript. Réessaie dans une heure.' },
+});
+
+app.get('/api/youtube-transcript', ytTranscriptLimiter, optionalAuth, async (req, res) => {
+  const url = (req.query.url || '').trim();
+  if (!url) return res.status(400).json({ error: 'Paramètre url manquant.' });
+
+  // Extract video ID from various YouTube URL formats
+  let videoId = null;
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'youtu.be') videoId = u.pathname.slice(1).split('?')[0];
+    else videoId = u.searchParams.get('v');
+  } catch {
+    const m = url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    if (m) videoId = m[1];
+  }
+
+  if (!videoId || !/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+    return res.status(400).json({ error: 'URL YouTube invalide ou ID vidéo introuvable.' });
+  }
+
+  try {
+    const { YoutubeTranscript } = require('youtube-transcript');
+    const segments = await YoutubeTranscript.fetchTranscript(videoId);
+    if (!segments || !segments.length) {
+      return res.status(404).json({ error: 'Aucun sous-titre disponible pour cette vidéo.' });
+    }
+    const transcript = segments.map(s => s.text).join(' ').replace(/\s+/g, ' ').trim();
+    // Cap at ~15 000 chars to avoid oversized AI prompts
+    const capped = transcript.length > 15000 ? transcript.slice(0, 15000) + '…' : transcript;
+    return res.json({ transcript: capped, videoId, segments: segments.length });
+  } catch (err) {
+    console.error('[youtube-transcript]', err.message);
+    const msg = err.message?.includes('disabled') || err.message?.includes('subtitles')
+      ? 'Les sous-titres sont désactivés sur cette vidéo.'
+      : 'Impossible de récupérer le transcript. Vérifie que la vidéo est publique et a des sous-titres.';
+    return res.status(502).json({ error: msg });
+  }
+});
+
+// ============================================================
+//  VISION — Photo de notes manuscrites  (Sprint 3)
+// ============================================================
+const multer = require('multer');
+const upload_multer = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Seules les images sont acceptées.'));
+  },
+});
+
+const visionLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, max: 20,
+  standardHeaders: true, legacyHeaders: false,
+  keyGenerator: require('./middleware/ipKeyGenerator'),
+  message: { error: 'Limite vision atteinte. Réessaie dans une heure.' },
+});
+
+app.post('/api/vision', visionLimiter, optionalAuth, upload_multer.single('image'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Aucune image reçue.' });
+
+  const groqVision = USE_GROQ
+    ? new (require('openai').OpenAI)({
+        apiKey: process.env.GROQ_API_KEY.trim(),
+        baseURL: 'https://api.groq.com/openai/v1',
+      })
+    : null;
+
+  if (!groqVision) {
+    return res.status(503).json({ error: 'Vision non disponible (GROQ_API_KEY requis).' });
+  }
+
+  try {
+    const b64 = req.file.buffer.toString('base64');
+    const mime = req.file.mimetype;
+    const completion = await groqVision.chat.completions.create({
+      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      messages: [{
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: 'Transcris exactement et intégralement le texte manuscrit ou imprimé visible sur cette image de notes de cours. Conserve la structure (titres, listes, formules). Réponds uniquement avec le texte transcrit, sans commentaire.',
+          },
+          { type: 'image_url', image_url: { url: `data:${mime};base64,${b64}` } },
+        ],
+      }],
+      max_tokens: 2000,
+    });
+    const text = completion.choices?.[0]?.message?.content?.trim() || '';
+    if (!text) return res.status(502).json({ error: 'Vision n\'a retourné aucun texte.' });
+    return res.json({ text });
+  } catch (err) {
+    console.error('[vision]', err.message);
+    return res.status(502).json({ error: 'Erreur vision : ' + err.message });
+  }
+});
+
+// ============================================================
 //  STATIC ROUTES FOR NEW PAGES
 // ============================================================
 app.get('/privacy',         (_req, res) => res.sendFile(path.join(__dirname, 'public/privacy.html')));
