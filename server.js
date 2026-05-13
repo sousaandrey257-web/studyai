@@ -397,6 +397,10 @@ app.get('/app',    (_req, res) => res.sendFile(path.join(__dirname, 'public/app.
 app.get('/upload', (_req, res) => res.sendFile(path.join(__dirname, 'public/upload.html')));
 app.get('/battle', (_req, res) => res.sendFile(path.join(__dirname, 'public/battle.html')));
 app.get('/brain',  (_req, res) => res.sendFile(path.join(__dirname, 'public/brain.html')));
+// Modal routes — auth/premium are inline modals on the homepage
+app.get('/login',    (_req, res) => res.redirect('/#login'));
+app.get('/register', (_req, res) => res.redirect('/#register'));
+app.get('/premium',  (_req, res) => res.redirect('/#pricing'));
 
 // Body JSON — limite à 100 Ko pour éviter les attaques par payload massif
 app.use(express.json({ limit: '100kb' }));
@@ -605,9 +609,9 @@ function optionalAuth(req, res, next) {
 async function callOpenAI(messages, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const extraParams = USE_GROQ ? {} : { response_format: { type: 'json_object' } };
+      const extraParams = { response_format: { type: 'json_object' } };
       return await openai.chat.completions.create({
-        model: MODEL, messages, max_tokens: 2000, temperature: 0.6, ...extraParams,
+        model: MODEL, messages, max_tokens: 4096, temperature: 0.6, ...extraParams,
       });
     } catch (err) {
       if (err instanceof OpenAI.APIError && err.status === 429 && attempt < maxRetries) {

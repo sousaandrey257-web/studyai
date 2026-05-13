@@ -7,7 +7,7 @@
 //    - /api/* routes                     → Network-only (never cache)
 // ============================================================
 
-const CACHE_VERSION = 'studyai-v6';
+const CACHE_VERSION = 'studyai-v7';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const FONT_CACHE    = `${CACHE_VERSION}-fonts`;
 const OFFLINE_URL   = '/offline.html';
@@ -28,6 +28,7 @@ const PRECACHE_URLS = [
   '/js/i18n.js',
   '/js/auth.js?v=5',
   '/js/app.js?v=16',
+  '/js/ui.js?v=2',
   '/js/workspace.js?v=5',
   '/js/upload.js?v=5',
   '/js/brain.js?v=5',
