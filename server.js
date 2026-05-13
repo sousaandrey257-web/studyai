@@ -2265,18 +2265,37 @@ app.get('/api/youtube-transcript', ytTranscriptLimiter, optionalAuth, async (req
     return res.status(400).json({ error: 'URL YouTube invalide ou ID vidéo introuvable.' });
   }
 
+  // Fetch video title via oEmbed (no API key, public endpoint)
+  let videoTitle = '';
+  try {
+    const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    const oRes = await fetch(oembedUrl, { signal: AbortSignal.timeout(5000) });
+    if (oRes.ok) {
+      const oData = await oRes.json();
+      if (oData.title) videoTitle = oData.title;
+    }
+  } catch (_) { /* title is optional — continue without it */ }
+
   try {
     const { YoutubeTranscript } = require('youtube-transcript');
     const segments = await YoutubeTranscript.fetchTranscript(videoId);
     if (!segments || !segments.length) {
       return res.status(404).json({ error: 'Aucun sous-titre disponible pour cette vidéo.' });
     }
-    const transcript = segments.map(s => s.text).join(' ').replace(/\s+/g, ' ').trim();
+    const rawText = segments.map(s => s.text).join(' ').replace(/\s+/g, ' ').trim();
+    // Prepend video title so the AI knows the exact subject
+    const withTitle = videoTitle
+      ? `Titre de la vidéo : "${videoTitle}"\n\nTranscript :\n${rawText}`
+      : rawText;
     // Cap at ~15 000 chars to avoid oversized AI prompts
-    const capped = transcript.length > 15000 ? transcript.slice(0, 15000) + '…' : transcript;
-    return res.json({ transcript: capped, videoId, segments: segments.length });
+    const capped = withTitle.length > 15000 ? withTitle.slice(0, 15000) + '…' : withTitle;
+    return res.json({ transcript: capped, videoId, title: videoTitle, segments: segments.length });
   } catch (err) {
     console.error('[youtube-transcript]', err.message);
+    // Even if transcript fails, return the title so the client can build a better prompt
+    if (videoTitle) {
+      return res.status(502).json({ error: 'transcript_unavailable', title: videoTitle });
+    }
     const msg = err.message?.includes('disabled') || err.message?.includes('subtitles')
       ? 'Les sous-titres sont désactivés sur cette vidéo.'
       : 'Impossible de récupérer le transcript. Vérifie que la vidéo est publique et a des sous-titres.';

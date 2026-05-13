@@ -915,14 +915,24 @@
             try {
               var r = await fetch('/api/youtube-transcript?url=' + encodeURIComponent(url));
               var d = await r.json();
-              if (!r.ok || !d.transcript) throw new Error(d.error || 'Transcript indisponible');
-              if (textarea) { textarea.value = d.transcript; textarea.dispatchEvent(new Event('input')); }
+              if (r.ok && d.transcript) {
+                // Transcript available — includes title header from server
+                if (textarea) { textarea.value = d.transcript; textarea.dispatchEvent(new Event('input')); }
+              } else {
+                // No transcript but server may have returned the title via oEmbed
+                var title = d.title || '';
+                var fallback = title
+                  ? 'Génère un résumé complet, quiz et flashcards sur ce sujet précis : "' + title + '"\n\nContexte : vidéo YouTube — ' + url
+                  : 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + url;
+                if (textarea) { textarea.value = fallback; textarea.dispatchEvent(new Event('input')); }
+                if (hintEl) hintEl.innerHTML = '⚠️ Sous-titres indisponibles' + (title ? ' — sujet détecté : "' + title + '"' : '') + '. Génération basée sur le titre.';
+              }
             } catch(err) {
               if (textarea) {
                 textarea.value = 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + url;
                 textarea.dispatchEvent(new Event('input'));
               }
-              if (hintEl) hintEl.innerHTML = '⚠️ Transcript auto indisponible — génération basée sur le sujet.';
+              if (hintEl) hintEl.innerHTML = '⚠️ Transcript indisponible — génération basée sur le sujet.';
             } finally {
               btnGen.disabled = false;
             }
