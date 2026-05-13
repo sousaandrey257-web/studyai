@@ -1,0 +1,342 @@
+/* ============================================================
+   StudyAI — Support Bot Widget
+   ============================================================ */
+
+/* ── Bubble ──────────────────────────────────────────────── */
+#support-bubble {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #06b6d4);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: supportPulse 3s ease-in-out infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#support-bubble:hover,
+#support-bubble:focus-visible {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(124, 58, 237, 0.6);
+  outline: none;
+  animation: none;
+}
+
+@keyframes supportPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45); }
+  50%       { box-shadow: 0 4px 28px rgba(124, 58, 237, 0.75), 0 0 0 8px rgba(124, 58, 237, 0.1); }
+}
+
+#support-bubble .support-bubble-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: #10b981;
+  border-radius: 50%;
+  border: 2px solid #09090f;
+}
+
+/* ── Chat window ─────────────────────────────────────────── */
+#support-window {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  z-index: 9998;
+  width: 380px;
+  height: 500px;
+  background: #111118;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: bottom right;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.18s ease;
+}
+
+#support-window.support-hidden {
+  transform: scale(0.85) translateY(12px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.support-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(6,182,212,0.15));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.support-header-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.support-header-info { flex: 1; min-width: 0; }
+
+.support-header-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  line-height: 1.2;
+}
+
+.support-header-status {
+  font-size: 0.72rem;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.support-header-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+}
+
+.support-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.support-close-btn:hover { color: #f1f5f9; background: rgba(255,255,255,0.08); }
+
+/* ── Messages area ───────────────────────────────────────── */
+.support-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 14px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+.support-messages::-webkit-scrollbar { width: 4px; }
+.support-messages::-webkit-scrollbar-track { background: transparent; }
+.support-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+/* ── Message bubbles ─────────────────────────────────────── */
+.support-msg {
+  display: flex;
+  gap: 8px;
+  max-width: 88%;
+  animation: supportMsgIn 0.18s ease;
+}
+
+@keyframes supportMsgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.support-msg.bot  { align-self: flex-start; }
+.support-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+.support-msg-bubble {
+  padding: 9px 13px;
+  border-radius: 14px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.support-msg.bot .support-msg-bubble {
+  background: rgba(255, 255, 255, 0.07);
+  color: #e2e8f0;
+  border-bottom-left-radius: 4px;
+}
+
+.support-msg.user .support-msg-bubble {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+/* ── Typing indicator ────────────────────────────────────── */
+.support-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 13px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  animation: supportMsgIn 0.18s ease;
+}
+
+.support-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94a3b8;
+  animation: supportTypingDot 1.2s ease-in-out infinite;
+}
+.support-typing span:nth-child(2) { animation-delay: 0.2s; }
+.support-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes supportTypingDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ── Suggestions ─────────────────────────────────────────── */
+.support-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 14px 10px;
+  flex-shrink: 0;
+}
+
+.support-suggestion-btn {
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  color: #c4b5fd;
+  font-size: 0.76rem;
+  padding: 5px 11px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.support-suggestion-btn:hover {
+  background: rgba(124, 58, 237, 0.3);
+  border-color: rgba(124, 58, 237, 0.6);
+}
+
+/* ── Input area ──────────────────────────────────────────── */
+.support-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#support-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #f1f5f9;
+  font-size: 0.84rem;
+  padding: 9px 12px;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.4;
+  max-height: 90px;
+  overflow-y: auto;
+  transition: border-color 0.15s;
+}
+
+#support-input::placeholder { color: #64748b; }
+#support-input:focus { border-color: rgba(124, 58, 237, 0.5); }
+
+#support-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #06b6d4);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  align-self: flex-end;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+#support-send-btn:hover  { opacity: 0.85; }
+#support-send-btn:active { transform: scale(0.93); }
+#support-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Escalation notice ───────────────────────────────────── */
+.support-escalate-bar {
+  margin: 0 14px 10px;
+  padding: 9px 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.support-escalate-bar button {
+  margin-left: auto;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 0.74rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.support-escalate-bar button:hover { background: rgba(245, 158, 11, 0.35); }
+
+/* ── Mobile: full screen ─────────────────────────────────── */
+@media (max-width: 480px) {
+  #support-window {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 92dvh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+  }
+
+  #support-bubble {
+    bottom: 16px;
+    right: 16px;
+  }
+}
