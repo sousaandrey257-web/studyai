@@ -717,20 +717,58 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Noms de niveaux — tableau indexé par niveau (1-based)
+  var _LEVEL_NAMES = [
+    '', 'Novice', 'Débutant', 'Apprenti', 'Étudiant',
+    'Explorateur', 'Avancé', 'Expert', 'Maître', 'Champion', 'Légende',
+  ];
+  function _getLevelName(n) {
+    return _LEVEL_NAMES[Math.min(n, _LEVEL_NAMES.length - 1)] || 'Expert';
+  }
+
+  // Confettis CSS purs — utilise .confetti-particle défini dans premium.css
+  function _spawnConfetti() {
+    var COLORS = ['#8b5cf6','#06b6d4','#f59e0b','#10b981','#ef4444','#ec4899','#ffffff'];
+    for (var i = 0; i < 48; i++) {
+      (function (idx) {
+        setTimeout(function () {
+          var p  = document.createElement('div');
+          p.className = 'confetti-particle';
+          var x   = (Math.random() * 80 + 10).toFixed(1);    // 10-90 vw
+          var dx  = ((Math.random() - 0.5) * 240).toFixed(0);
+          var dy  = (-(Math.random() * 220 + 80)).toFixed(0);
+          var rot = ((Math.random() - 0.5) * 720).toFixed(0);
+          var dur = (Math.random() * 0.55 + 0.75).toFixed(2);
+          var sz  = (Math.random() * 7 + 6).toFixed(1);
+          var col = COLORS[Math.floor(Math.random() * COLORS.length)];
+          p.style.cssText = 'left:' + x + 'vw;top:52vh;width:' + sz + 'px;height:' +
+            (parseFloat(sz) * 0.55).toFixed(1) + 'px;background:' + col +
+            ';--dx:' + dx + 'px;--dy:' + dy + 'px;--rot:' + rot + 'deg;--dur:' + dur + 's';
+          document.body.appendChild(p);
+          setTimeout(function () { p.remove(); }, parseFloat(dur) * 1000 + 300);
+        }, idx * 28);
+      }(i));
+    }
+  }
+
   function showLevelUp(level) {
+    window.SFX && SFX.levelup();
+    _spawnConfetti();
+    var levelName = _getLevelName(level);
     var overlay = document.createElement('div');
     overlay.className = 'level-up-overlay';
     overlay.innerHTML =
       '<div class="level-up-card">' +
         '<div class="level-up-tag">✨ Niveau supérieur !</div>' +
         '<div class="level-up-num">' + level + '</div>' +
-        '<div class="level-up-title">Tu es maintenant Niveau ' + level + '</div>' +
+        '<div class="level-up-name">' + levelName + '</div>' +
+        '<div class="level-up-title">Bravo ! Tu es maintenant <strong>' + levelName + '</strong></div>' +
         '<div class="level-up-sub">Continue comme ça — chaque cours compte !</div>' +
         '<button class="level-up-close" id="lv-close">Super ! 🎉</button>' +
       '</div>';
     document.body.appendChild(overlay);
     document.getElementById('lv-close').addEventListener('click', function () { overlay.remove(); });
-    setTimeout(function () { overlay.remove(); }, 6000);
+    setTimeout(function () { overlay.remove(); }, 7000);
   }
 
   function showMissionToast(m) {
