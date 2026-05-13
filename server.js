@@ -1595,7 +1595,7 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
       message: 'Limite quotidienne atteinte (3/jour). Passez Premium pour un accès illimité.' });
   }
 
-  const { text, country } = req.body;
+  const { text, country, lang } = req.body;
   if (!text || text.trim().length < 10)
     return res.status(400).json({ error: 'Écris au moins quelques mots pour que je puisse t\'aider.' });
   if (text.length > 10000)
@@ -1605,8 +1605,12 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
     ? `\n- Système éducatif : ${buildCurriculumCtx(country)} — adapte les exemples et le niveau.`
     : '';
 
+  const langInstruction = lang && lang !== 'fr'
+    ? `IMPORTANT: Generate ALL content (summary, flashcard, quiz questions, answers, explanations) in the language with code "${lang}". Do NOT use French unless the user's text is in French.`
+    : '';
+
   const systemPrompt = `Tu es un tuteur pédagogique expert, formé aux meilleures méthodes d'apprentissage actif (Feynman, Bloom, répétition espacée).
-Tu réponds TOUJOURS en JSON valide, sans markdown, dans la même langue que l'utilisateur.
+Tu réponds TOUJOURS en JSON valide, sans markdown, dans la même langue que l'utilisateur.${langInstruction ? '\n' + langInstruction : ''}
 
 L'utilisateur peut t'envoyer un texte de cours OU une commande naturelle ("Explique-moi X", "Quiz sur Y", "Fais-moi comprendre Z").
 Détecte l'intention → champ "mode" : "quiz" | "summary" | "full"

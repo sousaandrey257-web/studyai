@@ -262,8 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Messages de chargement — adaptés selon la longueur du texte
     const isCommand = text.length < 200;
     const msgs = isCommand
-      ? ['Analyse de ta demande…', 'Création du contenu…', 'Rédaction des questions…', 'Finalisation…']
-      : ['Lecture du cours…', 'Extraction des idées clés…', 'Rédaction du résumé…', 'Création du quiz…', 'Finalisation…'];
+      ? [t('loading_cmd_1'), t('loading_cmd_2'), t('loading_cmd_3'), t('loading_cmd_4')]
+      : [t('loading_1'), t('loading_2'), t('loading_3'), t('loading_4'), t('loading_5'), t('loading_6')];
     let mi = 0;
     loadingMsg.textContent = msgs[0];
     const ticker = setInterval(function () {
@@ -280,7 +280,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (state.premiumToken) headers['x-premium-token'] = state.premiumToken;
       if (window.auth?.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
 
-      const res  = await fetch('/api/generate', { method: 'POST', headers, body: JSON.stringify({ text, country: state.country || null }), signal: controller.signal });
+      const lang = window.i18n ? window.i18n.currentLang : 'fr';
+      const res  = await fetch('/api/generate', { method: 'POST', headers, body: JSON.stringify({ text, country: state.country || null, lang }), signal: controller.signal });
       clearTimeout(fetchTimeout);
       const data = await res.json();
 
@@ -462,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const total = state.quizQuestions.length;
 
     quizFill.style.width = Math.round((idx / total) * 100) + '%';
-    quizCounter.textContent = 'Question ' + (idx + 1) + ' / ' + total;
+    quizCounter.textContent = t('quiz_counter', { c: idx + 1, t: total });
     quizQuestionText.textContent = q.question;
 
     state.answered = false;
@@ -473,12 +474,12 @@ document.addEventListener('DOMContentLoaded', function () {
     quizOpenInput.value = '';
 
     // Badges difficulté + type
-    const diffLabels = { 1: 'Facile', 2: 'Moyen', 3: 'Difficile' };
+    const diffLabels = { 1: t('quiz_difficulty_easy'), 2: t('quiz_difficulty_medium'), 3: t('quiz_difficulty_hard') };
     const diffClasses = { 1: 'easy', 2: 'medium', 3: 'hard' };
     const d = q.difficulty || 1;
-    quizDiffBadge.textContent = diffLabels[d] || 'Facile';
+    quizDiffBadge.textContent = diffLabels[d] || t('quiz_difficulty_easy');
     quizDiffBadge.className = 'quiz-difficulty-badge ' + (diffClasses[d] || 'easy');
-    quizTypeBadge.textContent = q.type === 'open' ? '✍ Réponse rédigée' : '✦ QCM';
+    quizTypeBadge.textContent = q.type === 'open' ? t('quiz_type_open') : t('quiz_type_mcq');
     quizMeta.classList.remove('hidden');
 
     if (q.type === 'open') {
@@ -522,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function () {
     quizExplanation.classList.remove('hidden');
 
     const isLast = state.currentQuestion === state.quizQuestions.length - 1;
-    btnNext.textContent = isLast ? 'Voir mon score 🏆' : 'Question suivante →';
+    btnNext.textContent = isLast ? t('quiz_finish') : t('quiz_next');
     btnNext.classList.remove('hidden');
   }
 
@@ -550,7 +551,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     quizSelfAssess.classList.add('hidden');
     const isLast = state.currentQuestion === state.quizQuestions.length - 1;
-    btnNext.textContent = isLast ? 'Voir mon score 🏆' : 'Question suivante →';
+    btnNext.textContent = isLast ? t('quiz_finish') : t('quiz_next');
     btnNext.classList.remove('hidden');
   };
 
@@ -572,11 +573,11 @@ document.addEventListener('DOMContentLoaded', function () {
     btnNext.classList.add('hidden');
 
     const map = [
-      [1,    '🏆', 'Parfait ! Tu maîtrises ce cours.'],
-      [0.8,  '🌟', 'Excellent ! Encore un peu de révision.'],
-      [0.6,  '👍', 'Bien ! Revois les points manqués.'],
-      [0.4,  '📚', 'Continue de réviser — tu progresses !'],
-      [-1,   '💪', 'Ce cours nécessite plus de révision.'],
+      [1,    '🏆', t('score_perfect')],
+      [0.8,  '🌟', t('score_great')],
+      [0.6,  '👍', t('score_good')],
+      [0.4,  '📚', t('score_ok')],
+      [-1,   '💪', t('score_low')],
     ];
     const [, emoji, msg] = map.find(([min]) => pct >= min) || map[map.length - 1];
 
@@ -591,7 +592,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnConsolidate) {
       if (state.wrongQuestions.length >= 2) {
         btnConsolidate.classList.remove('hidden');
-        btnConsolidate.textContent = '🎯 Renforcer les ' + state.wrongQuestions.length + ' points faibles';
+        btnConsolidate.textContent = t('quiz_consolidate', { n: state.wrongQuestions.length });
       } else {
         btnConsolidate.classList.add('hidden');
       }
@@ -810,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.startConsolidation = async function () {
     if (state.wrongQuestions.length === 0) return;
     const btnConsolidate = document.getElementById('btn-consolidate');
-    if (btnConsolidate) { btnConsolidate.disabled = true; btnConsolidate.textContent = 'Génération…'; }
+    if (btnConsolidate) { btnConsolidate.disabled = true; btnConsolidate.textContent = t('loading_5'); }
 
     try {
       const res  = await fetch('/api/consolidation-quiz', {
@@ -821,17 +822,16 @@ document.addEventListener('DOMContentLoaded', function () {
       const data = await res.json();
       if (!res.ok || !Array.isArray(data.questions)) {
         showToast('❌ ' + (data.error || 'Erreur génération'), 'error');
-        if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = '🎯 Renforcer les points faibles'; }
+        if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = t('quiz_consolidate', { n: state.wrongQuestions.length }); }
         return;
       }
-      // Remplace les questions et relance le quiz
       state.quizQuestions  = data.questions;
       state.wrongQuestions = [];
-      state.currentContentId = null; // consolidation n'est pas sauvegardée
+      state.currentContentId = null;
       startQuiz();
     } catch {
       showToast('❌ Connexion impossible.', 'error');
-      if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = '🎯 Renforcer les points faibles'; }
+      if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = t('quiz_consolidate', { n: state.wrongQuestions.length }); }
     }
   };
 
@@ -907,17 +907,18 @@ document.addEventListener('DOMContentLoaded', function () {
     usageBadge.classList.remove('hidden');
     if (isPremium) {
       state.isPremium              = true;
-      usageText.textContent        = '✨ Premium — illimité';
+      usageText.textContent        = t('usage_premium');
       usageText.style.color        = '';
       if (btnPremium) {
-        btnPremium.textContent     = '✨ Premium actif';
+        btnPremium.textContent     = t('premium_active');
         btnPremium.style.opacity   = '0.6';
         btnPremium.style.cursor    = 'default';
         btnPremium.setAttribute('aria-disabled', 'true');
-        btnPremium.title           = 'Vous êtes déjà Premium';
+        btnPremium.title           = t('premium_already');
       }
     } else if (remaining !== null && remaining !== undefined) {
-      usageText.textContent = remaining + ' génération' + (remaining > 1 ? 's' : '') + ' restante' + (remaining > 1 ? 's' : '');
+      const s = remaining > 1 ? 's' : '';
+      usageText.textContent = t('usage_remaining', { n: remaining, s });
       usageText.style.color = remaining === 0 ? 'var(--error)' : '';
     }
   }
