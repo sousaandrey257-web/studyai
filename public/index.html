@@ -146,12 +146,12 @@
         ></textarea>
 
         <!-- Exemples cliquables -->
-        <div class="example-chips">
+        <div class="example-chips" ontouchstart="">
           <span class="example-chip-label">Essaie :</span>
-          <button class="example-chip" onclick="useExample(this)">Quiz sur la photosynthèse</button>
-          <button class="example-chip" onclick="useExample(this)">Résume la Révolution française</button>
-          <button class="example-chip" onclick="useExample(this)">Explique-moi les fractions</button>
-          <button class="example-chip" onclick="useExample(this)">Quiz sur la Seconde Guerre mondiale</button>
+          <button class="example-chip" ontouchstart="" onclick="useExample(this)">Quiz sur la photosynthèse</button>
+          <button class="example-chip" ontouchstart="" onclick="useExample(this)">Résume la Révolution française</button>
+          <button class="example-chip" ontouchstart="" onclick="useExample(this)">Explique-moi les fractions</button>
+          <button class="example-chip" ontouchstart="" onclick="useExample(this)">Quiz sur la Seconde Guerre mondiale</button>
         </div>
 
         <div class="input-footer">
@@ -583,7 +583,7 @@
   <!-- i18n must load BEFORE app.js -->
   <script src="js/i18n.js?v=9"></script>
   <script src="js/auth.js?v=5"></script>
-  <script src="js/app.js?v=16"></script>
+  <script src="js/app.js?v=17"></script>
   <script src="js/ui.js?v=2"></script>
   <script>
     // PWA Service Worker registration

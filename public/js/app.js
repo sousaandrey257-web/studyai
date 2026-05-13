@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
   window.useExample = function (btn) {
     courseInput.value = btn.textContent;
     courseInput.dispatchEvent(new Event('input'));
-    courseInput.focus();
+    generate();
   };
 
   async function generate() {
