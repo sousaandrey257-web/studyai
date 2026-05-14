@@ -231,6 +231,13 @@ const translations = {
     footer_lang_title:      "Langue",
     footer_support:         "💬 Support en ligne",
     footer_copy:            "© 2026 StudyAI — Tous droits réservés",
+    wl_title:         "🚀 Phase de lancement gratuite  !",
+    wl_body:          "StudyAI est en phase de lancement. L’inscription gratuite est totalement fonctionnelle. Les abonnements premium seront activés dans quelques jours.",
+    wl_cta:           "Inscris-toi pour être notifié(e) en premier !",
+    wl_email_ph:      "ton@email.com",
+    wl_btn:           "M’inscrire à la liste",
+    wl_thanks:        "🎉 Merci ! Tu seras prévenu(e) au lancement.",
+    wl_already:       "✓ Tu es déjà sur la liste !",
   },
 
   // ----------------------------------------------------------
@@ -459,6 +466,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Free Launch Phase!",
+    wl_body:          "StudyAI is in launch phase. The free plan is fully functional. Premium subscriptions will be activated in a few days.",
+    wl_cta:           "Sign up to be notified first!",
+    wl_email_ph:      "your@email.com",
+    wl_btn:           "Join the waitlist",
+    wl_thanks:        "🎉 Thanks! You’ll be the first to know.",
+    wl_already:       "✓ You’re already on the list!",
   },
 
   // ----------------------------------------------------------
@@ -676,6 +690,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 ¡Fase de lanzamiento gratuita!",
+    wl_body:          "StudyAI está en fase de lanzamiento. El plan gratuito es completamente funcional. Las suscripciones premium se activarán en unos días.",
+    wl_cta:           "¡Regístrate para ser notificado primero!",
+    wl_email_ph:      "tu@email.com",
+    wl_btn:           "Unirme a la lista",
+    wl_thanks:        "🎉 ¡Gracias! Serás el primero en saber.",
+    wl_already:       "✓ ¡Ya estás en la lista!",
   },
 
   // ----------------------------------------------------------
@@ -893,6 +914,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Kostenlose Startphase!",
+    wl_body:          "StudyAI befindet sich in der Startphase. Der kostenlose Plan ist voll funktionsfähig. Premium-Abonnements werden in wenigen Tagen freigeschaltet.",
+    wl_cta:           "Melde dich an, um als Erster benachrichtigt zu werden!",
+    wl_email_ph:      "deine@email.com",
+    wl_btn:           "Zur Warteliste anmelden",
+    wl_thanks:        "🎉 Danke! Du wirst als Erster informiert.",
+    wl_already:       "✓ Du bist bereits auf der Liste!",
   },
 
   // ----------------------------------------------------------
@@ -1110,6 +1138,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Fase de lançamento gratuita!",
+    wl_body:          "StudyAI está em fase de lançamento. O plano gratuito está totalmente funcional. As assinaturas premium serão ativadas em alguns dias.",
+    wl_cta:           "Inscreva-se para ser notificado primeiro!",
+    wl_email_ph:      "seu@email.com",
+    wl_btn:           "Entrar na lista de espera",
+    wl_thanks:        "🎉 Obrigado! Você será o primeiro a saber.",
+    wl_already:       "✓ Você já está na lista!",
   },
 
   // ----------------------------------------------------------
@@ -1327,6 +1362,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Fase di lancio gratuita!",
+    wl_body:          "StudyAI è in fase di lancio. Il piano gratuito è completamente funzionale. Gli abbonamenti premium saranno attivati tra qualche giorno.",
+    wl_cta:           "Iscriviti per essere notificato per primo!",
+    wl_email_ph:      "tua@email.com",
+    wl_btn:           "Unisciti alla lista",
+    wl_thanks:        "🎉 Grazie! Sarai il primo a saperlo.",
+    wl_already:       "✓ Sei già nella lista!",
   },
 
   // ----------------------------------------------------------
@@ -1544,6 +1586,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 免费启动阶段！",
+    wl_body:          "StudyAI正处于启动阶段。免费计划完全可用。高级订阅将在几天内激活。",
+    wl_cta:           "注册以优先获得通知！",
+    wl_email_ph:      "你的@邮件.com",
+    wl_btn:           "加入等待列表",
+    wl_thanks:        "🎉 谢谢！您将是第一个知道的。",
+    wl_already:       "✓ 您已在列表中！",
     file_drop_sub:           "またはここにドラッグ＆ドロップ",
     file_drop_formats:       "PDF · DOCX · TXT · 最大10MB",
     file_hint:               "✨ AIがドキュメントを読み取り、45秒で要約+クイズ+フラッシュカードを生成",
@@ -1766,6 +1815,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 無料ローンチフェーズ！",
+    wl_body:          "StudyAIはローンチフェーズです。無料プランは完全に機能しています。プレミアムは数日後に有効になります。",
+    wl_cta:           "最初に通知を受け取るために登録してください！",
+    wl_email_ph:      "あなた@メール.com",
+    wl_btn:           "ウェイトリストに参加",
+    wl_thanks:        "🎉 ありがとう！最初にお知らせします。",
+    wl_already:       "✓ すでにリストに登録されています！",
   },
 
   // ----------------------------------------------------------
@@ -1983,6 +2039,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 무료 출시 단계!",
+    wl_body:          "StudyAI는 출시 단계입니다. 무료 플랜은 완전히 작동합니다. 프리미엄 구독은 며칠 내로 활성화됩니다.",
+    wl_cta:           "먼저 알림을 받으려면 등록하세요!",
+    wl_email_ph:      "당신@이메일.com",
+    wl_btn:           "대기 목록에 참여",
+    wl_thanks:        "🎉 감사합니다! 가장 먼저 알려드리겠습니다.",
+    wl_already:       "✓ 이미 목록에 있습니다!",
   },
 
   // ----------------------------------------------------------
@@ -2200,6 +2263,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Fase Peluncuran Gratis!",
+    wl_body:          "StudyAI sedang dalam fase peluncuran. Paket gratis berfungsi penuh. Langganan premium akan diaktifkan dalam beberapa hari.",
+    wl_cta:           "Daftar untuk diberitahu pertama!",
+    wl_email_ph:      "kamu@email.com",
+    wl_btn:           "Bergabung dengan daftar tunggu",
+    wl_thanks:        "🎉 Terima kasih! Kamu akan menjadi yang pertama tahu.",
+    wl_already:       "✓ Kamu sudah ada di daftar!",
   },
 
   // ----------------------------------------------------------
@@ -2417,6 +2487,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 مرحلة الإطلاق المجانية!",
+    wl_body:          "StudyAI في مرحلة الإطلاق. الخطة المجانية تعمل بكامل طاقتها. ستُفعَّل الاشتراكات المميزة خلال أيام قليلة.",
+    wl_cta:           "سجّل لتكون أول من يُعلَم!",
+    wl_email_ph:      "بريدك@مثال.com",
+    wl_btn:           "الانضمام إلى قائمة الانتظار",
+    wl_thanks:        "🎉 شكراً! ستكون أول من يعلم.",
+    wl_already:       "✓ أنت بالفعل في القائمة!",
   },
 
   // ----------------------------------------------------------
@@ -2634,6 +2711,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 ระยะเปิดตัวฟรี!",
+    wl_body:          "StudyAI อยู่ในระยะเปิดตัว แผนฟรีใช้งานได้เต็มรูปแบบ การสมัครสมาชิกพรีเมียมจะเปิดใช้งานในไม่กี่วัน",
+    wl_cta:           "ลงทะเบียนเพื่อรับการแจ้งเตือนก่อน!",
+    wl_email_ph:      "อีเมล@คุณ.com",
+    wl_btn:           "เข้าร่วมรายการรอ",
+    wl_thanks:        "🎉 ขอบคุณ! คุณจะได้รับแจ้งเป็นคนแรก",
+    wl_already:       "✓ คุณอยู่ในรายการแล้ว!",
   },
 
   // ----------------------------------------------------------
@@ -2851,6 +2935,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Ücretsiz Lansman Aşaması!",
+    wl_body:          "StudyAI lansman aşamasındadır. Ücretsiz plan tamamen işlevseldir. Premium abonelikler birkaç gün içinde etkinleştirilecek.",
+    wl_cta:           "İlk bildirim almak için kaydol!",
+    wl_email_ph:      "senin@email.com",
+    wl_btn:           "Bekleme listesine katıl",
+    wl_thanks:        "🎉 Teşekkürler! İlk sen öğreneceksin.",
+    wl_already:       "✓ Zaten listedesin!",
   },
 
   // ----------------------------------------------------------
@@ -3068,6 +3159,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Gratis lanceerfase!",
+    wl_body:          "StudyAI is in de lanceerfase. Het gratis abonnement is volledig functioneel. Premium abonnementen worden binnen een paar dagen geactiveerd.",
+    wl_cta:           "Schrijf je in om als eerste op de hoogte te worden gesteld!",
+    wl_email_ph:      "jouw@email.com",
+    wl_btn:           "Aanmelden voor de wachtlijst",
+    wl_thanks:        "🎉 Dank je! Je bent als eerste op de hoogte.",
+    wl_already:       "✓ Je staat al op de lijst!",
   },
 
   // ----------------------------------------------------------
@@ -3285,6 +3383,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Бесплатная фаза запуска!",
+    wl_body:          "StudyAI находится в фазе запуска. Бесплатный план полностью функционален. Премиум-подписки будут активированы через несколько дней.",
+    wl_cta:           "Зарегистрируйся, чтобы узнать первым!",
+    wl_email_ph:      "твой@email.com",
+    wl_btn:           "Присоединиться к списку ожидания",
+    wl_thanks:        "🎉 Спасибо! Ты узнаешь первым.",
+    wl_already:       "✓ Ты уже в списке!",
   },
 
   // ----------------------------------------------------------
@@ -3502,6 +3607,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Darmowa faza uruchomienia!",
+    wl_body:          "StudyAI jest w fazie uruchomienia. Bezpłatny plan jest w pełni funkcjonalny. Subskrypcje premium zostaną aktywowane za kilka dni.",
+    wl_cta:           "Zapisz się, aby być powiadomionym jako pierwszy!",
+    wl_email_ph:      "twoj@email.com",
+    wl_btn:           "Dołącz do listy oczekujących",
+    wl_thanks:        "🎉 Dziękujemy! Będziesz pierwszym, który się dowie.",
+    wl_already:       "✓ Już jesteś na liście!",
   },
 
   // ----------------------------------------------------------
@@ -3719,6 +3831,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 Giai đoạn ra mắt miễn phí!",
+    wl_body:          "StudyAI đang trong giai đoạn ra mắt. Gói miễn phí hoạt động đầy đủ. Các gói cao cấp sẽ được kích hoạt trong vài ngày.",
+    wl_cta:           "Đăng ký để được thông báo trước!",
+    wl_email_ph:      "email@ban.com",
+    wl_btn:           "Tham gia danh sách chờ",
+    wl_thanks:        "🎉 Cảm ơn! Bạn sẽ là người đầu tiên biết.",
+    wl_already:       "✓ Bạn đã có trong danh sách!",
   },
 
   // ----------------------------------------------------------
@@ -4065,6 +4184,13 @@ const translations = {
     footer_lang_title:      "Language",
     footer_support:         "💬 Online support",
     footer_copy:            "© 2026 StudyAI — All rights reserved",
+    wl_title:         "🚀 मुफ़्त लॉन्च चरण!",
+    wl_body:          "StudyAI लॉन्च चरण में है। मुफ़्त प्लान पूरी तरह काम कर रहा है। प्रीमियम सदस्यताएं कुछ दिनों में सक्रिय होंगी।",
+    wl_cta:           "पहले सूचित होने के लिए साइन अप करें!",
+    wl_email_ph:      "aapka@email.com",
+    wl_btn:           "प्रतीक्षा सूची में शामिल हों",
+    wl_thanks:        "🎉 धन्यवाद! आप पहले जानेंगे।",
+    wl_already:       "✓ आप पहले से सूची में हैं!",
   },
 
   // ----------------------------------------------------------
@@ -4269,6 +4395,13 @@ const translations = {
     footer_lang_title:       "Мова",
     footer_support:          "💬 Онлайн підтримка",
     footer_copy:             "© 2026 StudyAI — Усі права захищені",
+    wl_title:         "🚀 Безкоштовна фаза запуску!",
+    wl_body:          "StudyAI знаходиться у фазі запуску. Безкоштовний план повністю функціональний. Преміум-підписки буде активовано за кілька днів.",
+    wl_cta:           "Зареєструйся, щоб дізнатися першим!",
+    wl_email_ph:      "tviy@email.com",
+    wl_btn:           "Приєднатися до списку очікування",
+    wl_thanks:        "🎉 Дякуємо! Ти дізнаєшся першим.",
+    wl_already:       "✓ Ти вже у списку!",
   },
 };
 
