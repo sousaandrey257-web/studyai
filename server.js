@@ -405,9 +405,10 @@ app.get('/brain',  (_req, res) => res.sendFile(path.join(__dirname, 'public/brai
 // Invite / referral landing page
 app.get('/invite/:code', (_req, res) => res.sendFile(path.join(__dirname, 'public/invite.html')));
 // Modal routes — auth/premium are inline modals on the homepage
-app.get('/login',    (_req, res) => res.redirect('/#login'));
-app.get('/register', (_req, res) => res.redirect('/#register'));
-app.get('/premium',  (_req, res) => res.redirect('/#pricing'));
+app.get('/login',       (_req, res) => res.redirect('/#login'));
+app.get('/register',    (_req, res) => res.redirect('/#register'));
+app.get('/premium',     (_req, res) => res.redirect('/#pricing'));
+app.get('/leaderboard', (_req, res) => res.redirect('/dashboard'));
 
 // Body JSON — limite à 100 Ko pour éviter les attaques par payload massif
 app.use(express.json({ limit: '100kb' }));
