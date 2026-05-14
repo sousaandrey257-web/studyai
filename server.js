@@ -1840,7 +1840,7 @@ async function createStripeSession({ plan, currency, origin, customerEmail, pric
       price_data: {
         currency: currency.toLowerCase(),
         product_data: { name, description: desc },
-        unit_amount: prices[plan],
+        unit_amount: prices[plan === 'lifetime' ? 'yearly' : plan],
         ...(recurring ? { recurring } : {}),
       },
       quantity: 1,
