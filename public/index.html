@@ -212,8 +212,24 @@
             />
           </div>
           <p class="imode-hint" id="yt-hint-text">
-            🎬 <span data-i18n="yt_hint">L'IA extrait automatiquement le transcript et génère résumé, quiz et flashcards. La vidéo doit être publique avec sous-titres.</span>
+            🎬 <span data-i18n="yt_hint">Colle l'URL d'une vidéo YouTube. L'IA lit les sous-titres pour générer résumé, quiz et flashcards.</span>
           </p>
+          <p class="imode-yt-tip">
+            💡 <span data-i18n="yt_tip">Astuce : cours en ligne, conférences TED et vidéos universitaires ont souvent des sous-titres automatiques (bouton CC).</span>
+          </p>
+          <!-- Error box (hidden by default, shown when no captions) -->
+          <div class="yt-error-box hidden" id="yt-error-box">
+            <span class="yt-error-icon">⚠️</span>
+            <span id="yt-error-msg" data-i18n="yt_no_caption">Cette vidéo n'a pas de sous-titres accessibles.</span>
+            <button class="yt-retry-btn" id="yt-retry-btn" type="button" data-i18n="yt_try_another">Essayer une autre vidéo</button>
+          </div>
+          <!-- Clickable example chips -->
+          <div class="yt-examples" id="yt-examples">
+            <span class="yt-examples-label" data-i18n="yt_examples_label">Exemples :</span>
+            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=aircAruvnKk">🧠 Réseaux de neurones</button>
+            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=5MgBikgcWnY">🎓 Apprendre en 20h</button>
+            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=Unzc731iCUY">🎤 Conférence MIT</button>
+          </div>
         </div>
 
         <!-- ── Panel : Fichier / PDF ── -->
@@ -1127,7 +1143,9 @@
             if (!url) { ytInput && ytInput.focus(); return; }
             e.stopImmediatePropagation();
             var hintEl = document.getElementById('yt-hint-text');
-            if (hintEl) hintEl.innerHTML = '⏳ Récupération du transcript…';
+            var errBox = document.getElementById('yt-error-box');
+            if (hintEl) hintEl.innerHTML = '⏳ <span>Récupération du transcript…</span>';
+            if (errBox) errBox.classList.add('hidden');
             btnGen.disabled = true;
             try {
               var r = await fetch('/api/youtube-transcript?url=' + encodeURIComponent(url));
@@ -1135,25 +1153,27 @@
               if (r.ok && d.transcript) {
                 // Transcript available — includes title header from server
                 if (textarea) { textarea.value = d.transcript; textarea.dispatchEvent(new Event('input')); }
+                if (hintEl) hintEl.innerHTML = '🎬 <span data-i18n="yt_hint">Colle l\'URL d\'une vidéo YouTube. L\'IA lit les sous-titres pour générer résumé, quiz et flashcards.</span>';
+                switchMode('text');
               } else {
-                // No transcript but server may have returned the title via oEmbed
-                var title = d.title || '';
-                var fallback = title
-                  ? 'Génère un résumé complet, quiz et flashcards sur ce sujet précis : "' + title + '"\n\nContexte : vidéo YouTube — ' + url
-                  : 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + url;
-                if (textarea) { textarea.value = fallback; textarea.dispatchEvent(new Event('input')); }
-                if (hintEl) hintEl.innerHTML = '⚠️ Sous-titres indisponibles' + (title ? ' — sujet détecté : "' + title + '"' : '') + '. Génération basée sur le titre.';
+                // No captions — show error box, let user try another video
+                if (errBox) {
+                  var errMsg = document.getElementById('yt-error-msg');
+                  if (errMsg && d.title) errMsg.textContent = '⚠️ Pas de sous-titres pour "' + d.title + '". Essaie une vidéo avec le bouton CC activé.';
+                  errBox.classList.remove('hidden');
+                }
+                if (hintEl) hintEl.innerHTML = '🎬 <span data-i18n="yt_hint">Colle l\'URL d\'une vidéo YouTube. L\'IA lit les sous-titres pour générer résumé, quiz et flashcards.</span>';
+                btnGen.disabled = false;
+                return;
               }
             } catch(err) {
-              if (textarea) {
-                textarea.value = 'Génère un résumé complet, quiz et flashcards sur le sujet de cette vidéo YouTube : ' + url;
-                textarea.dispatchEvent(new Event('input'));
-              }
-              if (hintEl) hintEl.innerHTML = '⚠️ Transcript indisponible — génération basée sur le sujet.';
+              if (errBox) errBox.classList.remove('hidden');
+              if (hintEl) hintEl.innerHTML = '🎬 <span data-i18n="yt_hint">Colle l\'URL d\'une vidéo YouTube. L\'IA lit les sous-titres pour générer résumé, quiz et flashcards.</span>';
+              btnGen.disabled = false;
+              return;
             } finally {
               btnGen.disabled = false;
             }
-            switchMode('text');
             return;
           }
 
@@ -1173,6 +1193,27 @@
 
           /* ── Text mode: default app.js flow handles it ── */
         }, true);
+      }
+
+      /* YouTube example chips — fill URL field on click */
+      document.querySelectorAll('.yt-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          var inp = document.getElementById('yt-url-input');
+          if (inp) { inp.value = chip.dataset.url; inp.focus(); }
+          var eb = document.getElementById('yt-error-box');
+          if (eb) eb.classList.add('hidden');
+        });
+      });
+
+      /* YouTube retry button — clear field and hide error box */
+      var ytRetryBtn = document.getElementById('yt-retry-btn');
+      if (ytRetryBtn) {
+        ytRetryBtn.addEventListener('click', function() {
+          var inp = document.getElementById('yt-url-input');
+          if (inp) { inp.value = ''; inp.focus(); }
+          var eb = document.getElementById('yt-error-box');
+          if (eb) eb.classList.add('hidden');
+        });
       }
     }());
 
