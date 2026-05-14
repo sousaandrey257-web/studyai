@@ -621,74 +621,6 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         </div>
       </div>
 
-      <!-- ===== PRICING SECTION ===== -->
-      <div id="pricing" class="pricing-section reveal">
-        <div class="section-label" data-i18n="pricing_label">Tarifs simples</div>
-        <h2 class="how-title" data-i18n="pricing_title">Choisir mon plan</h2>
-        <p class="how-subtitle" data-i18n="pricing_subtitle">Commence gratuitement — passe Premium quand tu veux.</p>
-        <div class="pricing-cards">
-
-          <div class="pricing-card-v2">
-            <div class="pricing-card-name" data-i18n="plan_free_name">Gratuit</div>
-            <div class="pricing-card-price">
-              <span class="pricing-card-amount">0 €</span>
-            </div>
-            <div class="pricing-card-desc" data-i18n="plan_free_desc">Pour découvrir StudyAI</div>
-            <ul class="pricing-card-features">
-              <li class="pf-ok" data-i18n="pf_free_1">✓ 3 analyses par jour</li>
-              <li class="pf-ok" data-i18n="pf_free_2">✓ Résumé + fiche + quiz</li>
-              <li class="pf-ok" data-i18n="pf_free_3">✓ 20 langues</li>
-              <li class="pf-ok" data-i18n="pf_free_4">✓ Battle Mode</li>
-              <li class="pf-no" data-i18n="pf_free_5">✗ Générations illimitées</li>
-              <li class="pf-no" data-i18n="pf_free_6">✗ Historique & stats</li>
-              <li class="pf-no" data-i18n="pf_free_7">✗ XP ×2</li>
-            </ul>
-            <button class="btn-outline-pricing" onclick="window.location.href='/'" data-i18n="plan_free_cta">Commencer gratuitement</button>
-          </div>
-
-          <div class="pricing-card-v2 pricing-card-v2-featured">
-            <div class="pricing-best-badge" data-i18n="pricing_best">⭐ Meilleur choix</div>
-            <div class="pricing-card-name" data-i18n="plan_monthly_name">Mensuel</div>
-            <div class="pricing-card-price">
-              <span class="pricing-card-amount" data-price-key="monthly">9,99 €</span>
-              <span class="pricing-card-period" data-i18n="plan_per_month">/mois</span>
-            </div>
-            <div class="pricing-card-desc" data-i18n="plan_monthly_desc">Sans engagement · Annulable à tout moment</div>
-            <ul class="pricing-card-features">
-              <li class="pf-ok" data-i18n="pf_pro_1">✓ Générations illimitées</li>
-              <li class="pf-ok" data-i18n="pf_pro_2">✓ Résumé + fiche + quiz</li>
-              <li class="pf-ok" data-i18n="pf_pro_3">✓ 20 langues</li>
-              <li class="pf-ok" data-i18n="pf_pro_4">✓ Historique & statistiques</li>
-              <li class="pf-ok pf-highlight" data-i18n="pf_pro_5">⚡ XP ×2 + missions bonus</li>
-              <li class="pf-ok pf-highlight" data-i18n="pf_pro_6">🔥 Streak protégé</li>
-              <li class="pf-ok" data-i18n="pf_pro_7">✓ Support prioritaire</li>
-            </ul>
-            <button class="btn-primary btn-full" onclick="window.startCheckout && window.startCheckout('monthly')" data-i18n="plan_monthly_cta">Démarrer le Premium</button>
-          </div>
-
-          <div class="pricing-card-v2">
-            <div class="pricing-card-name" data-i18n="plan_yearly_name">À vie</div>
-            <div class="pricing-card-price">
-              <span class="pricing-card-amount" data-price-key="yearly">69,99 €</span>
-              <span class="pricing-card-period" data-i18n="plan_once">une fois</span>
-            </div>
-            <div class="pricing-card-desc" data-i18n="plan_yearly_desc">Paiement unique · Accès permanent</div>
-            <ul class="pricing-card-features">
-              <li class="pf-ok" data-i18n="pf_pro_1">✓ Générations illimitées</li>
-              <li class="pf-ok" data-i18n="pf_pro_2">✓ Résumé + fiche + quiz</li>
-              <li class="pf-ok" data-i18n="pf_pro_3">✓ 20 langues</li>
-              <li class="pf-ok" data-i18n="pf_pro_4">✓ Historique & statistiques</li>
-              <li class="pf-ok pf-highlight" data-i18n="pf_pro_5">⚡ XP ×2 + missions bonus</li>
-              <li class="pf-ok pf-highlight" data-i18n="pf_pro_6">🔥 Streak protégé</li>
-              <li class="pf-ok" data-i18n="pf_lifetime_bonus">✓ Toutes les futures mises à jour</li>
-            </ul>
-            <button class="btn-outline-pricing" onclick="window.startCheckout && window.startCheckout('yearly')" data-i18n="plan_yearly_cta">Acheter à vie</button>
-          </div>
-
-        </div>
-        <p class="pricing-reassurance" data-i18n="pricing_reassure">🔒 Paiement sécurisé par Stripe · Aucune CB requise pour le plan gratuit · Annulation en un clic</p>
-      </div>
-
       <!-- COMPARATIF LIBRE vs PREMIUM (keep for anchor compatibility) -->
       <div class="compare-section compare-section-compact reveal">
         <div class="compare-grid">
@@ -889,44 +821,70 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       <h2 class="modal-title" data-i18n="premium_title">Passez Premium</h2>
       <p class="modal-sub" data-i18n="premium_sub">Débloquez un accès illimité à StudyAI</p>
 
-      <div class="pricing-grid-2" style="grid-template-columns:1fr 1fr;max-width:680px;margin:0 auto">
+      <div class="pricing-grid-3">
 
-        <!-- Plan Mensuel -->
+        <!-- Card Gratuit -->
         <div class="pricing-card">
-          <div class="pricing-name" data-i18n="plan_monthly_name">Mensuel</div>
-          <div class="pricing-price"><span data-price-key="monthly">9,99 €</span><span class="pricing-period">/mois</span></div>
-          <div class="pricing-desc">Sans engagement · Annulable à tout moment</div>
+          <div class="pricing-name" data-i18n="plan_free_name">Gratuit</div>
+          <div class="pricing-price"><span>0 €</span></div>
+          <div class="pricing-desc" data-i18n="plan_free_desc">Pour découvrir StudyAI</div>
           <ul class="pricing-features">
-            <li>✅ Générations illimitées</li>
-            <li>✅ Toutes matières & langues</li>
-            <li>✅ XP ×2 + missions quotidiennes</li>
-            <li>✅ Historique & statistiques</li>
+            <li data-i18n="pf_free_1">✓ 3 générations par jour</li>
+            <li data-i18n="pf_free_2">✓ Résumés courts</li>
+            <li data-i18n="pf_free_3">✓ Quiz basique (5 questions)</li>
+            <li data-i18n="pf_free_4">✓ 10 flashcards par session</li>
+            <li data-i18n="pf_free_5">✓ 20 langues</li>
+            <li data-i18n="pf_free_6">✓ Accès au battle mode</li>
+            <li data-i18n="pf_free_7">✓ Communauté + leaderboard</li>
           </ul>
-          <button class="btn-secondary btn-full btn-checkout" type="button" data-plan="monthly">
-            Commencer — 9,99€/mois
+          <button class="btn-secondary btn-full" type="button" data-i18n="plan_free_cta"
+            onclick="window.hidePremiumModal && window.hidePremiumModal(); setTimeout(function(){ var el=document.getElementById('course-input'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.focus(); } },250)">
+            Commencer gratuitement
           </button>
         </div>
 
-        <!-- Plan Annuel — HÉROS -->
+        <!-- Plan Mensuel — HÉROS -->
         <div class="pricing-card pricing-card-featured">
-          <div class="pricing-recommended" data-i18n="plan_popular">🎯 Économise 50€/an</div>
-          <div class="pricing-name" data-i18n="plan_yearly_name">Annuel</div>
-          <div class="pricing-price"><span data-price-key="yearly">69,99 €</span><span class="pricing-period">/an</span></div>
-          <div class="pricing-desc pricing-saving">≈ 5,83€/mois · <strong>Économise 42%</strong></div>
+          <div class="pricing-recommended" data-i18n="plan_popular">⭐ Meilleur choix</div>
+          <div class="pricing-name" data-i18n="plan_monthly_name">Mensuel</div>
+          <div class="pricing-price"><span data-price-key="monthly">9,99 €</span><span class="pricing-period" data-i18n="plan_per_month">/mois</span></div>
+          <div class="pricing-desc" data-i18n="plan_monthly_desc">Sans engagement · Annulable à tout moment</div>
           <ul class="pricing-features">
-            <li>✅ Générations illimitées</li>
-            <li>✅ Toutes matières & langues</li>
-            <li>✅ XP ×2 + missions quotidiennes</li>
-            <li>✅ Streak protégé + priorité nouveautés</li>
+            <li data-i18n="pf_pro_1">✓ Générations illimitées</li>
+            <li data-i18n="pf_pro_2">✓ Résumé + fiche + quiz</li>
+            <li data-i18n="pf_pro_3">✓ 20 langues</li>
+            <li data-i18n="pf_pro_4">✓ Historique &amp; statistiques</li>
+            <li data-i18n="pf_pro_5">⚡ XP ×2 + missions bonus</li>
+            <li data-i18n="pf_pro_6">🔥 Streak protégé</li>
+            <li data-i18n="pf_pro_7">✓ Support prioritaire</li>
           </ul>
-          <button class="btn-primary btn-full btn-checkout" type="button" data-plan="yearly">
-            Meilleur prix — 69,99€/an
+          <button class="btn-primary btn-full btn-checkout" type="button" data-plan="monthly" data-i18n="plan_monthly_cta">
+            Démarrer le Premium
+          </button>
+        </div>
+
+        <!-- Plan À vie -->
+        <div class="pricing-card">
+          <div class="pricing-name" data-i18n="plan_yearly_name">À vie</div>
+          <div class="pricing-price"><span data-price-key="yearly">69,99 €</span><span class="pricing-period" data-i18n="plan_once">une fois</span></div>
+          <div class="pricing-desc" data-i18n="plan_yearly_desc">Paiement unique · Accès permanent</div>
+          <ul class="pricing-features">
+            <li data-i18n="pf_pro_1">✓ Générations illimitées</li>
+            <li data-i18n="pf_pro_2">✓ Résumé + fiche + quiz</li>
+            <li data-i18n="pf_pro_3">✓ 20 langues</li>
+            <li data-i18n="pf_pro_4">✓ Historique &amp; statistiques</li>
+            <li data-i18n="pf_pro_5">⚡ XP ×2 + missions bonus</li>
+            <li data-i18n="pf_pro_6">🔥 Streak protégé</li>
+            <li data-i18n="pf_lifetime_bonus">🎁 Bonus à vie : nouvelles features avant tout le monde</li>
+          </ul>
+          <button class="btn-secondary btn-full btn-checkout" type="button" data-plan="yearly" data-i18n="plan_yearly_cta">
+            Acheter à vie
           </button>
         </div>
 
       </div>
 
-      <p class="modal-free-note">Plan gratuit : 3 générations par jour</p>
+      <p class="pricing-reassurance" data-i18n="pricing_reassure">🔒 Paiement sécurisé par Stripe · Annulation en un clic</p>
     </div>
   </div>
 
