@@ -2063,3 +2063,61 @@ body::before {
   border:1px solid var(--border); background:var(--surface-3);
   font-family:inherit; font-size:0.7rem;
 }
+
+/* ── Waitlist modal ── */
+.modal-card-waitlist {
+  max-width: 460px;
+  width: 100%;
+  padding: 36px 32px 28px;
+  text-align: center;
+}
+.wl-cta-text {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0 0 18px;
+}
+.wl-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+.wl-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 1rem;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.wl-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.wl-message {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.wl-message.wl-success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+.wl-message.wl-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+@media (prefers-color-scheme: dark) {
+  .wl-message.wl-success { background: #14532d; color: #bbf7d0; border-color: #166534; }
+  .wl-message.wl-error   { background: #450a0a; color: #fecaca; border-color: #991b1b; }
+}
+@media (max-width: 520px) {
+  .modal-card-waitlist { padding: 28px 16px 22px; }
+}
