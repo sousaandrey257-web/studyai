@@ -187,10 +187,83 @@
           ></textarea>
           <div class="example-chips" ontouchstart="">
             <span class="example-chip-label" data-i18n="try_label">Essaie :</span>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_1">Quiz sur la photosynthèse</button>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_2">Résume la Révolution française</button>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_3">Explique-moi les fractions</button>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_4">Quiz sur la Seconde Guerre mondiale</button>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_1" data-example="La photosynthèse est le processus par lequel les plantes convertissent l'énergie lumineuse en énergie chimique stockée sous forme de glucose. Elle se déroule dans les chloroplastes grâce à la chlorophylle.
+
+Deux phases principales :
+
+1. Phase lumineuse : l'énergie solaire décompose l'eau (H₂O) par photolyse, libérant de l'oxygène (O₂) et produisant de l'énergie (ATP, NADPH).
+
+2. Cycle de Calvin : l'énergie produite fixe le CO₂ atmosphérique pour former du glucose (C₆H₁₂O₆).
+
+Équation bilan :
+6 CO₂ + 6 H₂O + lumière → C₆H₁₂O₆ + 6 O₂
+
+Facteurs limitants : intensité lumineuse, concentration en CO₂, température, disponibilité en eau.
+
+Importance : base de la chaîne alimentaire, régulation de l'atmosphère terrestre (absorption CO₂, libération O₂), stockage de l'énergie solaire dans la biomasse végétale. Sans photosynthèse, la vie telle que nous la connaissons serait impossible.">Quiz sur la photosynthèse</button>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_2" data-example="La Révolution française (1789-1799) est l'événement fondateur de la France moderne qui renverse la monarchie absolue et établit les principes de Liberté, Égalité, Fraternité.
+
+Causes principales :
+- Crise financière de l'État royal
+- Inégalités entre les 3 ordres (Clergé, Noblesse, Tiers-État 97%)
+- Idées des Lumières (Voltaire, Rousseau, Montesquieu)
+- Famines et hausse du prix du pain
+
+Étapes clés :
+• 5 mai 1789 : Réunion des États Généraux
+• 17 juin 1789 : Le Tiers-État se proclame Assemblée nationale
+• 14 juillet 1789 : Prise de la Bastille (fête nationale)
+• 26 août 1789 : Déclaration des droits de l'homme
+• 1792 : Proclamation de la Première République
+• 1793-94 : La Terreur sous Robespierre
+• 9 novembre 1799 : Coup d'État de Napoléon Bonaparte
+
+Conséquences : abolition du système féodal, laïcisation de l'État, modèle républicain exporté en Europe, bases de la France actuelle.">Résume la Révolution française</button>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_3" data-example="Une fraction représente une partie d'un tout. Elle s'écrit a/b où a est le numérateur et b le dénominateur (nombre de parties égales).
+
+Opérations fondamentales :
+
+Fractions équivalentes : multiplier/diviser numérateur et dénominateur par le même nombre.
+1/2 = 2/4 = 4/8
+
+Addition et soustraction : trouver le dénominateur commun (PPCM) :
+1/3 + 1/4 = 4/12 + 3/12 = 7/12
+
+Multiplication : multiplier directement numérateurs et dénominateurs :
+2/3 × 3/5 = 6/15 = 2/5
+
+Division : multiplier par l'inverse du diviseur :
+2/3 ÷ 4/5 = 2/3 × 5/4 = 10/12 = 5/6
+
+Simplification : diviser par le PGCD (plus grand commun diviseur).
+
+Nombres mixtes : 2¾ = (2×4+3)/4 = 11/4
+
+Conversion décimale : 3/4 = 0,75 · 1/3 = 0,333...
+
+Applications pratiques : recettes de cuisine, probabilités, ratios, pourcentages, algèbre.">Explique-moi les fractions</button>
+            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_4" data-example="La Seconde Guerre mondiale (1939-1945) est le conflit le plus meurtrier de l'histoire humaine (70 à 85 millions de morts).
+
+Causes :
+- Montée du nazisme en Allemagne (Hitler au pouvoir en 1933)
+- Politique d'apaisement des démocraties face à Hitler
+- Traité de Versailles jugé humiliant par l'Allemagne
+- Crise économique mondiale de 1929
+
+Chronologie des événements clés :
+• 1er sept. 1939 : Invasion de la Pologne, déclaration de guerre franco-britannique
+• Juin 1940 : Chute de la France, armistice
+• 1940 : Bataille d'Angleterre
+• Juin 1941 : Opération Barbarossa — invasion de l'URSS
+• 7 déc. 1941 : Pearl Harbor — entrée en guerre des États-Unis
+• 1942-43 : Bataille de Stalingrad (tournant décisif)
+• 6 juin 1944 : Débarquement en Normandie (D-Day)
+• 8 mai 1945 : Capitulation de l'Allemagne (VE Day)
+• 2 sept. 1945 : Capitulation du Japon (VJ Day)
+
+La Shoah : génocide de 6 millions de Juifs par le régime nazi.
+
+Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshall.">Quiz sur la Seconde Guerre mondiale</button>
           </div>
           <div class="imode-char-row">
             <span id="char-count" class="char-count">0 / 20 000</span>
@@ -590,7 +663,7 @@
               <li class="pf-ok pf-highlight" data-i18n="pf_pro_6">🔥 Streak protégé</li>
               <li class="pf-ok" data-i18n="pf_pro_7">✓ Support prioritaire</li>
             </ul>
-            <button class="btn-primary btn-full" onclick="window.showPremiumModal && window.showPremiumModal()" data-i18n="plan_monthly_cta">Démarrer le Premium</button>
+            <button class="btn-primary btn-full" onclick="window.startCheckout && window.startCheckout('monthly')" data-i18n="plan_monthly_cta">Démarrer le Premium</button>
           </div>
 
           <div class="pricing-card-v2">
@@ -609,7 +682,7 @@
               <li class="pf-ok pf-highlight" data-i18n="pf_pro_6">🔥 Streak protégé</li>
               <li class="pf-ok" data-i18n="pf_lifetime_bonus">✓ Toutes les futures mises à jour</li>
             </ul>
-            <button class="btn-outline-pricing" onclick="window.showPremiumModal && window.showPremiumModal()" data-i18n="plan_yearly_cta">Acheter à vie</button>
+            <button class="btn-outline-pricing" onclick="window.startCheckout && window.startCheckout('yearly')" data-i18n="plan_yearly_cta">Acheter à vie</button>
           </div>
 
         </div>
@@ -640,7 +713,7 @@
               <li class="compare-ok compare-highlight">⚡ XP ×2 — progression 2× plus rapide</li>
               <li class="compare-ok compare-highlight">🔥 Streak protégé + missions bonus</li>
             </ul>
-            <button type="button" class="btn-primary btn-full compare-cta" onclick="window.showPremiumModal && window.showPremiumModal()" data-i18n="plan_monthly_cta">Démarrer le Premium</button>
+            <button type="button" class="btn-primary btn-full compare-cta" onclick="window.startCheckout && window.startCheckout('monthly')" data-i18n="plan_monthly_cta">Démarrer le Premium</button>
           </div>
         </div>
       </div>
