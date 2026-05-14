@@ -1978,6 +1978,68 @@ body::before {
   z-index:9997; transition:opacity 0.5s;
 }
 
+/* ── YouTube panel UX ── */
+.imode-yt-tip {
+  font-size: 0.78rem;
+  color: var(--text-muted, #8b949e);
+  margin: 4px 0 8px;
+  line-height: 1.4;
+}
+.yt-error-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  font-size: 0.83rem;
+  color: #fca5a5;
+  flex-wrap: wrap;
+}
+.yt-error-box.hidden { display: none; }
+#yt-error-msg { flex: 1; }
+.yt-retry-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 6px;
+  color: #fca5a5;
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.yt-retry-btn:hover { background: rgba(239, 68, 68, 0.28); }
+.yt-examples {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 8px 0 2px;
+}
+.yt-examples-label {
+  font-size: 0.73rem;
+  color: var(--text-muted, #8b949e);
+  white-space: nowrap;
+}
+.yt-chip {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 20px;
+  color: var(--accent, #818cf8);
+  cursor: pointer;
+  font-size: 0.73rem;
+  padding: 3px 10px;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.yt-chip:hover {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.45);
+}
+
 /* ── Sprint 4 — Print styles ── */
 @media print {
   .upload-header, .bottom-nav, .results-tabs, .results-actions,
