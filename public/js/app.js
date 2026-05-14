@@ -41,7 +41,15 @@ const state = {
 
   window.showPremiumModal = function () {
     var modal = _el();
-    if (!modal || state.isPremium || _open) return;
+    if (!modal) return;
+    if (state.isPremium) {
+      if (window.showToast) window.showToast('✨ ' + (t('premium_already') || 'Tu es déjà Premium'), 'success');
+      return;
+    }
+    if (_open) {
+      if (modal.classList.contains('hidden')) { _open = false; }
+      else { return; }
+    }
     _open = true;
     window.lockBodyScroll && window.lockBodyScroll();
     modal.classList.remove('hidden');
