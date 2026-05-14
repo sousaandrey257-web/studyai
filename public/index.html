@@ -60,9 +60,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
   <link rel="dns-prefetch" href="https://js.stripe.com" />
-  <link rel="preload" href="css/style.css?v=3" as="style" />
+  <link rel="preload" href="css/style.css?v=4" as="style" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
   <link rel="stylesheet" href="css/gamification.css?v=2" />
   <link rel="stylesheet" href="css/premium.css?v=3" />
   <link rel="stylesheet" href="css/refresh.css?v=2" />
@@ -858,7 +858,8 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <li data-i18n="pf_pro_6">🔥 Streak protégé</li>
             <li data-i18n="pf_pro_7">✓ Support prioritaire</li>
           </ul>
-          <button class="btn-primary btn-full btn-checkout" type="button" data-plan="monthly" data-i18n="plan_monthly_cta">
+          <button class="btn-primary btn-full btn-checkout" type="button" data-plan="monthly" data-i18n="plan_monthly_cta"
+            onclick="window.startCheckout && window.startCheckout('monthly')">
             Démarrer le Premium
           </button>
         </div>
@@ -877,7 +878,8 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <li data-i18n="pf_pro_6">🔥 Streak protégé</li>
             <li data-i18n="pf_lifetime_bonus">🎁 Bonus à vie : nouvelles features avant tout le monde</li>
           </ul>
-          <button class="btn-secondary btn-full btn-checkout" type="button" data-plan="yearly" data-i18n="plan_yearly_cta">
+          <button class="btn-secondary btn-full btn-checkout" type="button" data-plan="yearly" data-i18n="plan_yearly_cta"
+            onclick="window.startCheckout && window.startCheckout('yearly')">
             Acheter à vie
           </button>
         </div>
