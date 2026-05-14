@@ -241,9 +241,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
 
   window.useExample = function (btn) {
-    courseInput.value = btn.textContent;
+    var content = (btn.dataset && btn.dataset.example) ? btn.dataset.example : btn.textContent.trim();
+    if (!content || !courseInput) return;
+    courseInput.value = content;
     courseInput.dispatchEvent(new Event('input'));
-    generate();
+    courseInput.focus();
+    courseInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   async function generate() {
