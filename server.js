@@ -1079,7 +1079,42 @@ app.get('/api/health', async (req, res) => {
 });
 
 // GET /api/country — détecte le pays via IP et retourne les prix régionaux
+// Priorité de détection :
+//   1. Header Cloudflare CF-IPCountry (si derrière CF)
+//   2. Headers Railway / Vercel / Fly.io
+//   3. Accept-Language heuristique
+//   4. ipapi.co géolocalisation IP (fallback réseau)
+//   5. Défaut EUR
 app.get('/api/country', async (req, res) => {
+  res.set('Cache-Control', 'private, max-age=300'); // cache 5 min côté client
+
+  // ── 1. Headers cloud (Cloudflare, Railway, Vercel, Fly) ──
+  const cloudCountry =
+    req.headers['cf-ipcountry'] ||
+    req.headers['x-vercel-ip-country'] ||
+    req.headers['fly-client-ip-country'] ||
+    req.headers['x-country-code'] ||
+    null;
+
+  if (cloudCountry && cloudCountry !== 'XX' && cloudCountry.length === 2) {
+    return res.json(getRegionalPricing(cloudCountry.toUpperCase()));
+  }
+
+  // ── 2. Accept-Language heuristique (approximatif, sans réseau) ──
+  const LANG_TO_COUNTRY = {
+    'pt-br':'BR','pt-BR':'BR','zh-cn':'CN','zh-CN':'CN','zh-tw':'TW',
+    'ja':'JP','ko':'KR','ru':'RU','uk':'UA','pl':'PL',
+    'hi':'IN','bn':'BD','ur':'PK','id':'ID','ms':'MY',
+    'th':'TH','vi':'VN','ar':'SA','tr':'TR',
+  };
+  const acceptLang = req.headers['accept-language'] || '';
+  for (const [tag, cc] of Object.entries(LANG_TO_COUNTRY)) {
+    if (acceptLang.toLowerCase().startsWith(tag.toLowerCase())) {
+      return res.json(getRegionalPricing(cc));
+    }
+  }
+
+  // ── 3. Fallback : ipapi.co par IP ──
   const ip = getClientIP(req);
   const isLocal = ip === '127.0.0.1' || ip === '::1' || ip === 'unknown';
   if (isLocal) return res.json(getRegionalPricing('FR'));
@@ -1092,11 +1127,15 @@ app.get('/api/country', async (req, res) => {
       signal:  controller.signal,
     });
     const geo = await r.json();
+    if (geo.error) throw new Error(geo.reason || 'ipapi error');
     res.json(getRegionalPricing(geo.country_code || 'XX'));
   } catch {
     res.json(getRegionalPricing('XX'));
   }
 });
+
+// Alias /api/pricing → même réponse (hook pour le front)
+app.get('/api/pricing', (req, res) => res.redirect(307, '/api/country'));
 
 // POST /api/register
 app.post('/api/register',

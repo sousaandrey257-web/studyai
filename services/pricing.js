@@ -4,8 +4,8 @@
 //  Centralise toute la logique tarifaire (PPP-aware)
 //  Règles :
 //    · Pays riches (EU/US/UK/CA/AU/SG/JP/KR) → prix plein
-//    · Pays intermédiaires (BR/MX/CN) → −30 %
-//    · Pays faible PA (IN/ID/TH/PH/PK/VN/MY) → −50 % max
+//    · Pays intermédiaires (BR/MX/CN/TR/PL/UA/EG) → −30 à −50 %
+//    · Pays faible PA (IN/ID/TH/PH/PK/VN/MY/NG/BD/AR) → −50 % max
 //    · Marge cible : 85-95 % (coûts API Groq ~0,001 €/session)
 // ============================================================
 
@@ -25,10 +25,17 @@ const CURRENCY_PRICES = {
   KRW: { monthly:14900, yearly: 99900 }, // pas de décimales
   // ── Pays intermédiaires ────────────────────────────────────
   BRL: { monthly: 2999, yearly: 21999 }, // ~6 USD/mois
-  MXN: { monthly: 1599, yearly: 11999 }, // ~8 USD/mois
+  MXN: { monthly: 7900, yearly: 57900 }, // ~4 USD/mois (PPP)
   CNY: { monthly: 6800, yearly: 49900 }, // ~9 USD/mois
+  TRY: { monthly: 8900, yearly: 64900 }, // ~2.5 USD/mois (PPP)
+  PLN: { monthly: 1999, yearly: 13999 }, // ~5 USD/mois (PPP)
+  UAH: { monthly:11900, yearly: 83900 }, // ~2.9 USD/mois (PPP)
+  EGP: { monthly:14900, yearly:109900 }, // ~3 USD/mois (PPP)
   // ── Faible pouvoir d'achat ─────────────────────────────────
   INR: { monthly:  499, yearly:  3499 }, // ~6 USD/mois
+  ARS: { monthly:599000, yearly:4390000 }, // ~6 USD/mois (PPP)
+  NGN: { monthly:350000, yearly:2499000 }, // ~2.4 USD/mois (PPP)
+  BDT: { monthly: 19900, yearly:139900 }, // ~1.8 USD/mois (PPP)
 };
 
 // Devises sans décimales pour Stripe
@@ -39,7 +46,7 @@ const ZERO_DECIMAL_CURRENCIES = new Set([
 
 const EU_COUNTRIES = [
   'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR',
-  'HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK',
+  'HU','IE','IT','LV','LT','LU','MT','NL','PT','RO','SK',
   'SI','ES','SE','CH','NO',
 ];
 
@@ -56,8 +63,12 @@ const REGIONAL_PRICING = {
   SG: { currency:'SGD', monthly:'S$13.99',   yearly:'S$99.99'    },
   // ── Pays intermédiaires ─────────────────────────────────────
   BR: { currency:'BRL', monthly:'R$29,99',   yearly:'R$219,99'   },
-  MX: { currency:'USD', monthly:'$7.99',     yearly:'$59.99'     },
+  MX: { currency:'MXN', monthly:'$79 MX',    yearly:'$579 MX'    },
   CN: { currency:'CNY', monthly:'¥68',       yearly:'¥499'       },
+  TR: { currency:'TRY', monthly:'₺89',       yearly:'₺649'       },
+  PL: { currency:'PLN', monthly:'19,99 zł',  yearly:'139,99 zł'  },
+  UA: { currency:'UAH', monthly:'₴119',      yearly:'₴839'       },
+  EG: { currency:'EGP', monthly:'E£149',     yearly:'E£1.049'    },
   // ── Faible pouvoir d'achat ──────────────────────────────────
   IN: { currency:'INR', monthly:'₹499',      yearly:'₹3,499'     },
   ID: { currency:'USD', monthly:'$3.99',     yearly:'$29.99'     },
@@ -66,6 +77,9 @@ const REGIONAL_PRICING = {
   PH: { currency:'USD', monthly:'$3.99',     yearly:'$29.99'     },
   VN: { currency:'USD', monthly:'$3.99',     yearly:'$29.99'     },
   PK: { currency:'USD', monthly:'$2.99',     yearly:'$21.99'     },
+  AR: { currency:'ARS', monthly:'AR$5.990',  yearly:'AR$43.990'  },
+  NG: { currency:'NGN', monthly:'₦3.500',    yearly:'₦24.990'    },
+  BD: { currency:'BDT', monthly:'৳199',      yearly:'৳1.399'     },
 };
 
 function getCurrencyForCountry(country) {
@@ -74,6 +88,7 @@ function getCurrencyForCountry(country) {
   const map = {
     GB:'GBP', US:'USD', CA:'CAD', AU:'AUD', SG:'SGD',
     JP:'JPY', KR:'KRW', CN:'CNY', BR:'BRL', IN:'INR', MX:'MXN',
+    TR:'TRY', PL:'PLN', UA:'UAH', EG:'EGP', AR:'ARS', NG:'NGN', BD:'BDT',
   };
   return map[country] || 'EUR';
 }
