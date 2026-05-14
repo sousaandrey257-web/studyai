@@ -65,6 +65,7 @@
   <link rel="stylesheet" href="css/style.css?v=2" />
   <link rel="stylesheet" href="css/gamification.css" />
   <link rel="stylesheet" href="css/premium.css?v=2" />
+  <link rel="stylesheet" href="css/refresh.css?v=1" />
 </head>
 <body>
 
@@ -128,16 +129,16 @@
           <span data-i18n="hero_badge">Propulsé par IA — gratuit pour commencer</span>
         </div>
         <h1 class="hero-title">
-          <span data-i18n="hero_title_1">Ton assistant révisions</span><br />
-          <span class="gradient-text" data-i18n="hero_title_2">quiz, fiches et résumés en 10 s</span>
+          <span data-i18n="hero_title_1">Transforme n'importe quel cours</span><br />
+          <span class="gradient-text" data-i18n="hero_title_2">en fiche + quiz en 45 secondes</span>
         </h1>
         <p class="hero-sub" data-i18n="hero_sub">
-          Colle ton cours ou écris simplement ce que tu veux réviser.
+          Droit, médecine, sciences, histoire… Colle ton cours ci-dessous.
         </p>
 
         <!-- Rotating words strip -->
         <div class="hero-rotating-strip">
-          <span class="rotating-static">Conçu pour </span><span class="hero-rotating-word" id="hero-rotating">réviser 10× plus vite</span>
+          <span class="rotating-static" data-i18n="rotating_prefix">Conçu pour </span><span class="hero-rotating-word" id="hero-rotating">réviser plus vite</span>
         </div>
 
         <div class="product-highlights">
@@ -253,7 +254,8 @@
       <div class="trust-strip">
         <div class="trust-item"><span class="trust-icon">🔒</span> <span data-i18n="trust_1">Données sécurisées</span></div>
         <div class="trust-item"><span class="trust-icon">✅</span> <span data-i18n="trust_2">Sans carte bancaire</span></div>
-        <div class="trust-item"><span class="trust-icon">⚡</span> <span data-i18n="trust_3">Résultats en 10 secondes</span></div>
+        <div class="trust-item"><span class="trust-icon">⚡</span> <span data-i18n="trust_3">Résultats en 45 secondes</span></div>
+        <div class="trust-item"><span class="trust-icon">🌍</span> <span data-i18n="trust_4">20 langues</span></div>
       </div>
 
       <!-- ===== STATS STRIP ===== -->
@@ -304,47 +306,112 @@
 
       <!-- ===== COMMENT ÇA MARCHE ===== -->
       <div class="how-section reveal">
+        <div class="section-label" data-i18n="how_label">Simple &amp; rapide</div>
         <h2 class="how-title" data-i18n="how_title">Comment ça marche</h2>
+        <p class="how-subtitle" data-i18n="how_subtitle">Trois étapes, zéro configuration.</p>
         <div class="how-steps">
           <div class="how-step">
-            <div class="how-step-icon">📋</div>
-            <h3 class="how-step-title" data-i18n="how_1_title">1. Colle ton cours</h3>
-            <p class="how-step-desc" data-i18n="how_1_desc">Copie-colle n'importe quel texte — cours, PDF, notes, ou tape juste le sujet à réviser.</p>
+            <div class="how-step-num">1</div>
+            <div class="how-step-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <h3 class="how-step-title" data-i18n="how_1_title">Colle ton cours</h3>
+            <p class="how-step-desc" data-i18n="how_1_desc">Texte, lien YouTube, ou PDF — n'importe quel format, n'importe quelle matière.</p>
           </div>
-          <div class="how-arrow">→</div>
-          <div class="how-step">
-            <div class="how-step-icon">⚡</div>
-            <h3 class="how-step-title" data-i18n="how_2_title">2. L'IA analyse et génère</h3>
-            <p class="how-step-desc" data-i18n="how_2_desc">Résumé clair, fiche mémorable (méthode Feynman) et quiz progressif (taxonomie de Bloom) en quelques secondes.</p>
+          <div class="how-connector" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </div>
-          <div class="how-arrow">→</div>
           <div class="how-step">
-            <div class="how-step-icon">🏆</div>
-            <h3 class="how-step-title" data-i18n="how_3_title">3. Révise et progresse</h3>
-            <p class="how-step-desc" data-i18n="how_3_desc">Teste-toi avec le quiz interactif. Les points faibles sont identifiés pour une révision ciblée.</p>
+            <div class="how-step-num">2</div>
+            <div class="how-step-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h3 class="how-step-title" data-i18n="how_2_title">L'IA génère en 45s</h3>
+            <p class="how-step-desc" data-i18n="how_2_desc">Résumé Feynman · fiche de révision · quiz Bloom · flashcards — générés simultanément.</p>
+          </div>
+          <div class="how-connector" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">3</div>
+            <div class="how-step-icon-wrap">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3 class="how-step-title" data-i18n="how_3_title">Révise et progresse</h3>
+            <p class="how-step-desc" data-i18n="how_3_desc">Quiz interactif, flashcards, XP, streaks et classement pour rester motivé.</p>
           </div>
         </div>
       </div>
 
-      <!-- ===== POUR QUI ===== -->
-      <div class="testimonials-section reveal">
-        <h2 class="how-title" data-i18n="who_title">Conçu pour les étudiants sérieux</h2>
-        <div class="testimonials-grid">
-          <div class="testimonial-card">
-            <div class="usecase-icon">📚</div>
-            <h3 class="usecase-title" data-i18n="who_1_title">Lycée & Bac</h3>
-            <p class="testimonial-text" data-i18n="who_1_desc">Transforme n'importe quel cours en fiche de révision structurée. Le quiz progressif teste ta mémorisation avant l'exam.</p>
+      <!-- ===== EXEMPLES RÉELS ===== -->
+      <div class="examples-section reveal">
+        <div class="section-label" data-i18n="ex_label">Preuve concrète</div>
+        <h2 class="how-title" data-i18n="ex_title">Ce que StudyAI génère vraiment</h2>
+        <p class="how-subtitle" data-i18n="ex_subtitle">Voici des exemples réels de contenu généré à partir de cours étudiants.</p>
+        <div class="examples-grid">
+          <div class="example-card">
+            <div class="example-card-head">
+              <span class="example-subject-icon">🧬</span>
+              <div>
+                <div class="example-subject" data-i18n="ex_1_subject">Sciences · Biologie</div>
+                <div class="example-topic" data-i18n="ex_1_topic">La photosynthèse</div>
+              </div>
+            </div>
+            <div class="example-preview">
+              <div class="example-preview-line long"></div>
+              <div class="example-preview-line medium"></div>
+              <div class="example-preview-line short"></div>
+              <div class="example-blur-badge" data-i18n="ex_try">Génère le tien ↗</div>
+            </div>
+            <div class="example-meta">
+              <span class="example-pill">📝 <span data-i18n="ex_summary">Résumé</span></span>
+              <span class="example-pill">🎯 10 quiz</span>
+              <span class="example-pill">🗂️ 8 flashcards</span>
+            </div>
           </div>
-          <div class="testimonial-card">
-            <div class="usecase-icon">🎓</div>
-            <h3 class="usecase-title" data-i18n="who_2_title">Études supérieures</h3>
-            <p class="testimonial-text" data-i18n="who_2_desc">Résume des cours denses en quelques paragraphes clairs. Idéal pour droit, médecine, sciences — n'importe quelle matière.</p>
+          <div class="example-card">
+            <div class="example-card-head">
+              <span class="example-subject-icon">⚖️</span>
+              <div>
+                <div class="example-subject" data-i18n="ex_2_subject">Droit · Constitutionnel</div>
+                <div class="example-topic" data-i18n="ex_2_topic">La Constitution française</div>
+              </div>
+            </div>
+            <div class="example-preview">
+              <div class="example-preview-line long"></div>
+              <div class="example-preview-line long"></div>
+              <div class="example-preview-line medium"></div>
+              <div class="example-blur-badge" data-i18n="ex_try">Génère le tien ↗</div>
+            </div>
+            <div class="example-meta">
+              <span class="example-pill">📝 <span data-i18n="ex_summary">Résumé</span></span>
+              <span class="example-pill">🎯 10 quiz</span>
+              <span class="example-pill">🗂️ 8 flashcards</span>
+            </div>
           </div>
-          <div class="testimonial-card">
-            <div class="usecase-icon">🌍</div>
-            <h3 class="usecase-title" data-i18n="who_3_title">International</h3>
-            <p class="testimonial-text" data-i18n="who_3_desc">Fonctionne dans 20 langues. L'IA génère le contenu dans la langue de ton cours, automatiquement.</p>
+          <div class="example-card">
+            <div class="example-card-head">
+              <span class="example-subject-icon">🫀</span>
+              <div>
+                <div class="example-subject" data-i18n="ex_3_subject">Médecine · Anatomie</div>
+                <div class="example-topic" data-i18n="ex_3_topic">Anatomie du cœur</div>
+              </div>
+            </div>
+            <div class="example-preview">
+              <div class="example-preview-line medium"></div>
+              <div class="example-preview-line long"></div>
+              <div class="example-preview-line short"></div>
+              <div class="example-blur-badge" data-i18n="ex_try">Génère le tien ↗</div>
+            </div>
+            <div class="example-meta">
+              <span class="example-pill">📝 <span data-i18n="ex_summary">Résumé</span></span>
+              <span class="example-pill">🎯 10 quiz</span>
+              <span class="example-pill">🗂️ 8 flashcards</span>
+            </div>
           </div>
+        </div>
+        <div class="examples-cta">
+          <button class="btn-outline-ghost" onclick="document.getElementById('course-input').focus(); window.scrollTo({top:0,behavior:'smooth'})" data-i18n="ex_cta">Essayer maintenant — c'est gratuit →</button>
         </div>
       </div>
 
@@ -403,49 +470,138 @@
 
       <!-- ===== FAQ ===== -->
       <div class="faq-section reveal">
-        <h2 class="faq-title" data-i18n="faq_title">Questions fréquentes</h2>
+        <div class="section-label" data-i18n="faq_label">Questions fréquentes</div>
+        <h2 class="faq-title" data-i18n="faq_title">Tout ce que tu veux savoir</h2>
         <div class="faq-list">
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span data-i18n="faq_q1">Est-ce vraiment gratuit ?</span>
-              <span class="faq-arrow">▼</span>
+              <span data-i18n="faq_q1">C'est vraiment gratuit pour commencer ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </button>
-            <div class="faq-answer"><p data-i18n="faq_a1">Oui ! Le plan gratuit inclut 3 analyses par jour — sans carte bancaire, sans engagement. Le Premium débloque les générations illimitées et l'XP ×2.</p></div>
+            <div class="faq-answer"><p data-i18n="faq_a1">Oui — 3 analyses par jour, sans carte bancaire, sans engagement. Premium débloque les générations illimitées, l'historique et l'XP ×2.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span data-i18n="faq_q2">Quelles matières sont supportées ?</span>
-              <span class="faq-arrow">▼</span>
+              <span data-i18n="faq_q2">Mes documents sont-ils en sécurité ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </button>
-            <div class="faq-answer"><p data-i18n="faq_a2">Toutes. Histoire, biologie, droit, mathématiques, langues, informatique… StudyAI analyse n'importe quel texte dans 20 langues différentes.</p></div>
+            <div class="faq-answer"><p data-i18n="faq_a2">Absolument. Ton cours n'est pas stocké après génération. L'historique est chiffré côté serveur et jamais partagé. Tu peux supprimer ton compte à tout moment.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span data-i18n="faq_q3">Comment fonctionne le quiz adaptatif ?</span>
-              <span class="faq-arrow">▼</span>
+              <span data-i18n="faq_q3">Quelles langues sont supportées ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </button>
-            <div class="faq-answer"><p data-i18n="faq_a3">L'IA génère 10 questions selon la taxonomie de Bloom — du plus simple au plus complexe. Les points faibles sont identifiés pour une révision ciblée.</p></div>
+            <div class="faq-answer"><p data-i18n="faq_a3">20 langues : français, anglais, espagnol, allemand, portugais, italien, chinois, japonais, coréen, indonésien, arabe, thaï, turc, néerlandais, russe, polonais, vietnamien, hindi, ukrainien et portugais brésilien.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span data-i18n="faq_q4">Mes données sont-elles sécurisées ?</span>
-              <span class="faq-arrow">▼</span>
+              <span data-i18n="faq_q4">Quelle différence avec ChatGPT ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </button>
-            <div class="faq-answer"><p data-i18n="faq_a4">Absolument. Ton cours n'est pas stocké après génération. Ton historique est chiffré côté serveur et jamais partagé. Tu peux supprimer ton compte à tout moment.</p></div>
+            <div class="faq-answer"><p data-i18n="faq_a4">ChatGPT est un chatbot généraliste. StudyAI est spécialisé pour la révision — il génère automatiquement un résumé structuré (Feynman), des flashcards et un quiz progressif (Bloom) en un clic, avec gamification, streaks et historique.</p></div>
           </div>
           <div class="faq-item">
             <button type="button" class="faq-question">
-              <span data-i18n="faq_q5">Puis-je annuler le Premium à tout moment ?</span>
-              <span class="faq-arrow">▼</span>
+              <span data-i18n="faq_q5">Puis-je annuler mon abonnement à tout moment ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </button>
-            <div class="faq-answer"><p data-i18n="faq_a5">Oui. Le plan mensuel est sans engagement — tu peux annuler quand tu veux depuis les paramètres. Le plan annuel offre 42% d'économie sur le prix mensuel.</p></div>
+            <div class="faq-answer"><p data-i18n="faq_a5">Oui. Le plan mensuel est sans engagement — annule en un clic depuis ton compte. Le paiement s'effectue via Stripe, 100% sécurisé.</p></div>
+          </div>
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span data-i18n="faq_q6">Sur quels appareils ça marche ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+            </button>
+            <div class="faq-answer"><p data-i18n="faq_a6">Sur tous les navigateurs modernes — ordinateur, tablette et smartphone. L'appli est installable sur Android et iOS (PWA) pour accéder même sans connexion.</p></div>
+          </div>
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span data-i18n="faq_q7">L'IA peut-elle se tromper ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+            </button>
+            <div class="faq-answer"><p data-i18n="faq_a7">Oui — comme tout outil IA, il peut produire des erreurs. Nous recommandons de toujours vérifier les informations critiques avec ton cours original. StudyAI est un outil de révision, pas une source de référence absolue.</p></div>
+          </div>
+          <div class="faq-item">
+            <button type="button" class="faq-question">
+              <span data-i18n="faq_q8">Comment obtenir de l'aide ?</span>
+              <span class="faq-icon-wrap" aria-hidden="true"><svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+            </button>
+            <div class="faq-answer"><p data-i18n="faq_a8">Le bouton support 💬 en bas à droite de l'écran ouvre notre assistant IA disponible 24h/24. Tu peux aussi nous écrire à <a href="mailto:support@studyai.app">support@studyai.app</a>.</p></div>
           </div>
         </div>
       </div>
 
-      <!-- ===== COMPARATIF LIBRE vs PREMIUM ===== -->
-      <div id="pricing" class="compare-section reveal">
-        <h2 class="how-title" data-i18n="compare_title">Gratuit vs Premium</h2>
+      <!-- ===== PRICING SECTION ===== -->
+      <div id="pricing" class="pricing-section reveal">
+        <div class="section-label" data-i18n="pricing_label">Tarifs simples</div>
+        <h2 class="how-title" data-i18n="pricing_title">Choisir mon plan</h2>
+        <p class="how-subtitle" data-i18n="pricing_subtitle">Commence gratuitement — passe Premium quand tu veux.</p>
+        <div class="pricing-cards">
+
+          <div class="pricing-card-v2">
+            <div class="pricing-card-name" data-i18n="plan_free_name">Gratuit</div>
+            <div class="pricing-card-price">
+              <span class="pricing-card-amount">0 €</span>
+            </div>
+            <div class="pricing-card-desc" data-i18n="plan_free_desc">Pour découvrir StudyAI</div>
+            <ul class="pricing-card-features">
+              <li class="pf-ok" data-i18n="pf_free_1">✓ 3 analyses par jour</li>
+              <li class="pf-ok" data-i18n="pf_free_2">✓ Résumé + fiche + quiz</li>
+              <li class="pf-ok" data-i18n="pf_free_3">✓ 20 langues</li>
+              <li class="pf-ok" data-i18n="pf_free_4">✓ Battle Mode</li>
+              <li class="pf-no" data-i18n="pf_free_5">✗ Générations illimitées</li>
+              <li class="pf-no" data-i18n="pf_free_6">✗ Historique & stats</li>
+              <li class="pf-no" data-i18n="pf_free_7">✗ XP ×2</li>
+            </ul>
+            <button class="btn-outline-pricing" onclick="window.location.href='/'" data-i18n="plan_free_cta">Commencer gratuitement</button>
+          </div>
+
+          <div class="pricing-card-v2 pricing-card-v2-featured">
+            <div class="pricing-best-badge" data-i18n="pricing_best">⭐ Meilleur choix</div>
+            <div class="pricing-card-name" data-i18n="plan_monthly_name">Mensuel</div>
+            <div class="pricing-card-price">
+              <span class="pricing-card-amount" data-price-key="monthly">9,99 €</span>
+              <span class="pricing-card-period" data-i18n="plan_per_month">/mois</span>
+            </div>
+            <div class="pricing-card-desc" data-i18n="plan_monthly_desc">Sans engagement · Annulable à tout moment</div>
+            <ul class="pricing-card-features">
+              <li class="pf-ok" data-i18n="pf_pro_1">✓ Générations illimitées</li>
+              <li class="pf-ok" data-i18n="pf_pro_2">✓ Résumé + fiche + quiz</li>
+              <li class="pf-ok" data-i18n="pf_pro_3">✓ 20 langues</li>
+              <li class="pf-ok" data-i18n="pf_pro_4">✓ Historique & statistiques</li>
+              <li class="pf-ok pf-highlight" data-i18n="pf_pro_5">⚡ XP ×2 + missions bonus</li>
+              <li class="pf-ok pf-highlight" data-i18n="pf_pro_6">🔥 Streak protégé</li>
+              <li class="pf-ok" data-i18n="pf_pro_7">✓ Support prioritaire</li>
+            </ul>
+            <button class="btn-primary btn-full" onclick="window.showPremiumModal && window.showPremiumModal()" data-i18n="plan_monthly_cta">Démarrer le Premium</button>
+          </div>
+
+          <div class="pricing-card-v2">
+            <div class="pricing-card-name" data-i18n="plan_yearly_name">À vie</div>
+            <div class="pricing-card-price">
+              <span class="pricing-card-amount" data-price-key="yearly">69,99 €</span>
+              <span class="pricing-card-period" data-i18n="plan_once">une fois</span>
+            </div>
+            <div class="pricing-card-desc" data-i18n="plan_yearly_desc">Paiement unique · Accès permanent</div>
+            <ul class="pricing-card-features">
+              <li class="pf-ok" data-i18n="pf_pro_1">✓ Générations illimitées</li>
+              <li class="pf-ok" data-i18n="pf_pro_2">✓ Résumé + fiche + quiz</li>
+              <li class="pf-ok" data-i18n="pf_pro_3">✓ 20 langues</li>
+              <li class="pf-ok" data-i18n="pf_pro_4">✓ Historique & statistiques</li>
+              <li class="pf-ok pf-highlight" data-i18n="pf_pro_5">⚡ XP ×2 + missions bonus</li>
+              <li class="pf-ok pf-highlight" data-i18n="pf_pro_6">🔥 Streak protégé</li>
+              <li class="pf-ok" data-i18n="pf_lifetime_bonus">✓ Toutes les futures mises à jour</li>
+            </ul>
+            <button class="btn-outline-pricing" onclick="window.showPremiumModal && window.showPremiumModal()" data-i18n="plan_yearly_cta">Acheter à vie</button>
+          </div>
+
+        </div>
+        <p class="pricing-reassurance" data-i18n="pricing_reassure">🔒 Paiement sécurisé par Stripe · Aucune CB requise pour le plan gratuit · Annulation en un clic</p>
+      </div>
+
+      <!-- COMPARATIF LIBRE vs PREMIUM (keep for anchor compatibility) -->
+      <div class="compare-section compare-section-compact reveal">
         <div class="compare-grid">
           <div class="compare-col compare-col-free">
             <div class="compare-header" data-i18n="compare_free_header">Gratuit</div>
@@ -454,10 +610,8 @@
               <li class="compare-ok">✓ Résumé + fiche + quiz</li>
               <li class="compare-ok">✓ Toutes les langues</li>
               <li class="compare-no">✗ Générations illimitées</li>
-              <li class="compare-no">✗ Historique & statistiques</li>
+              <li class="compare-no">✗ Historique &amp; statistiques</li>
               <li class="compare-no">✗ XP ×2 + missions bonus</li>
-              <li class="compare-no">✗ Streak protégé</li>
-              <li class="compare-no">✗ Quiz de consolidation</li>
             </ul>
           </div>
           <div class="compare-col compare-col-premium">
@@ -466,14 +620,11 @@
               <li class="compare-ok">✓ Générations illimitées</li>
               <li class="compare-ok">✓ Résumé + fiche + quiz</li>
               <li class="compare-ok">✓ Toutes les langues</li>
-              <li class="compare-ok">✓ Historique & statistiques</li>
+              <li class="compare-ok">✓ Historique &amp; statistiques</li>
               <li class="compare-ok compare-highlight">⚡ XP ×2 — progression 2× plus rapide</li>
               <li class="compare-ok compare-highlight">🔥 Streak protégé + missions bonus</li>
-              <li class="compare-ok">✓ Quiz de consolidation</li>
             </ul>
-            <button type="button" class="btn-primary btn-full compare-cta" onclick="window.showPremiumModal && window.showPremiumModal()">
-              Commencer — dès <span data-price-key="yearly">69,99 €</span>/an
-            </button>
+            <button type="button" class="btn-primary btn-full compare-cta" onclick="window.showPremiumModal && window.showPremiumModal()" data-i18n="plan_monthly_cta">Démarrer le Premium</button>
           </div>
         </div>
       </div>
@@ -691,15 +842,81 @@
   </div>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <div class="site-footer-inner">
-      <a href="/" class="footer-logo">⚡ StudyAI</a>
-      <nav class="footer-links" aria-label="Liens légaux">
-        <a href="/privacy">Confidentialité</a>
-        <a href="/terms">CGU</a>
-        <a href="mailto:support@studyai.app">Contact</a>
-      </nav>
-      <p class="footer-copy">© 2026 StudyAI — Tous droits réservés</p>
+  <footer class="site-footer site-footer-v2">
+    <div class="site-footer-v2-inner">
+      <div class="footer-col footer-col-brand">
+        <a href="/" class="footer-logo-v2">⚡ StudyAI</a>
+        <p class="footer-tagline" data-i18n="footer_tagline">L'IA de révision pour les étudiants exigeants.</p>
+        <p class="footer-made" data-i18n="footer_made">🇧🇪 Créé en Belgique</p>
+        <div class="footer-social">
+          <a href="#" class="footer-social-link" aria-label="TikTok">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="YouTube">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58a2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--bg)"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title" data-i18n="footer_product">Produit</h4>
+        <nav class="footer-col-links">
+          <a href="/#pricing" data-i18n="footer_pricing">Tarifs</a>
+          <a href="/upload" data-i18n="footer_upload">Analyser un fichier</a>
+          <a href="/battle" data-i18n="footer_battle">Battle Mode</a>
+          <a href="/brain" data-i18n="footer_brain">Second Brain</a>
+          <a href="/dashboard" data-i18n="footer_dashboard">Mon tableau de bord</a>
+        </nav>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title" data-i18n="footer_legal_title">Légal</h4>
+        <nav class="footer-col-links">
+          <a href="/privacy" data-i18n="footer_privacy">Confidentialité</a>
+          <a href="/terms" data-i18n="footer_terms">Conditions d'utilisation</a>
+          <a href="mailto:support@studyai.app" data-i18n="footer_contact">Contact</a>
+        </nav>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title" data-i18n="footer_lang_title">Langue</h4>
+        <div class="footer-lang-wrap">
+          <select id="footer-lang-select" class="footer-lang-select" aria-label="Sélectionner la langue">
+            <option value="fr">🇫🇷 Français</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="pt">🇵🇹 Português</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="ja">🇯🇵 日本語</option>
+            <option value="ko">🇰🇷 한국어</option>
+            <option value="ar">🇸🇦 العربية</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="nl">🇳🇱 Nederlands</option>
+            <option value="pl">🇵🇱 Polski</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="hi">🇮🇳 हिन्दी</option>
+            <option value="vi">🇻🇳 Tiếng Việt</option>
+            <option value="id">🇮🇩 Bahasa Indonesia</option>
+            <option value="th">🇹🇭 ภาษาไทย</option>
+            <option value="uk">🇺🇦 Українська</option>
+          </select>
+        </div>
+        <p class="footer-support-link"><a href="#" onclick="document.querySelector('#support-bot-container button')?.click(); return false" data-i18n="footer_support">💬 Support en ligne</a></p>
+      </div>
+
+    </div>
+    <div class="site-footer-v2-bottom">
+      <p class="footer-copy" data-i18n="footer_copy">© 2026 StudyAI — Tous droits réservés</p>
+      <div class="footer-badges">
+        <span class="footer-badge">🔒 SSL</span>
+        <span class="footer-badge">🛡️ RGPD</span>
+        <span class="footer-badge">⚡ Stripe</span>
+      </div>
     </div>
   </footer>
 
@@ -957,6 +1174,59 @@
           /* ── Text mode: default app.js flow handles it ── */
         }, true);
       }
+    }());
+
+  }());
+
+    /* 5. FAQ accordion (new 8-question version) */
+    (function() {
+      document.querySelectorAll('.faq-question').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var item = btn.closest('.faq-item');
+          var isOpen = item.classList.contains('open');
+          // Close all
+          document.querySelectorAll('.faq-item.open').forEach(function(el) { el.classList.remove('open'); });
+          // Open clicked if it was closed
+          if (!isOpen) item.classList.add('open');
+        });
+      });
+    }());
+
+    /* 6. Scroll reveal — enhanced IntersectionObserver */
+    (function() {
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('revealed'); });
+        return;
+      }
+      var revealObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            // Also reveal children with stagger
+            entry.target.querySelectorAll('.how-step, .example-card, .pricing-card-v2').forEach(function(child) {
+              child.classList.add('revealed');
+            });
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+    }());
+
+    /* 7. Footer lang-select synced with main i18n selector */
+    (function() {
+      var footerSel = document.getElementById('footer-lang-select');
+      if (!footerSel) return;
+      // Sync to current lang
+      if (window.i18n) footerSel.value = window.i18n.currentLang;
+      footerSel.addEventListener('change', function() {
+        if (window.i18n) window.i18n.setLang(this.value);
+        var mainSel = document.getElementById('lang-select');
+        if (mainSel) mainSel.value = this.value;
+      });
+      // Keep footer in sync when main selector changes
+      document.addEventListener('langchange', function() {
+        if (window.i18n) footerSel.value = window.i18n.currentLang;
+      });
     }());
 
   }());
