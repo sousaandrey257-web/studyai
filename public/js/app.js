@@ -86,83 +86,33 @@ const state = {
 }());
 
 // ── Waitlist modal (launch-mode) ──────────────────────────────
-(function () {
-  var _wlOpen = false;
+var _wlOpen = false;
 
-  function _wlEl() { return document.getElementById('modal-waitlist'); }
+window.showWaitlistModal = function () {
+  var modal = document.getElementById('modal-waitlist');
+  if (!modal) return;
+  if (_wlOpen) { _wlOpen = false; }  // reset stuck flag
+  _wlOpen = true;
+  modal.classList.remove('hidden');
+  modal.setAttribute('aria-hidden', 'false');
+  var form = document.getElementById('wl-form');
+  var msg  = document.getElementById('wl-message');
+  if (form) { form.style.display = ''; form.reset(); }
+  if (msg)  { msg.className = 'wl-message hidden'; msg.textContent = ''; }
+  var btn = document.getElementById('wl-submit');
+  if (btn) { btn.disabled = false; btn.textContent = t('wl_btn') || "M'inscrire à la liste"; }
+  var inp = document.getElementById('wl-email');
+  if (inp) { inp.placeholder = t('wl_email_ph') || 'ton@email.com'; setTimeout(function(){ inp.focus(); }, 60); }
+  if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations();
+};
 
-  window.showWaitlistModal = function () {
-    var modal = _wlEl();
-    if (!modal || _wlOpen) return;
-    _wlOpen = true;
-    modal.classList.remove('hidden');
-    modal.setAttribute('aria-hidden', 'false');
-    // Reset form state
-    var form = document.getElementById('wl-form');
-    var msg  = document.getElementById('wl-message');
-    if (form) { form.style.display = ''; form.reset(); }
-    if (msg)  { msg.className = 'wl-message hidden'; msg.textContent = ''; }
-    var btn = document.getElementById('wl-submit');
-    if (btn) { btn.disabled = false; btn.textContent = t('wl_btn') || "M'inscrire à la liste"; }
-    var inp = document.getElementById('wl-email');
-    if (inp) { inp.placeholder = t('wl_email_ph') || 'ton@email.com'; setTimeout(function(){ inp.focus(); }, 60); }
-    // Apply i18n to modal
-    if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations();
-  };
-
-  window.hideWaitlistModal = function () {
-    var modal = _wlEl();
-    if (!modal) return;
-    _wlOpen = false;
-    modal.classList.add('hidden');
-    modal.setAttribute('aria-hidden', 'true');
-  };
-
-  // Close on overlay click
-  document.addEventListener('click', function (e) {
-    var modal = _wlEl();
-    if (modal && !modal.classList.contains('hidden') && e.target === modal) {
-      window.hideWaitlistModal();
-    }
-  });
-
-  // Form submission
-  document.addEventListener('submit', function (e) {
-    if (e.target && e.target.id === 'wl-form') {
-      e.preventDefault();
-      var emailEl = document.getElementById('wl-email');
-      var btn     = document.getElementById('wl-submit');
-      var msg     = document.getElementById('wl-message');
-      var email   = emailEl ? emailEl.value.trim() : '';
-      if (!email) return;
-      if (btn) { btn.disabled = true; btn.textContent = '…'; }
-      fetch('/api/beta/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email }),
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          var form = document.getElementById('wl-form');
-          if (form) form.style.display = 'none';
-          if (msg) {
-            msg.className = 'wl-message wl-success';
-            msg.textContent = data.already
-              ? (t('wl_already') || '✓ Tu es déjà sur la liste !')
-              : (t('wl_thanks')  || '🎉 Merci ! Tu seras prévenu(e) au lancement.');
-          }
-          setTimeout(function () { window.hideWaitlistModal(); }, 3000);
-        })
-        .catch(function () {
-          if (btn) { btn.disabled = false; btn.textContent = t('wl_btn') || "M'inscrire"; }
-          if (msg) {
-            msg.className = 'wl-message wl-error';
-            msg.textContent = '❌ Erreur réseau, réessaie.';
-          }
-        });
-    }
-  });
-}());
+window.hideWaitlistModal = function () {
+  var modal = document.getElementById('modal-waitlist');
+  if (!modal) return;
+  _wlOpen = false;
+  modal.classList.add('hidden');
+  modal.setAttribute('aria-hidden', 'true');
+};
 
 // startCheckout — LAUNCH MODE: shows waitlist modal instead of Stripe redirect.
 // Stripe code is preserved below (commented) for easy reactivation.
@@ -1052,6 +1002,65 @@ document.addEventListener('DOMContentLoaded', function () {
         var plan = btn.dataset.plan;
         if (plan) window.startCheckout(plan);
       }
+    });
+  }());
+
+  // ── Waitlist modal — event wiring ─────────────────────────────
+  (function () {
+    var modal = document.getElementById('modal-waitlist');
+    if (!modal) return;
+    var card   = modal.querySelector('.modal-card');
+    var form   = document.getElementById('wl-form');
+    var closeBtn = document.getElementById('wl-close');
+
+    // Overlay click → close
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) window.hideWaitlistModal();
+    });
+
+    // Stop clicks inside card from closing via overlay
+    if (card) card.addEventListener('click', function (e) { e.stopPropagation(); });
+
+    // Close button
+    if (closeBtn) closeBtn.addEventListener('click', function () { window.hideWaitlistModal(); });
+
+    // Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && _wlOpen) window.hideWaitlistModal();
+    });
+
+    // Form submit
+    if (form) form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var emailEl = document.getElementById('wl-email');
+      var btn     = document.getElementById('wl-submit');
+      var msg     = document.getElementById('wl-message');
+      var email   = emailEl ? emailEl.value.trim() : '';
+      if (!email) return;
+      if (btn) { btn.disabled = true; btn.textContent = '…'; }
+      fetch('/api/beta/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (form) form.style.display = 'none';
+          if (msg) {
+            msg.className = 'wl-message wl-success';
+            msg.textContent = data.already
+              ? (t('wl_already') || '✓ Tu es déjà sur la liste !')
+              : (t('wl_thanks')  || '🎉 Merci ! Tu seras prévenu(e) au lancement.');
+          }
+          setTimeout(function () { window.hideWaitlistModal(); }, 3000);
+        })
+        .catch(function () {
+          if (btn) { btn.disabled = false; btn.textContent = t('wl_btn') || "M'inscrire"; }
+          if (msg) {
+            msg.className = 'wl-message wl-error';
+            msg.textContent = '❌ Erreur réseau, réessaie.';
+          }
+        });
     });
   }());
 

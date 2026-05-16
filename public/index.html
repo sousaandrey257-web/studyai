@@ -893,12 +893,12 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <!-- ===== MODAL WAITLIST ===== -->
   <div id="modal-waitlist" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Liste d'attente">
     <div class="modal-card modal-card-waitlist">
-      <button class="modal-close" type="button" onclick="window.hideWaitlistModal && window.hideWaitlistModal()">✕</button>
+      <button class="modal-close" id="wl-close" type="button">✕</button>
       <div class="modal-icon">🚀</div>
       <h2 class="modal-title" data-i18n="wl_title">Phase de lancement gratuite !</h2>
       <p class="modal-sub" data-i18n="wl_body">StudyAI est en phase de lancement. L'inscription gratuite est totalement fonctionnelle. Les abonnements premium seront activés dans quelques jours.</p>
       <p class="wl-cta-text" data-i18n="wl_cta">Inscris-toi pour être notifié(e) en premier !</p>
-      <form id="wl-form" class="wl-form" onsubmit="return false">
+      <form id="wl-form" class="wl-form">
         <input id="wl-email" class="wl-input" type="email" required autocomplete="email"
           data-i18n-placeholder="wl_email_ph" placeholder="ton@email.com" />
         <button id="wl-submit" class="btn-primary btn-full" type="submit" data-i18n="wl_btn">
@@ -1021,7 +1021,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <!-- i18n must load BEFORE app.js -->
   <script src="js/i18n.js?v=14"></script>
   <script src="js/auth.js?v=5"></script>
-  <script src="js/app.js?v=21"></script>
+  <script src="js/app.js?v=22"></script>
   <script src="js/ui.js?v=2"></script>
   <script src="js/share-card.js?v=1" defer></script>
   <script>
