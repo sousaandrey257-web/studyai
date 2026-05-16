@@ -187,7 +187,7 @@
           ></textarea>
           <div class="example-chips" ontouchstart="">
             <span class="example-chip-label" data-i18n="try_label">Essaie :</span>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_1" data-example="La photosynthèse est le processus par lequel les plantes convertissent l'énergie lumineuse en énergie chimique stockée sous forme de glucose. Elle se déroule dans les chloroplastes grâce à la chlorophylle.
+            <button class="example-chip" ontouchstart="" data-i18n="example_1" data-example="La photosynthèse est le processus par lequel les plantes convertissent l'énergie lumineuse en énergie chimique stockée sous forme de glucose. Elle se déroule dans les chloroplastes grâce à la chlorophylle.
 
 Deux phases principales :
 
@@ -201,7 +201,7 @@ Deux phases principales :
 Facteurs limitants : intensité lumineuse, concentration en CO₂, température, disponibilité en eau.
 
 Importance : base de la chaîne alimentaire, régulation de l'atmosphère terrestre (absorption CO₂, libération O₂), stockage de l'énergie solaire dans la biomasse végétale. Sans photosynthèse, la vie telle que nous la connaissons serait impossible.">Quiz sur la photosynthèse</button>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_2" data-example="La Révolution française (1789-1799) est l'événement fondateur de la France moderne qui renverse la monarchie absolue et établit les principes de Liberté, Égalité, Fraternité.
+            <button class="example-chip" ontouchstart="" data-i18n="example_2" data-example="La Révolution française (1789-1799) est l'événement fondateur de la France moderne qui renverse la monarchie absolue et établit les principes de Liberté, Égalité, Fraternité.
 
 Causes principales :
 - Crise financière de l'État royal
@@ -219,7 +219,7 @@ Causes principales :
 • 9 novembre 1799 : Coup d'État de Napoléon Bonaparte
 
 Conséquences : abolition du système féodal, laïcisation de l'État, modèle républicain exporté en Europe, bases de la France actuelle.">Résume la Révolution française</button>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_3" data-example="Une fraction représente une partie d'un tout. Elle s'écrit a/b où a est le numérateur et b le dénominateur (nombre de parties égales).
+            <button class="example-chip" ontouchstart="" data-i18n="example_3" data-example="Une fraction représente une partie d'un tout. Elle s'écrit a/b où a est le numérateur et b le dénominateur (nombre de parties égales).
 
 Opérations fondamentales :
 
@@ -242,7 +242,7 @@ Nombres mixtes : 2¾ = (2×4+3)/4 = 11/4
 Conversion décimale : 3/4 = 0,75 · 1/3 = 0,333...
 
 Applications pratiques : recettes de cuisine, probabilités, ratios, pourcentages, algèbre.">Explique-moi les fractions</button>
-            <button class="example-chip" ontouchstart="" onclick="useExample(this)" data-i18n="example_4" data-example="La Seconde Guerre mondiale (1939-1945) est le conflit le plus meurtrier de l'histoire humaine (70 à 85 millions de morts).
+            <button class="example-chip" ontouchstart="" data-i18n="example_4" data-example="La Seconde Guerre mondiale (1939-1945) est le conflit le plus meurtrier de l'histoire humaine (70 à 85 millions de morts).
 
 Causes :
 - Montée du nazisme en Allemagne (Hitler au pouvoir en 1933)
@@ -837,8 +837,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <li data-i18n="pf_free_6">✓ Accès au battle mode</li>
             <li data-i18n="pf_free_7">✓ Communauté + leaderboard</li>
           </ul>
-          <button class="btn-secondary btn-full" type="button" data-i18n="plan_free_cta"
-            onclick="window.hidePremiumModal && window.hidePremiumModal(); setTimeout(function(){ var el=document.getElementById('course-input'); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.focus(); } },250)">
+          <button class="btn-secondary btn-full" id="btn-use-free" type="button" data-i18n="plan_free_cta">
             Commencer gratuitement
           </button>
         </div>
@@ -932,7 +931,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       <div class="footer-col">
         <h4 class="footer-col-title" data-i18n="footer_product">Produit</h4>
         <nav class="footer-col-links">
-          <a href="#" onclick="window.showPremiumModal && window.showPremiumModal(); return false;" data-i18n="footer_pricing">Tarifs</a>
+          <a href="#" id="footer-link-pricing" data-i18n="footer_pricing">Tarifs</a>
           <a href="/upload" data-i18n="footer_upload">Analyser un fichier</a>
           <a href="/battle" data-i18n="footer_battle">Battle Mode</a>
           <a href="/brain" data-i18n="footer_brain">Second Brain</a>
@@ -1021,7 +1020,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <!-- i18n must load BEFORE app.js -->
   <script src="js/i18n.js?v=14"></script>
   <script src="js/auth.js?v=5"></script>
-  <script src="js/app.js?v=22"></script>
+  <script src="js/app.js?v=23"></script>
   <script src="js/ui.js?v=2"></script>
   <script src="js/share-card.js?v=1" defer></script>
   <script>

@@ -284,6 +284,36 @@ document.addEventListener('DOMContentLoaded', function () {
   if (btnBack)       btnBack.addEventListener('click', function () { showSection('results'); switchTab('flashcard'); });
   if (btnPremium)    btnPremium.addEventListener('click', function() { window.showPremiumModal(); });
 
+  // Example chips — event delegation (CSP script-src-attr 'none' blocks inline onclick)
+  var exampleChipsContainer = document.querySelector('.example-chips');
+  if (exampleChipsContainer) {
+    exampleChipsContainer.addEventListener('click', function (e) {
+      var chip = e.target.closest('.example-chip');
+      if (chip) window.useExample(chip);
+    });
+  }
+
+  // "Commencer gratuitement" button in premium modal
+  var btnUseFree = document.getElementById('btn-use-free');
+  if (btnUseFree) {
+    btnUseFree.addEventListener('click', function () {
+      if (window.hidePremiumModal) window.hidePremiumModal();
+      setTimeout(function () {
+        var el = document.getElementById('course-input');
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }
+      }, 250);
+    });
+  }
+
+  // Footer "Tarifs" link
+  var footerPricing = document.getElementById('footer-link-pricing');
+  if (footerPricing) {
+    footerPricing.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (window.showPremiumModal) window.showPremiumModal();
+    });
+  }
+
   // ============================================================
   //  GÉNÉRATION
   // ============================================================
