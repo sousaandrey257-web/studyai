@@ -301,6 +301,10 @@
       tab.addEventListener('click', function () { switchAuthTab(tab.dataset.tab); });
     });
 
+    // "Mot de passe oublié ?" — close modal then navigate
+    var forgotLink = _q('auth-forgot-link');
+    if (forgotLink) forgotLink.addEventListener('click', function () { hideAuthModal(); });
+
     var btnDoLogin = _q('btn-do-login');
     if (btnDoLogin) btnDoLogin.addEventListener('click', function () { doLogin(); });
     var btnDoRegister = _q('btn-do-register');

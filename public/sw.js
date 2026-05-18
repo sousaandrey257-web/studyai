@@ -7,7 +7,7 @@
 //    - /api/* routes                     → Network-only (never cache)
 // ============================================================
 
-const CACHE_VERSION = 'studyai-v21';
+const CACHE_VERSION = 'studyai-v22';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const FONT_CACHE    = `${CACHE_VERSION}-fonts`;
 const OFFLINE_URL   = '/offline.html';
@@ -15,7 +15,7 @@ const OFFLINE_URL   = '/offline.html';
 const PRECACHE_URLS = [
   '/',
   '/offline.html',
-  '/css/style.css?v=5',
+  '/css/style.css?v=6',
   '/css/premium.css?v=3',
   '/css/gamification.css?v=2',
   '/css/refresh.css?v=2',
@@ -26,8 +26,8 @@ const PRECACHE_URLS = [
   '/js/perf.js?v=1',
   '/js/fingerprint.js?v=1',
   '/js/pow.js?v=1',
-  '/js/i18n.js?v=14',
-  '/js/auth.js?v=6',
+  '/js/i18n.js?v=15',
+  '/js/auth.js?v=7',
   '/js/app.js?v=24',
   '/js/sfx.js?v=1',
   '/js/ui.js?v=2',

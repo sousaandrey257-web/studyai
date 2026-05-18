@@ -1105,6 +1105,16 @@ body::before {
   margin-top: 4px;
 }
 .auth-note { text-align: center; font-size: 0.72rem; color: var(--text-subtle); margin-top: 16px; }
+.auth-forgot-link {
+  display: block;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-subtle);
+  text-decoration: none;
+  margin-top: -4px;
+  transition: color 0.15s;
+}
+.auth-forgot-link:hover { color: var(--primary-light); text-decoration: underline; }
 
 /* ============================================================
    MODAL HISTORIQUE
