@@ -85,12 +85,12 @@
       <!-- Sélecteur de langue -->
       <!-- Zone auth -->
       <div id="auth-zone" class="auth-zone">
-        <button id="btn-login" class="btn-secondary-small" onclick="showAuthModal()" data-i18n="btn_login">Connexion</button>
+        <button id="btn-login" class="btn-secondary-small" data-i18n="btn_login">Connexion</button>
         <div id="user-zone" class="user-zone hidden">
           <a href="/dashboard" class="btn-icon-small" title="Mon espace">📊</a>
-          <button id="btn-history" class="btn-icon-small" onclick="showHistoryModal()" title="Historique rapide">📚</button>
+          <button id="btn-history" class="btn-icon-small" title="Historique rapide">📚</button>
           <span id="user-email-label" class="user-email-label"></span>
-          <button class="btn-text-small" onclick="doLogout()" data-i18n="btn_logout">Déco</button>
+          <button id="btn-logout" class="btn-text-small" data-i18n="btn_logout">Déco</button>
         </div>
       </div>
       <select id="lang-select" class="lang-select">
@@ -500,7 +500,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           </div>
         </div>
         <div class="examples-cta">
-          <button class="btn-outline-ghost" onclick="document.getElementById('course-input').focus(); window.scrollTo({top:0,behavior:'smooth'})" data-i18n="ex_cta">Essayer maintenant — c'est gratuit →</button>
+          <button id="btn-compare-cta" class="btn-outline-ghost" data-i18n="ex_cta">Essayer maintenant — c'est gratuit →</button>
         </div>
       </div>
 
@@ -667,8 +667,8 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <div class="guest-nudge-text">
             <strong>💾 Sauvegarde ce résultat</strong> — crée un compte gratuit pour l'historique, l'XP et le streak
           </div>
-          <button class="guest-nudge-cta" onclick="openRegisterModal()" data-i18n="guest_nudge_cta">Créer mon compte →</button>
-          <button class="guest-nudge-close" onclick="dismissGuestNudge()" aria-label="Fermer">✕</button>
+          <button id="guest-nudge-cta" class="guest-nudge-cta" data-i18n="guest_nudge_cta">Créer mon compte →</button>
+          <button id="guest-nudge-close" class="guest-nudge-close" aria-label="Fermer">✕</button>
         </div>
       </div>
 
@@ -684,7 +684,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <div class="result-card">
           <div class="result-card-header">
             <h2 class="result-title" data-i18n="title_summary">Résumé</h2>
-            <button class="btn-copy" data-i18n="copy_btn" onclick="copyText('summary-text')">Copier</button>
+            <button id="btn-copy-summary" class="btn-copy" data-i18n="copy_btn">Copier</button>
           </div>
           <p id="summary-text" class="summary-text"></p>
         </div>
@@ -695,7 +695,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <div class="result-card">
           <div class="result-card-header">
             <h2 class="result-title" data-i18n="title_flashcard">Fiche de révision</h2>
-            <button class="btn-copy" data-i18n="copy_btn" onclick="copyFlashcard()">Copier</button>
+            <button id="btn-copy-flashcard" class="btn-copy" data-i18n="copy_btn">Copier</button>
           </div>
           <ul id="flashcard-list" class="flashcard-list"></ul>
         </div>
@@ -739,7 +739,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       <!-- Zone question ouverte -->
       <div id="quiz-open-zone" class="quiz-open-zone hidden">
         <textarea id="quiz-open-input" class="quiz-open-input" data-i18n-ph="quiz_open_ph" placeholder="Rédige ta réponse ici…" rows="4"></textarea>
-        <button id="btn-reveal-answer" class="btn-secondary" onclick="revealAnswer()" data-i18n="quiz_reveal_btn">Voir la réponse modèle 👁</button>
+        <button id="btn-reveal-answer" class="btn-secondary" data-i18n="quiz_reveal_btn">Voir la réponse modèle 👁</button>
       </div>
 
       <div id="quiz-explanation" class="quiz-explanation hidden">
@@ -750,8 +750,8 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       <div id="quiz-self-assess" class="quiz-self-assess hidden">
         <p class="self-assess-label" data-i18n="self_assess_label">Tu avais bon ?</p>
         <div class="self-assess-buttons">
-          <button class="btn-self-correct" onclick="selfAssess(true)" data-i18n="self_assess_yes">✓ Oui, j'avais bon</button>
-          <button class="btn-self-wrong" onclick="selfAssess(false)" data-i18n="self_assess_no">✗ Non, j'avais faux</button>
+          <button id="btn-self-correct" class="btn-self-correct" data-i18n="self_assess_yes">✓ Oui, j'avais bon</button>
+          <button id="btn-self-wrong" class="btn-self-wrong" data-i18n="self_assess_no">✗ Non, j'avais faux</button>
         </div>
       </div>
 
@@ -771,31 +771,31 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <button id="btn-retry-quiz"   class="btn-secondary" data-i18n="quiz_retry">Recommencer le quiz</button>
           <button id="btn-back-results" class="btn-primary"   data-i18n="quiz_back">Voir la fiche ✓</button>
         </div>
-        <button id="btn-consolidate" class="btn-consolidate hidden" onclick="startConsolidation()">🎯 Renforcer les points faibles</button>
+        <button id="btn-consolidate" class="btn-consolidate hidden">🎯 Renforcer les points faibles</button>
       </div>
     </section>
   </main>
 
   <!-- ===== MODAL AUTH ===== -->
-  <div id="modal-auth" class="modal-overlay hidden" onclick="closeAuthModal(event)">
+  <div id="modal-auth" class="modal-overlay hidden">
     <div class="modal-card modal-card-auth">
-      <button class="modal-close" onclick="hideAuthModal()">✕</button>
+      <button id="auth-modal-close" class="modal-close">✕</button>
 
       <div class="auth-tabs">
-        <button class="auth-tab active" data-tab="login"    onclick="switchAuthTab('login')"    data-i18n="auth_login_tab">Connexion</button>
-        <button class="auth-tab"        data-tab="register" onclick="switchAuthTab('register')" data-i18n="auth_register_tab">Créer un compte</button>
+        <button class="auth-tab active" data-tab="login"    data-i18n="auth_login_tab">Connexion</button>
+        <button class="auth-tab"        data-tab="register" data-i18n="auth_register_tab">Créer un compte</button>
       </div>
 
       <form id="form-login" class="auth-form" onsubmit="return false">
         <input type="email"    id="login-email"    class="auth-input" placeholder="Email"          autocomplete="email" />
         <input type="password" id="login-password" class="auth-input" data-i18n-ph="auth_pass_ph" placeholder="Mot de passe"   autocomplete="current-password" />
-        <button type="button" class="btn-primary btn-full" onclick="doLogin()" data-i18n="auth_login_btn">Se connecter</button>
+        <button id="btn-do-login" type="button" class="btn-primary btn-full" data-i18n="auth_login_btn">Se connecter</button>
       </form>
 
       <form id="form-register" class="auth-form hidden" onsubmit="return false">
         <input type="email"    id="register-email"    class="auth-input" placeholder="Email"                          autocomplete="email" />
         <input type="password" id="register-password" class="auth-input" data-i18n-ph="auth_pass_new_ph" placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password" />
-        <button type="button" class="btn-primary btn-full" onclick="doRegister()" data-i18n="auth_register_btn">Créer mon compte</button>
+        <button id="btn-do-register" type="button" class="btn-primary btn-full" data-i18n="auth_register_btn">Créer mon compte</button>
       </form>
 
       <p id="auth-error" class="auth-error hidden"></p>
@@ -804,9 +804,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   </div>
 
   <!-- ===== MODAL HISTORIQUE ===== -->
-  <div id="modal-history" class="modal-overlay hidden" onclick="closeHistoryModal(event)">
+  <div id="modal-history" class="modal-overlay hidden">
     <div class="modal-card modal-card-history">
-      <button class="modal-close" onclick="hideHistoryModal()">✕</button>
+      <button id="history-modal-close" class="modal-close">✕</button>
       <h2 class="modal-title" data-i18n="history_title">📚 Mon historique</h2>
       <p id="history-empty" class="history-empty hidden">Aucune session sauvegardée pour l'instant.<br><span style="font-size:0.82rem">Génère du contenu pour remplir ton cahier.</span></p>
       <div id="history-list" class="history-list"></div>
@@ -857,8 +857,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <li data-i18n="pf_pro_6">🔥 Streak protégé</li>
             <li data-i18n="pf_pro_7">✓ Support prioritaire</li>
           </ul>
-          <button class="btn-primary btn-full btn-checkout" type="button" data-plan="monthly" data-i18n="plan_monthly_cta"
-            onclick="window.startCheckout && window.startCheckout('monthly')">
+          <button class="btn-primary btn-full btn-checkout" type="button" data-plan="monthly" data-i18n="plan_monthly_cta">
             Démarrer le Premium
           </button>
         </div>
@@ -877,8 +876,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <li data-i18n="pf_pro_6">🔥 Streak protégé</li>
             <li data-i18n="pf_lifetime_bonus">🎁 Bonus à vie : nouvelles features avant tout le monde</li>
           </ul>
-          <button class="btn-secondary btn-full btn-checkout" type="button" data-plan="yearly" data-i18n="plan_yearly_cta"
-            onclick="window.startCheckout && window.startCheckout('yearly')">
+          <button class="btn-secondary btn-full btn-checkout" type="button" data-plan="yearly" data-i18n="plan_yearly_cta">
             Acheter à vie
           </button>
         </div>
@@ -973,7 +971,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <option value="uk">🇺🇦 Українська</option>
           </select>
         </div>
-        <p class="footer-support-link"><a href="#" onclick="document.querySelector('#support-bot-container button')?.click(); return false" data-i18n="footer_support">💬 Support en ligne</a></p>
+        <p class="footer-support-link"><a href="#" id="footer-link-support" data-i18n="footer_support">💬 Support en ligne</a></p>
       </div>
 
     </div>
@@ -1001,11 +999,11 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <span class="bottom-nav-icon">📄</span>
         <span>Auto Study</span>
       </a>
-      <button class="bottom-nav-item" data-page="/dashboard" onclick="window.location='/dashboard'">
+      <button id="bottom-nav-dashboard" class="bottom-nav-item" data-page="/dashboard">
         <span class="bottom-nav-icon">📊</span>
         <span data-i18n="nav_space">Espace</span>
       </button>
-      <button class="bottom-nav-item" onclick="showAuthModal()">
+      <button id="bottom-nav-account" class="bottom-nav-item">
         <span class="bottom-nav-icon">👤</span>
         <span data-i18n="nav_account">Compte</span>
       </button>
@@ -1019,8 +1017,8 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <script src="js/pow.js?v=1" defer></script>
   <!-- i18n must load BEFORE app.js -->
   <script src="js/i18n.js?v=14"></script>
-  <script src="js/auth.js?v=5"></script>
-  <script src="js/app.js?v=23"></script>
+  <script src="js/auth.js?v=6"></script>
+  <script src="js/app.js?v=24"></script>
   <script src="js/ui.js?v=2"></script>
   <script src="js/share-card.js?v=1" defer></script>
   <script>

@@ -314,6 +314,76 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // ── Buttons wired via addEventListener (CSP blocks inline onclick) ──
+  (function () {
+    var _q = function (id) { return document.getElementById(id); };
+
+    // "Essayer maintenant" CTA in compare section
+    var btnCompareCta = _q('btn-compare-cta');
+    if (btnCompareCta) btnCompareCta.addEventListener('click', function () {
+      var el = document.getElementById('course-input');
+      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }
+    });
+
+    // Guest nudge
+    var guestNudgeCta = _q('guest-nudge-cta');
+    if (guestNudgeCta) guestNudgeCta.addEventListener('click', function () {
+      if (window.openRegisterModal) window.openRegisterModal();
+    });
+    var guestNudgeClose = _q('guest-nudge-close');
+    if (guestNudgeClose) guestNudgeClose.addEventListener('click', function () {
+      if (window.dismissGuestNudge) window.dismissGuestNudge();
+    });
+
+    // Copy buttons
+    var btnCopySummary = _q('btn-copy-summary');
+    if (btnCopySummary) btnCopySummary.addEventListener('click', function () {
+      if (window.copyText) window.copyText('summary-text');
+    });
+    var btnCopyFlashcard = _q('btn-copy-flashcard');
+    if (btnCopyFlashcard) btnCopyFlashcard.addEventListener('click', function () {
+      if (window.copyFlashcard) window.copyFlashcard();
+    });
+
+    // Quiz open-ended buttons
+    var btnReveal = _q('btn-reveal-answer');
+    if (btnReveal) btnReveal.addEventListener('click', function () {
+      if (window.revealAnswer) window.revealAnswer();
+    });
+    var btnSelfCorrect = _q('btn-self-correct');
+    if (btnSelfCorrect) btnSelfCorrect.addEventListener('click', function () {
+      if (window.selfAssess) window.selfAssess(true);
+    });
+    var btnSelfWrong = _q('btn-self-wrong');
+    if (btnSelfWrong) btnSelfWrong.addEventListener('click', function () {
+      if (window.selfAssess) window.selfAssess(false);
+    });
+
+    // Consolidation
+    var btnConsolidate = _q('btn-consolidate');
+    if (btnConsolidate) btnConsolidate.addEventListener('click', function () {
+      if (window.startConsolidation) window.startConsolidation();
+    });
+
+    // Bottom nav
+    var bottomNavDash = _q('bottom-nav-dashboard');
+    if (bottomNavDash) bottomNavDash.addEventListener('click', function () {
+      window.location.href = '/dashboard';
+    });
+    var bottomNavAccount = _q('bottom-nav-account');
+    if (bottomNavAccount) bottomNavAccount.addEventListener('click', function () {
+      if (window.showAuthModal) window.showAuthModal();
+    });
+
+    // Footer support link
+    var footerSupport = _q('footer-link-support');
+    if (footerSupport) footerSupport.addEventListener('click', function (e) {
+      e.preventDefault();
+      var btn = document.querySelector('#support-bot-container button');
+      if (btn) btn.click();
+    });
+  }());
+
   // ============================================================
   //  GÉNÉRATION
   // ============================================================

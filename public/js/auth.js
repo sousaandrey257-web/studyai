@@ -272,10 +272,55 @@
       window.history.replaceState({}, '', '/');
       setTimeout(function () { window.showAuthModal && window.showAuthModal(); }, 200);
     }
-
-    // Si déjà connecté et redirigé depuis /dashboard, aller au dashboard directement
     if (params.get('login') === '1' && auth.isLoggedIn()) {
       window.history.replaceState({}, '', '/');
     }
+
+    // ── Buttons wired via addEventListener (CSP blocks inline onclick) ──
+    var _q = function (id) { return document.getElementById(id); };
+
+    // Nav header
+    var btnLogin = _q('btn-login');
+    if (btnLogin) btnLogin.addEventListener('click', function () { showAuthModal(); });
+    var btnHistory = _q('btn-history');
+    if (btnHistory) btnHistory.addEventListener('click', function () { showHistoryModal(); });
+    var btnLogout = _q('btn-logout');
+    if (btnLogout) btnLogout.addEventListener('click', function () { doLogout(); });
+
+    // Auth modal — overlay, close, tabs, submit buttons
+    var modalAuth = _q('modal-auth');
+    if (modalAuth) {
+      modalAuth.addEventListener('click', function (e) {
+        if (e.target === modalAuth) hideAuthModal();
+      });
+    }
+    var authClose = _q('auth-modal-close');
+    if (authClose) authClose.addEventListener('click', function () { hideAuthModal(); });
+
+    document.querySelectorAll('.auth-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () { switchAuthTab(tab.dataset.tab); });
+    });
+
+    var btnDoLogin = _q('btn-do-login');
+    if (btnDoLogin) btnDoLogin.addEventListener('click', function () { doLogin(); });
+    var btnDoRegister = _q('btn-do-register');
+    if (btnDoRegister) btnDoRegister.addEventListener('click', function () { doRegister(); });
+
+    // History modal — overlay, close
+    var modalHistory = _q('modal-history');
+    if (modalHistory) {
+      modalHistory.addEventListener('click', function (e) {
+        if (e.target === modalHistory) hideHistoryModal();
+      });
+    }
+    var historyClose = _q('history-modal-close');
+    if (historyClose) historyClose.addEventListener('click', function () { hideHistoryModal(); });
+
+    // Escape key closes whichever modal is open
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (modalAuth && !modalAuth.classList.contains('hidden')) hideAuthModal();
+      if (modalHistory && !modalHistory.classList.contains('hidden')) hideHistoryModal();
+    });
   });
 })();
