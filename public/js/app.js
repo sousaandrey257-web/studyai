@@ -1297,4 +1297,32 @@ document.addEventListener('DOMContentLoaded', function () {
   // Expose showToast globalement pour les boutons onclick inline
   window.showToast = showToast;
 
+  // ── FAQ accordéon ─────────────────────────────────────────────
+  document.addEventListener('click', function (e) {
+    var question = e.target.closest('.faq-question');
+    if (!question) return;
+    var item = question.closest('.faq-item');
+    if (!item) return;
+    var answer = item.querySelector('.faq-answer');
+    if (!answer) return;
+    var isOpen = item.classList.contains('open');
+
+    // Ferme tous les autres
+    document.querySelectorAll('.faq-item.open').forEach(function (other) {
+      if (other === item) return;
+      other.classList.remove('open');
+      var otherAns = other.querySelector('.faq-answer');
+      if (otherAns) otherAns.style.maxHeight = '0';
+    });
+
+    // Toggle l'item courant
+    if (isOpen) {
+      item.classList.remove('open');
+      answer.style.maxHeight = '0';
+    } else {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  });
+
 }); // fin DOMContentLoaded
