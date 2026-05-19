@@ -65,7 +65,7 @@
   <link rel="stylesheet" href="css/style.css?v=6" />
   <link rel="stylesheet" href="css/gamification.css?v=2" />
   <link rel="stylesheet" href="css/premium.css?v=3" />
-  <link rel="stylesheet" href="css/refresh.css?v=2" />
+  <link rel="stylesheet" href="css/refresh.css?v=3" />
 </head>
 <body>
 
@@ -129,35 +129,16 @@
           <span data-i18n="hero_badge">Propulsé par IA — gratuit pour commencer</span>
         </div>
         <h1 class="hero-title">
-          <span data-i18n="hero_title_1">Transforme n'importe quel cours</span><br />
-          <span class="gradient-text" data-i18n="hero_title_2">en fiche + quiz en 45 secondes</span>
+          <span data-i18n="hero_title_1">Tes cours en quiz</span><br />
+          <span class="gradient-text" data-i18n="hero_title_2">+ fiches en 45 secondes</span>
         </h1>
         <p class="hero-sub" data-i18n="hero_sub">
-          Droit, médecine, sciences, histoire… Colle ton cours ci-dessous.
+          L'IA fait le travail. Toi tu révises.
         </p>
 
         <!-- Rotating words strip -->
         <div class="hero-rotating-strip">
           <span class="rotating-static" data-i18n="rotating_prefix">Conçu pour </span><span class="hero-rotating-word" id="hero-rotating">réviser plus vite</span>
-        </div>
-
-        <div class="product-highlights">
-          <div class="highlight-chip">
-            <span class="highlight-icon">🤖</span>
-            <span data-i18n="highlight_1">Llama 3.3 · 70 milliards de paramètres</span>
-          </div>
-          <div class="highlight-chip">
-            <span class="highlight-icon">📚</span>
-            <span data-i18n="highlight_2">Droit, médecine, sciences et plus</span>
-          </div>
-          <div class="highlight-chip">
-            <span class="highlight-icon">🇧🇪</span>
-            <span data-i18n="highlight_3">Créé en Belgique</span>
-          </div>
-          <div class="highlight-chip">
-            <span class="highlight-icon">🎓</span>
-            <span data-i18n="highlight_4">Méthodes Feynman &amp; Bloom</span>
-          </div>
         </div>
       </div>
 
@@ -347,29 +328,6 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <div class="trust-item"><span class="trust-icon">🌍</span> <span data-i18n="trust_4">20 langues</span></div>
       </div>
 
-      <!-- ===== STATS STRIP ===== -->
-      <div class="stats-strip reveal">
-        <div class="stat-item">
-          <span class="stat-value">3-en-1</span>
-          <span class="stat-label" data-i18n="stat_label_1">résumé · fiche · quiz</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value">20</span>
-          <span class="stat-label" data-i18n="stat_label_2">langues</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value">Bloom</span>
-          <span class="stat-label" data-i18n="stat_label_3">taxonomie progressive</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value">Gratuit</span>
-          <span class="stat-label" data-i18n="stat_label_4">pour commencer</span>
-        </div>
-      </div>
-
       <!-- ===== STATS ANIMÉES ===== -->
       <div class="stats-v2 reveal" id="stats-v2">
         <div class="stat-v2">
@@ -398,8 +356,8 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <div class="section-label" data-i18n="how_label">Simple &amp; rapide</div>
         <h2 class="how-title" data-i18n="how_title">Comment ça marche</h2>
         <p class="how-subtitle" data-i18n="how_subtitle">Trois étapes, zéro configuration.</p>
-        <div class="how-steps">
-          <div class="how-step">
+        <div class="how-steps" id="how-steps">
+          <div class="how-step how-step-anim">
             <div class="how-step-num">1</div>
             <div class="how-step-icon-wrap">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -410,7 +368,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <div class="how-connector" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </div>
-          <div class="how-step">
+          <div class="how-step how-step-anim">
             <div class="how-step-num">2</div>
             <div class="how-step-icon-wrap">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -421,7 +379,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <div class="how-connector" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </div>
-          <div class="how-step">
+          <div class="how-step how-step-anim">
             <div class="how-step-num">3</div>
             <div class="how-step-icon-wrap">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -429,6 +387,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <h3 class="how-step-title" data-i18n="how_3_title">Révise et progresse</h3>
             <p class="how-step-desc" data-i18n="how_3_desc">Quiz interactif, flashcards, XP, streaks et classement pour rester motivé.</p>
           </div>
+        </div>
+        <div class="how-cta">
+          <button id="btn-see-example" class="btn-outline-ghost" data-i18n="how_try_btn">Voir un exemple →</button>
         </div>
       </div>
 
@@ -1017,9 +978,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <script src="js/fingerprint.js?v=1" defer></script>
   <script src="js/pow.js?v=1" defer></script>
   <!-- i18n must load BEFORE app.js -->
-  <script src="js/i18n.js?v=15"></script>
+  <script src="js/i18n.js?v=16"></script>
   <script src="js/auth.js?v=7"></script>
-  <script src="js/app.js?v=24"></script>
+  <script src="js/app.js?v=25"></script>
   <script src="js/ui.js?v=2"></script>
   <script src="js/share-card.js?v=1" defer></script>
   <script>

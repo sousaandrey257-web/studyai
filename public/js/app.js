@@ -384,6 +384,43 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }());
 
+  // ── "Voir un exemple" → scroll to btn-generate + pulse ───────
+  var btnSeeExample = document.getElementById('btn-see-example');
+  if (btnSeeExample) {
+    btnSeeExample.addEventListener('click', function () {
+      var btnGen = document.getElementById('btn-generate');
+      if (!btnGen) return;
+      btnGen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function () {
+        btnGen.classList.add('btn-pulse');
+        setTimeout(function () { btnGen.classList.remove('btn-pulse'); }, 1400);
+      }, 600);
+    });
+  }
+
+  // ── How-it-works steps — animate in on scroll ────────────────
+  (function () {
+    var steps = document.querySelectorAll('.how-step-anim');
+    if (!steps.length || !window.IntersectionObserver) {
+      steps.forEach(function (s) { s.classList.add('how-step-visible'); });
+      return;
+    }
+    var triggered = false;
+    var obs = new IntersectionObserver(function (entries) {
+      if (triggered) return;
+      if (!entries[0].isIntersecting) return;
+      triggered = true;
+      obs.disconnect();
+      steps.forEach(function (step, i) {
+        setTimeout(function () {
+          step.classList.add('how-step-visible');
+        }, i * 200);
+      });
+    }, { threshold: 0.15 });
+    var container = document.getElementById('how-steps');
+    if (container) obs.observe(container);
+  }());
+
   // ============================================================
   //  GÉNÉRATION
   // ============================================================

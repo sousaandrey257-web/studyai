@@ -537,10 +537,6 @@
   opacity: 1;
   transform: translateY(0);
 }
-/* Stagger for how-steps */
-.how-step:nth-child(1) { transition-delay: 0.05s; }
-.how-step:nth-child(3) { transition-delay: 0.15s; }
-.how-step:nth-child(5) { transition-delay: 0.25s; }
 /* Stagger for example cards */
 .example-card:nth-child(1) { transition-delay: 0.05s; }
 .example-card:nth-child(2) { transition-delay: 0.12s; }
@@ -549,6 +545,55 @@
 .pricing-card-v2:nth-child(1) { transition-delay: 0.0s; }
 .pricing-card-v2:nth-child(2) { transition-delay: 0.08s; }
 .pricing-card-v2:nth-child(3) { transition-delay: 0.16s; }
+
+/* ════════════════════════════════════════════════
+   HOW-IT-WORKS — step-by-step scroll animation
+   ════════════════════════════════════════════════ */
+.how-step-anim {
+  opacity: 0;
+  transform: translateY(32px) scale(0.96);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.how-step-anim.how-step-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+/* Number badge pops in with a spring bounce */
+.how-step-anim .how-step-num {
+  opacity: 0;
+  transform: translateX(-50%) scale(0.4);
+  transition: opacity 0.35s ease 0.25s,
+              transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s;
+}
+.how-step-anim.how-step-visible .how-step-num {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+/* Progressive violet → rose gradient on step numbers */
+.how-step-anim:nth-of-type(1) .how-step-num,
+.how-step:nth-child(1) .how-step-num { background: linear-gradient(135deg, #7c3aed, #6366f1); }
+.how-step-anim:nth-of-type(2) .how-step-num,
+.how-step:nth-child(3) .how-step-num { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.how-step-anim:nth-of-type(3) .how-step-num,
+.how-step:nth-child(5) .how-step-num { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+
+/* "Voir un exemple" CTA */
+.how-cta {
+  margin-top: 32px;
+  text-align: center;
+}
+
+/* ════════════════════════════════════════════════
+   BTN-GENERATE — pulse effect on arrival
+   ════════════════════════════════════════════════ */
+@keyframes btn-pulse-ring {
+  0%   { box-shadow: 0 4px 20px rgba(124,58,237,0.35), 0 0 0 0 rgba(124,58,237,0.4); }
+  50%  { box-shadow: 0 4px 28px rgba(124,58,237,0.55), 0 0 0 10px rgba(124,58,237,0); }
+  100% { box-shadow: 0 4px 20px rgba(124,58,237,0.35), 0 0 0 0 rgba(124,58,237,0); }
+}
+#btn-generate.btn-pulse {
+  animation: btn-pulse-ring 0.65s ease-out 2;
+}
 
 /* ════════════════════════════════════════════════
    BTN-GENERATE gradient upgrade
