@@ -154,6 +154,69 @@ window.startCheckout = async function (plan) {
 */
 
 // ============================================================
+//  CAROUSEL ROTATIF — 24 éléments × 20 langues
+// ============================================================
+const ROTATING_GRID_ITEMS = [
+  { icon: '⚖️',  key: 'subj_law' },
+  { icon: '⚕️',  key: 'subj_medicine' },
+  { icon: '🔬',  key: 'subj_science' },
+  { icon: '📊',  key: 'subj_math' },
+  { icon: '📜',  key: 'subj_history' },
+  { icon: '🌍',  key: 'subj_geography' },
+  { icon: '💻',  key: 'subj_cs' },
+  { icon: '📖',  key: 'subj_literature' },
+  { icon: '🇬🇧', key: 'subj_english' },
+  { icon: '🧠',  key: 'subj_philosophy' },
+  { icon: '💼',  key: 'subj_economics' },
+  { icon: '🧬',  key: 'subj_biology' },
+  { icon: '📝',  key: 'use_exam' },
+  { icon: '🎙️', key: 'use_oral' },
+  { icon: '✏️',  key: 'use_test' },
+  { icon: '📚',  key: 'use_revision' },
+  { icon: '📋',  key: 'feat_summary' },
+  { icon: '🃏',  key: 'feat_flashcards' },
+  { icon: '❓',  key: 'feat_quiz' },
+  { icon: '🎮',  key: 'feat_battle' },
+  { icon: '🚀',  key: 'tech_llama' },
+  { icon: '🌐',  key: 'tech_languages' },
+  { icon: '🎯',  key: 'tech_feynman' },
+  { icon: '🇧🇪', key: 'tech_belgium' },
+];
+
+(function () {
+  function rgText(key) {
+    return (window.i18n && window.i18n.t) ? window.i18n.t(key) : key;
+  }
+  function rgShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+  function renderGrid() {
+    var grid = document.getElementById('rotatingGrid');
+    if (!grid) return;
+    var items = rgShuffle(ROTATING_GRID_ITEMS).slice(0, 6);
+    grid.innerHTML = items.map(function (item) {
+      var label = rgText(item.key);
+      return '<div class="grid-chip"><span class="chip-icon">' + item.icon +
+             '</span><span class="chip-label">' + label + '</span></div>';
+    }).join('');
+  }
+  window._rgRender = renderGrid;
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('rotatingGrid')) return;
+    renderGrid();
+    setInterval(renderGrid, 3000);
+  });
+  document.addEventListener('langchange', function () {
+    if (window._rgRender) window._rgRender();
+  });
+}());
+
+// ============================================================
 //  DÉMARRAGE — s'exécute dès que la page est chargée
 // ============================================================
 document.addEventListener('DOMContentLoaded', function () {
