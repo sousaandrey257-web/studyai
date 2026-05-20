@@ -187,7 +187,7 @@ const translations = {
     char_count_of:          "{n} / 20 000",
     how_label:              "Simple & rapide",
     how_subtitle:           "Trois étapes, zéro configuration.",
-    rotating_prefix:        "Conçu pour ",
+    rotating_prefix:        'Conçu pour ',
     ex_label:               "Exemples de génération",
     ex_title:               "Ce que StudyAI génère vraiment",
     ex_subtitle:            "Voici 3 exemples de ce que l'IA peut générer pour t'aider à réviser.",
@@ -293,6 +293,7 @@ const translations = {
     history_empty_1: "Aucune session sauvegardée pour l'instant.",
     history_empty_2: 'Génère du contenu pour remplir ton cahier.',
     transcript_loading: 'Récupération du transcript…',
+    rotating_words:        "réviser plus efficacement|maîtriser n'importe quelle matière|réussir ses examens|transformer tes cours en quiz|gagner du temps de révision",
   },
 
   // ----------------------------------------------------------
@@ -476,7 +477,7 @@ const translations = {
     char_count_of:          "{n} / 20,000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Designed for ',
     ex_label:               "Generation examples",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Here are 3 examples of what the AI can generate to help you study.",
@@ -582,6 +583,7 @@ const translations = {
     history_empty_1: 'No saved session yet.',
     history_empty_2: 'Generate content to fill your notebook.',
     transcript_loading: 'Fetching transcript…',
+    rotating_words:        "study more efficiently|master any subject|ace your exams|turn notes into quizzes|save revision time",
   },
 
   // ----------------------------------------------------------
@@ -754,7 +756,7 @@ const translations = {
     char_count_of:          "{n} / 20 000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Diseñado para ',
     ex_label:               "Ejemplos de generación",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Aquí tienes 3 ejemplos de lo que la IA puede generar para ayudarte a estudiar.",
@@ -871,6 +873,7 @@ const translations = {
     history_empty_1: 'Ninguna sesión guardada por ahora.',
     history_empty_2: 'Genera contenido para llenar tu cuaderno.',
     transcript_loading: 'Obteniendo transcripción…',
+    rotating_words:        "estudiar más eficientemente|dominar cualquier materia|aprobar tus exámenes|convertir apuntes en quizzes|ahorrar tiempo de estudio",
   },
 
   // ----------------------------------------------------------
@@ -1043,7 +1046,7 @@ const translations = {
     char_count_of:          "{n} / 20.000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Entwickelt für ',
     ex_label:               "Generierungsbeispiele",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Hier sind 3 Beispiele, was die KI für dich generieren kann.",
@@ -1160,6 +1163,7 @@ const translations = {
     history_empty_1: 'Noch keine gespeicherte Sitzung.',
     history_empty_2: 'Erstelle Inhalte, um dein Notizbuch zu füllen.',
     transcript_loading: 'Transkript wird abgerufen…',
+    rotating_words:        "effektiver lernen|jedes Fach meistern|Prüfungen bestehen|Notizen in Quiz umwandeln|Lernzeit sparen",
   },
 
   // ----------------------------------------------------------
@@ -1358,7 +1362,7 @@ const translations = {
     char_count_of:          "{n} / 20 000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Criado para ',
     ex_label:               "Exemplos de geração",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Aqui estão 3 exemplos do que a IA pode gerar para te ajudar a estudar.",
@@ -1475,6 +1479,7 @@ const translations = {
     history_empty_1: 'Nenhuma sessão guardada por enquanto.',
     history_empty_2: 'Gera conteúdo para preencher o teu caderno.',
     transcript_loading: 'A obter transcrição…',
+    rotating_words:        "estudar mais eficientemente|dominar qualquer matéria|ter sucesso nos exames|transformar apontamentos em quiz|poupar tempo de estudo",
   },
 
   // ----------------------------------------------------------
@@ -1647,7 +1652,7 @@ const translations = {
     char_count_of:          "{n} / 20 000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Creato per ',
     ex_label:               "Esempi di generazione",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Ecco 3 esempi di ciò che l'IA può generare per aiutarti a studiare.",
@@ -1764,6 +1769,7 @@ const translations = {
     history_empty_1: 'Nessuna sessione salvata per ora.',
     history_empty_2: 'Genera contenuti per riempire il tuo quaderno.',
     transcript_loading: 'Recupero trascrizione…',
+    rotating_words:        "studiare in modo più efficiente|padroneggiare qualsiasi materia|superare gli esami|trasformare gli appunti in quiz|risparmiare tempo di studio",
   },
 
   // ----------------------------------------------------------
@@ -1936,7 +1942,7 @@ const translations = {
     char_count_of:          "{n} / 20,000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        '专为',
     ex_label:               "生成示例",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "以下是AI可以为你生成的3个学习内容示例。",
@@ -2058,6 +2064,7 @@ const translations = {
     history_empty_1: '暂无保存的会话。',
     history_empty_2: '生成内容以填充你的笔记本。',
     transcript_loading: '正在获取字幕…',
+    rotating_words:        "高效学习|掌握任何科目|通过考试|将笔记转为测验|节省复习时间",
   },
 
   // ----------------------------------------------------------
@@ -2230,7 +2237,7 @@ const translations = {
     char_count_of:           "{n} / 20,000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        '専用：',
     ex_label:               "生成例",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "AIがあなたの学習のために生成できる3つの例です。",
@@ -2347,6 +2354,7 @@ const translations = {
     history_empty_1: '保存されたセッションはまだありません。',
     history_empty_2: 'コンテンツを生成してノートを埋めましょう。',
     transcript_loading: '字幕を取得中…',
+    rotating_words:        "効率的に学ぶ|どんな科目も習得|試験に合格する|ノートをクイズに変換|復習時間を節約",
   },
 
   // ----------------------------------------------------------
@@ -2519,7 +2527,7 @@ const translations = {
     char_count_of:           "{n} / 20.000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        '전용：',
     ex_label:               "생성 예시",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "AI가 학습을 위해 생성할 수 있는 3가지 예시입니다.",
@@ -2636,6 +2644,7 @@ const translations = {
     history_empty_1: '저장된 세션이 아직 없습니다.',
     history_empty_2: '노트북을 채울 콘텐츠를 생성하세요.',
     transcript_loading: '자막을 가져오는 중…',
+    rotating_words:        "효율적으로 공부하기|모든 과목 마스터|시험 합격하기|노트를 퀴즈로 변환|학습 시간 절약",
   },
 
   // ----------------------------------------------------------
@@ -2808,7 +2817,7 @@ const translations = {
     char_count_of:           "{n} / 20,000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Dirancang untuk ',
     ex_label:               "Contoh generasi",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Berikut 3 contoh apa yang bisa dihasilkan AI untuk membantumu belajar.",
@@ -2925,6 +2934,7 @@ const translations = {
     history_empty_1: 'Belum ada sesi yang disimpan.',
     history_empty_2: 'Hasilkan konten untuk mengisi catatanmu.',
     transcript_loading: 'Mengambil transkrip…',
+    rotating_words:        "belajar lebih efisien|menguasai mata pelajaran apapun|lulus ujian|mengubah catatan menjadi kuis|menghemat waktu belajar",
   },
 
   // ----------------------------------------------------------
@@ -3097,7 +3107,7 @@ const translations = {
     char_count_of:           "{n} / 20,000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'مصمَّم لـ ',
     ex_label:               "أمثلة على التوليد",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "إليك 3 أمثلة على ما يمكن للذكاء الاصطناعي توليده لمساعدتك في المراجعة.",
@@ -3214,6 +3224,7 @@ const translations = {
     history_empty_1: 'لا توجد جلسة محفوظة حتى الآن.',
     history_empty_2: 'أنشئ محتوى لملء دفترك.',
     transcript_loading: 'جارٍ جلب النص…',
+    rotating_words:        "الدراسة بكفاءة أكبر|إتقان أي مادة|النجاح في الامتحانات|تحويل الملاحظات إلى اختبارات|توفير وقت المراجعة",
   },
 
   // ----------------------------------------------------------
@@ -3386,7 +3397,7 @@ const translations = {
     char_count_of:           "{n} / 20.000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'สำหรับ ',
     ex_label:               "ตัวอย่างการสร้าง",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "ต่อไปนี้คือตัวอย่าง 3 รายการที่ AI สามารถสร้างเพื่อช่วยในการเรียน",
@@ -3503,6 +3514,7 @@ const translations = {
     history_empty_1: 'ยังไม่มีเซสชันที่บันทึกไว้',
     history_empty_2: 'สร้างเนื้อหาเพื่อเติมสมุดบันทึกของคุณ',
     transcript_loading: 'กำลังดึงคำบรรยาย…',
+    rotating_words:        "เรียนอย่างมีประสิทธิภาพมากขึ้น|เชี่ยวชาญทุกวิชา|สอบผ่านได้|แปลงโน้ตเป็นแบบทดสอบ|ประหยัดเวลาทบทวน",
   },
 
   // ----------------------------------------------------------
@@ -3675,7 +3687,7 @@ const translations = {
     char_count_of:           "{n} / 20.000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Şunlar için ',
     ex_label:               "Oluşturma örnekleri",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "AI'nın çalışmana yardımcı olmak için üretebileceği 3 örnek.",
@@ -3792,6 +3804,7 @@ const translations = {
     history_empty_1: 'Henüz kaydedilmiş oturum yok.',
     history_empty_2: 'Defterini doldurmak için içerik oluştur.',
     transcript_loading: 'Transkript alınıyor…',
+    rotating_words:        "daha verimli çalışmak|herhangi bir konuyu öğrenmek|sınavları geçmek|notları quize dönüştürmek|tekrar zamanı kazanmak",
   },
 
   // ----------------------------------------------------------
@@ -3964,7 +3977,7 @@ const translations = {
     char_count_of:           "{n} / 20 000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Ontworpen voor ',
     ex_label:               "Generatievoorbeelden",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Hier zijn 3 voorbeelden van wat de AI voor jou kan genereren.",
@@ -4081,6 +4094,7 @@ const translations = {
     history_empty_1: 'Nog geen opgeslagen sessie.',
     history_empty_2: 'Genereer inhoud om je notitieboek te vullen.',
     transcript_loading: 'Transcript ophalen…',
+    rotating_words:        "efficiënter studeren|elk vak beheersen|examens halen|aantekeningen omzetten in quizzen|studietijd besparen",
   },
 
   // ----------------------------------------------------------
@@ -4253,7 +4267,7 @@ const translations = {
     char_count_of:           "{n} / 20 000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Создан для ',
     ex_label:               "Примеры генерации",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Вот 3 примера того, что ИИ может создать для подготовки к учёбе.",
@@ -4370,6 +4384,7 @@ const translations = {
     history_empty_1: 'Пока нет сохранённых сессий.',
     history_empty_2: 'Создавай контент, чтобы заполнить свой дневник.',
     transcript_loading: 'Получение транскрипта…',
+    rotating_words:        "учиться эффективнее|освоить любой предмет|сдать экзамены|превратить конспекты в тесты|экономить время на повторение",
   },
 
   // ----------------------------------------------------------
@@ -4542,7 +4557,7 @@ const translations = {
     char_count_of:           "{n} / 20 000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Stworzony dla ',
     ex_label:               "Przykłady generowania",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Oto 3 przykłady tego, co AI może wygenerować, by pomóc Ci się uczyć.",
@@ -4659,6 +4674,7 @@ const translations = {
     history_empty_1: 'Brak zapisanych sesji.',
     history_empty_2: 'Generuj treści, aby wypełnić swój zeszyt.',
     transcript_loading: 'Pobieranie transkryptu…',
+    rotating_words:        "uczyć się efektywniej|opanować każdy przedmiot|zdać egzaminy|zamienić notatki w quizy|oszczędzać czas nauki",
   },
 
   // ----------------------------------------------------------
@@ -4831,7 +4847,7 @@ const translations = {
     char_count_of:           "{n} / 20,000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Dành cho ',
     ex_label:               "Ví dụ tạo nội dung",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Đây là 3 ví dụ về những gì AI có thể tạo ra để giúp bạn ôn thi.",
@@ -4948,6 +4964,7 @@ const translations = {
     history_empty_1: 'Chưa có phiên nào được lưu.',
     history_empty_2: 'Tạo nội dung để điền vào sổ tay của bạn.',
     transcript_loading: 'Đang tải bản ghi…',
+    rotating_words:        "học hiệu quả hơn|thành thạo bất kỳ môn học nào|vượt qua kỳ thi|chuyển ghi chú thành câu đố|tiết kiệm thời gian ôn tập",
   },
 
   // ----------------------------------------------------------
@@ -5189,7 +5206,7 @@ const translations = {
     pricing_reassure:       "🔒 Stripe के माध्यम से सुरक्षित भुगतान · मुफ़्त प्लान के लिए कार्ड नहीं · कभी भी रद्द करें",
     pricing_subtitle:       "मुफ़्त में शुरू करें — जब चाहें अपग्रेड करें।",
     pricing_title:          "अपना प्लान चुनें",
-    rotating_prefix:        "इसके लिए बनाया गया ",
+    rotating_prefix:        'के लिए ',
     tab_file:               "PDF / फ़ाइल",
     tab_text:               "टेक्स्ट",
     tab_youtube:            "YouTube",
@@ -5237,6 +5254,7 @@ const translations = {
     history_empty_1: 'अभी तक कोई सत्र सहेजा नहीं गया।',
     history_empty_2: 'अपनी नोटबुक भरने के लिए सामग्री उत्पन्न करें।',
     transcript_loading: 'ट्रांसक्रिप्ट प्राप्त हो रहा है…',
+    rotating_words:        "अधिक प्रभावी ढंग से पढ़ना|किसी भी विषय में महारत हासिल करना|परीक्षाओं में सफलता|नोट्स को क्विज़ में बदलना|पुनरावृत्ति समय बचाना",
   },
 
   // ----------------------------------------------------------
@@ -5383,7 +5401,7 @@ const translations = {
     char_count_of:           "{n} / 20 000",
     how_label:              "Simple & fast",
     how_subtitle:           "Three steps, zero setup.",
-    rotating_prefix:        "Designed for ",
+    rotating_prefix:        'Criado para ',
     ex_label:               "Exemplos de geração",
     ex_title:               "What StudyAI actually generates",
     ex_subtitle:            "Aqui estão 3 exemplos do que a IA pode gerar para te ajudar a estudar.",
@@ -5526,6 +5544,7 @@ const translations = {
     history_empty_1: 'Nenhuma sessão salva ainda.',
     history_empty_2: 'Gere conteúdo para preencher seu caderno.',
     transcript_loading: 'Obtendo transcrição…',
+    rotating_words:        "estudar mais eficientemente|dominar qualquer matéria|passar nos exames|transformar notas em quiz|economizar tempo de estudo",
   },
 
   // ----------------------------------------------------------
@@ -5685,7 +5704,7 @@ const translations = {
     text_too_long:           "Текст задовгий — максимум 20 000 символів.",
     how_label:               "Просто і швидко",
     how_subtitle:            "Три кроки, нуль налаштувань.",
-    rotating_prefix:         "Створено для ",
+    rotating_prefix:         'Створено для ',
     ex_label:                "Приклади генерації",
     ex_title:                "Що StudyAI справді генерує",
     ex_subtitle:             "Ось 3 приклади того, що ШІ може створити для допомоги у навчанні.",
@@ -5815,6 +5834,7 @@ const translations = {
     history_empty_1: 'Ще немає збережених сесій.',
     history_empty_2: 'Створюй контент для заповнення свого зошита.',
     transcript_loading: 'Отримання транскрипту…',
+    rotating_words:        "навчатися ефективніше|опанувати будь-який предмет|скласти іспити|перетворити конспекти на тести|заощадити час на повторення",
   },
 };
 

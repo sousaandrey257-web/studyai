@@ -922,7 +922,10 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
     /* 1. Rotating words */
     var rotEl = document.getElementById('hero-rotating');
     if (rotEl) {
-      var words = ['réviser plus efficacement', 'maîtriser n\'importe quelle matière', 'réussir ses examens', 'transformer tes cours en quiz', 'gagner du temps de révision'];
+      var rawWords = window.i18n ? window.i18n.t('rotating_words') : '';
+      var words = (rawWords && rawWords.indexOf('|') > -1)
+        ? rawWords.split('|')
+        : ['réviser plus efficacement', 'maîtriser n\'importe quelle matière', 'réussir ses examens', 'transformer tes cours en quiz', 'gagner du temps de révision'];
       var rotIdx = 0;
       setInterval(function() {
         rotEl.style.opacity = '0';
