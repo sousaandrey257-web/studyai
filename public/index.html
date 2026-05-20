@@ -280,9 +280,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <!-- Clickable example chips -->
           <div class="yt-examples" id="yt-examples">
             <span class="yt-examples-label" data-i18n="yt_examples_label">Exemples :</span>
-            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=aircAruvnKk">🧠 Réseaux de neurones</button>
-            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=5MgBikgcWnY">🎓 Apprendre en 20h</button>
-            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=Unzc731iCUY">🎤 Conférence MIT</button>
+            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=aircAruvnKk" data-i18n="yt_chip_1">🧠 Réseaux de neurones</button>
+            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=5MgBikgcWnY" data-i18n="yt_chip_2">🎓 Apprendre en 20h</button>
+            <button class="yt-chip" type="button" data-url="https://www.youtube.com/watch?v=Unzc731iCUY" data-i18n="yt_chip_3">🎤 Conférence MIT</button>
           </div>
         </div>
 
@@ -547,8 +547,8 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       <!-- Nudge inscription (guests uniquement) -->
       <div id="guest-nudge" class="guest-nudge hidden">
         <div class="guest-nudge-inner">
-          <div class="guest-nudge-text">
-            <strong>💾 Sauvegarde ce résultat</strong> — crée un compte gratuit pour l'historique, l'XP et le streak
+          <div class="guest-nudge-text" data-i18n="guest_nudge_text">
+            💾 Sauvegarde ce résultat — crée un compte gratuit pour l'historique, l'XP et le streak
           </div>
           <button id="guest-nudge-cta" class="guest-nudge-cta" data-i18n="guest_nudge_cta">Créer mon compte →</button>
           <button id="guest-nudge-close" class="guest-nudge-close" aria-label="Fermer">✕</button>
@@ -654,7 +654,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <button id="btn-retry-quiz"   class="btn-secondary" data-i18n="quiz_retry">Recommencer le quiz</button>
           <button id="btn-back-results" class="btn-primary"   data-i18n="quiz_back">Voir la fiche ✓</button>
         </div>
-        <button id="btn-consolidate" class="btn-consolidate hidden">🎯 Renforcer les points faibles</button>
+        <button id="btn-consolidate" class="btn-consolidate hidden" data-i18n="btn_consolidate">🎯 Renforcer les points faibles</button>
       </div>
     </section>
   </main>
@@ -692,7 +692,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
     <div class="modal-card modal-card-history">
       <button id="history-modal-close" class="modal-close">✕</button>
       <h2 class="modal-title" data-i18n="history_title">📚 Mon historique</h2>
-      <p id="history-empty" class="history-empty hidden">Aucune session sauvegardée pour l'instant.<br><span style="font-size:0.82rem">Génère du contenu pour remplir ton cahier.</span></p>
+      <p id="history-empty" class="history-empty hidden"><span data-i18n="history_empty_1">Aucune session sauvegardée pour l'instant.</span><br><span style="font-size:0.82rem" data-i18n="history_empty_2">Génère du contenu pour remplir ton cahier.</span></p>
       <div id="history-list" class="history-list"></div>
     </div>
   </div>
@@ -1074,7 +1074,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             e.stopImmediatePropagation();
             var hintEl = document.getElementById('yt-hint-text');
             var errBox = document.getElementById('yt-error-box');
-            if (hintEl) hintEl.innerHTML = '⏳ <span>Récupération du transcript…</span>';
+            if (hintEl) hintEl.innerHTML = '⏳ <span>' + (window.i18n ? window.i18n.t('transcript_loading') : 'Récupération du transcript…') + '</span>';
             if (errBox) errBox.classList.add('hidden');
             btnGen.disabled = true;
             try {

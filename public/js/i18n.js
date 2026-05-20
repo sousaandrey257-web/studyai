@@ -285,6 +285,14 @@ const translations = {
     compare_row_lifetime: '💎 Lifetime deal',
     compare_row_price: 'Prix mensuel',
     compare_exclu: 'Exclusif',
+    yt_chip_1: '🧠 Réseaux de neurones',
+    yt_chip_2: '🎓 Apprendre en 20h',
+    yt_chip_3: '🎤 Conférence MIT',
+    guest_nudge_text: "💾 Sauvegarde ce résultat — crée un compte gratuit pour l'historique, l'XP et le streak",
+    btn_consolidate: '🎯 Renforcer les points faibles',
+    history_empty_1: "Aucune session sauvegardée pour l'instant.",
+    history_empty_2: 'Génère du contenu pour remplir ton cahier.',
+    transcript_loading: 'Récupération du transcript…',
   },
 
   // ----------------------------------------------------------
@@ -566,6 +574,14 @@ const translations = {
     compare_row_lifetime: '💎 Lifetime deal',
     compare_row_price: 'Monthly price',
     compare_exclu: 'Exclusive',
+    yt_chip_1: '🧠 Neural Networks',
+    yt_chip_2: '🎓 Learn in 20h',
+    yt_chip_3: '🎤 MIT Lecture',
+    guest_nudge_text: '💾 Save this result — create a free account for history, XP and streak',
+    btn_consolidate: '🎯 Strengthen weak points',
+    history_empty_1: 'No saved session yet.',
+    history_empty_2: 'Generate content to fill your notebook.',
+    transcript_loading: 'Fetching transcript…',
   },
 
   // ----------------------------------------------------------
@@ -847,6 +863,14 @@ const translations = {
     compare_row_lifetime: '💎 Oferta vitalicia',
     compare_row_price: 'Precio mensual',
     compare_exclu: 'Exclusivo',
+    yt_chip_1: '🧠 Redes neuronales',
+    yt_chip_2: '🎓 Aprender en 20h',
+    yt_chip_3: '🎤 Conferencia MIT',
+    guest_nudge_text: '💾 Guarda este resultado — crea una cuenta gratis para el historial, el XP y la racha',
+    btn_consolidate: '🎯 Reforzar los puntos débiles',
+    history_empty_1: 'Ninguna sesión guardada por ahora.',
+    history_empty_2: 'Genera contenido para llenar tu cuaderno.',
+    transcript_loading: 'Obteniendo transcripción…',
   },
 
   // ----------------------------------------------------------
@@ -1128,6 +1152,14 @@ const translations = {
     compare_row_lifetime: '💎 Lifetime-Deal',
     compare_row_price: 'Monatlicher Preis',
     compare_exclu: 'Exklusiv',
+    yt_chip_1: '🧠 Neuronale Netze',
+    yt_chip_2: '🎓 Lernen in 20h',
+    yt_chip_3: '🎤 MIT-Vortrag',
+    guest_nudge_text: '💾 Ergebnis speichern — kostenloses Konto für Verlauf, XP und Streak erstellen',
+    btn_consolidate: '🎯 Schwachstellen stärken',
+    history_empty_1: 'Noch keine gespeicherte Sitzung.',
+    history_empty_2: 'Erstelle Inhalte, um dein Notizbuch zu füllen.',
+    transcript_loading: 'Transkript wird abgerufen…',
   },
 
   // ----------------------------------------------------------
@@ -1435,6 +1467,14 @@ const translations = {
     compare_row_lifetime: '💎 Oferta vitalícia',
     compare_row_price: 'Preço mensal',
     compare_exclu: 'Exclusivo',
+    yt_chip_1: '🧠 Redes neurais',
+    yt_chip_2: '🎓 Aprender em 20h',
+    yt_chip_3: '🎤 Palestra MIT',
+    guest_nudge_text: '💾 Guarda este resultado — cria uma conta gratuita para o histórico, XP e streak',
+    btn_consolidate: '🎯 Reforçar os pontos fracos',
+    history_empty_1: 'Nenhuma sessão guardada por enquanto.',
+    history_empty_2: 'Gera conteúdo para preencher o teu caderno.',
+    transcript_loading: 'A obter transcrição…',
   },
 
   // ----------------------------------------------------------
@@ -1716,6 +1756,14 @@ const translations = {
     compare_row_lifetime: '💎 Offerta a vita',
     compare_row_price: 'Prezzo mensile',
     compare_exclu: 'Esclusivo',
+    yt_chip_1: '🧠 Reti neurali',
+    yt_chip_2: '🎓 Imparare in 20h',
+    yt_chip_3: '🎤 Conferenza MIT',
+    guest_nudge_text: "💾 Salva questo risultato — crea un account gratuito per la cronologia, l'XP e la striscia",
+    btn_consolidate: '🎯 Rafforzare i punti deboli',
+    history_empty_1: 'Nessuna sessione salvata per ora.',
+    history_empty_2: 'Genera contenuti per riempire il tuo quaderno.',
+    transcript_loading: 'Recupero trascrizione…',
   },
 
   // ----------------------------------------------------------
@@ -2002,6 +2050,14 @@ const translations = {
     compare_row_lifetime: '💎 终身套餐',
     compare_row_price: '月价格',
     compare_exclu: '专属',
+    yt_chip_1: '🧠 神经网络',
+    yt_chip_2: '🎓 20小时学会',
+    yt_chip_3: '🎤 MIT讲座',
+    guest_nudge_text: '💾 保存此结果 — 创建免费账户以获取历史记录、XP 和连胜',
+    btn_consolidate: '🎯 强化薄弱点',
+    history_empty_1: '暂无保存的会话。',
+    history_empty_2: '生成内容以填充你的笔记本。',
+    transcript_loading: '正在获取字幕…',
   },
 
   // ----------------------------------------------------------
@@ -2283,6 +2339,14 @@ const translations = {
     compare_row_lifetime: '💎 生涯ディール',
     compare_row_price: '月額料金',
     compare_exclu: '限定',
+    yt_chip_1: '🧠 ニューラルネットワーク',
+    yt_chip_2: '🎓 20時間で学ぶ',
+    yt_chip_3: '🎤 MIT講義',
+    guest_nudge_text: '💾 この結果を保存 — 無料アカウントで履歴・XP・ストリークを記録',
+    btn_consolidate: '🎯 弱点を補強する',
+    history_empty_1: '保存されたセッションはまだありません。',
+    history_empty_2: 'コンテンツを生成してノートを埋めましょう。',
+    transcript_loading: '字幕を取得中…',
   },
 
   // ----------------------------------------------------------
@@ -2564,6 +2628,14 @@ const translations = {
     compare_row_lifetime: '💎 평생 이용권',
     compare_row_price: '월간 가격',
     compare_exclu: '독점',
+    yt_chip_1: '🧠 신경망',
+    yt_chip_2: '🎓 20시간에 배우기',
+    yt_chip_3: '🎤 MIT 강의',
+    guest_nudge_text: '💾 이 결과 저장 — 무료 계정을 만들어 기록, XP, 연속 학습을 관리하세요',
+    btn_consolidate: '🎯 약점 강화하기',
+    history_empty_1: '저장된 세션이 아직 없습니다.',
+    history_empty_2: '노트북을 채울 콘텐츠를 생성하세요.',
+    transcript_loading: '자막을 가져오는 중…',
   },
 
   // ----------------------------------------------------------
@@ -2845,6 +2917,14 @@ const translations = {
     compare_row_lifetime: '💎 Penawaran seumur hidup',
     compare_row_price: 'Harga bulanan',
     compare_exclu: 'Eksklusif',
+    yt_chip_1: '🧠 Jaringan Saraf',
+    yt_chip_2: '🎓 Belajar dalam 20 Jam',
+    yt_chip_3: '🎤 Kuliah MIT',
+    guest_nudge_text: '💾 Simpan hasil ini — buat akun gratis untuk riwayat, XP, dan streak',
+    btn_consolidate: '🎯 Perkuat poin lemah',
+    history_empty_1: 'Belum ada sesi yang disimpan.',
+    history_empty_2: 'Hasilkan konten untuk mengisi catatanmu.',
+    transcript_loading: 'Mengambil transkrip…',
   },
 
   // ----------------------------------------------------------
@@ -3126,6 +3206,14 @@ const translations = {
     compare_row_lifetime: '💎 صفقة مدى الحياة',
     compare_row_price: 'السعر الشهري',
     compare_exclu: 'حصري',
+    yt_chip_1: '🧠 الشبكات العصبية',
+    yt_chip_2: '🎓 تعلم في 20 ساعة',
+    yt_chip_3: '🎤 محاضرة MIT',
+    guest_nudge_text: '💾 احفظ هذه النتيجة — أنشئ حسابًا مجانيًا للسجل ونقاط XP والتتالي',
+    btn_consolidate: '🎯 تعزيز نقاط الضعف',
+    history_empty_1: 'لا توجد جلسة محفوظة حتى الآن.',
+    history_empty_2: 'أنشئ محتوى لملء دفترك.',
+    transcript_loading: 'جارٍ جلب النص…',
   },
 
   // ----------------------------------------------------------
@@ -3407,6 +3495,14 @@ const translations = {
     compare_row_lifetime: '💎 ดีลตลอดชีพ',
     compare_row_price: 'ราคารายเดือน',
     compare_exclu: 'พิเศษเฉพาะ',
+    yt_chip_1: '🧠 โครงข่ายประสาทเทียม',
+    yt_chip_2: '🎓 เรียนใน 20 ชั่วโมง',
+    yt_chip_3: '🎤 บรรยาย MIT',
+    guest_nudge_text: '💾 บันทึกผลนี้ — สร้างบัญชีฟรีสำหรับประวัติ XP และสตรีค',
+    btn_consolidate: '🎯 เสริมจุดอ่อน',
+    history_empty_1: 'ยังไม่มีเซสชันที่บันทึกไว้',
+    history_empty_2: 'สร้างเนื้อหาเพื่อเติมสมุดบันทึกของคุณ',
+    transcript_loading: 'กำลังดึงคำบรรยาย…',
   },
 
   // ----------------------------------------------------------
@@ -3688,6 +3784,14 @@ const translations = {
     compare_row_lifetime: '💎 Ömür boyu teklif',
     compare_row_price: 'Aylık fiyat',
     compare_exclu: 'Özel',
+    yt_chip_1: '🧠 Sinir Ağları',
+    yt_chip_2: '🎓 20 Saatte Öğren',
+    yt_chip_3: '🎤 MIT Dersi',
+    guest_nudge_text: '💾 Bu sonucu kaydet — geçmiş, XP ve seri için ücretsiz hesap oluştur',
+    btn_consolidate: '🎯 Zayıf noktaları güçlendir',
+    history_empty_1: 'Henüz kaydedilmiş oturum yok.',
+    history_empty_2: 'Defterini doldurmak için içerik oluştur.',
+    transcript_loading: 'Transkript alınıyor…',
   },
 
   // ----------------------------------------------------------
@@ -3969,6 +4073,14 @@ const translations = {
     compare_row_lifetime: '💎 Lifetime deal',
     compare_row_price: 'Maandelijkse prijs',
     compare_exclu: 'Exclusief',
+    yt_chip_1: '🧠 Neurale Netwerken',
+    yt_chip_2: '🎓 Leer in 20 uur',
+    yt_chip_3: '🎤 MIT College',
+    guest_nudge_text: '💾 Sla dit resultaat op — maak een gratis account aan voor geschiedenis, XP en streak',
+    btn_consolidate: '🎯 Zwakke punten versterken',
+    history_empty_1: 'Nog geen opgeslagen sessie.',
+    history_empty_2: 'Genereer inhoud om je notitieboek te vullen.',
+    transcript_loading: 'Transcript ophalen…',
   },
 
   // ----------------------------------------------------------
@@ -4250,6 +4362,14 @@ const translations = {
     compare_row_lifetime: '💎 Пожизненная сделка',
     compare_row_price: 'Ежемесячная цена',
     compare_exclu: 'Эксклюзив',
+    yt_chip_1: '🧠 Нейронные сети',
+    yt_chip_2: '🎓 Учись за 20 часов',
+    yt_chip_3: '🎤 Лекция MIT',
+    guest_nudge_text: '💾 Сохрани результат — создай бесплатный аккаунт для истории, XP и серии',
+    btn_consolidate: '🎯 Укрепить слабые места',
+    history_empty_1: 'Пока нет сохранённых сессий.',
+    history_empty_2: 'Создавай контент, чтобы заполнить свой дневник.',
+    transcript_loading: 'Получение транскрипта…',
   },
 
   // ----------------------------------------------------------
@@ -4531,6 +4651,14 @@ const translations = {
     compare_row_lifetime: '💎 Oferta dożywotnia',
     compare_row_price: 'Cena miesięczna',
     compare_exclu: 'Ekskluzywne',
+    yt_chip_1: '🧠 Sieci neuronowe',
+    yt_chip_2: '🎓 Naucz się w 20h',
+    yt_chip_3: '🎤 Wykład MIT',
+    guest_nudge_text: '💾 Zapisz ten wynik — utwórz darmowe konto dla historii, XP i passy',
+    btn_consolidate: '🎯 Wzmocnij słabe punkty',
+    history_empty_1: 'Brak zapisanych sesji.',
+    history_empty_2: 'Generuj treści, aby wypełnić swój zeszyt.',
+    transcript_loading: 'Pobieranie transkryptu…',
   },
 
   // ----------------------------------------------------------
@@ -4812,6 +4940,14 @@ const translations = {
     compare_row_lifetime: '💎 Gói trọn đời',
     compare_row_price: 'Giá hàng tháng',
     compare_exclu: 'Độc quyền',
+    yt_chip_1: '🧠 Mạng nơ-ron',
+    yt_chip_2: '🎓 Học trong 20 giờ',
+    yt_chip_3: '🎤 Bài giảng MIT',
+    guest_nudge_text: '💾 Lưu kết quả này — tạo tài khoản miễn phí để xem lịch sử, XP và chuỗi',
+    btn_consolidate: '🎯 Củng cố điểm yếu',
+    history_empty_1: 'Chưa có phiên nào được lưu.',
+    history_empty_2: 'Tạo nội dung để điền vào sổ tay của bạn.',
+    transcript_loading: 'Đang tải bản ghi…',
   },
 
   // ----------------------------------------------------------
@@ -5093,6 +5229,14 @@ const translations = {
     compare_row_lifetime: '💎 आजीवन सौदा',
     compare_row_price: 'मासिक मूल्य',
     compare_exclu: 'विशेष',
+    yt_chip_1: '🧠 न्यूरल नेटवर्क',
+    yt_chip_2: '🎓 20 घंटे में सीखें',
+    yt_chip_3: '🎤 MIT व्याख्यान',
+    guest_nudge_text: '💾 यह परिणाम सहेजें — इतिहास, XP और स्ट्रीक के लिए निःशुल्क खाता बनाएं',
+    btn_consolidate: '🎯 कमज़ोर बिंदुओं को मज़बूत करें',
+    history_empty_1: 'अभी तक कोई सत्र सहेजा नहीं गया।',
+    history_empty_2: 'अपनी नोटबुक भरने के लिए सामग्री उत्पन्न करें।',
+    transcript_loading: 'ट्रांसक्रिप्ट प्राप्त हो रहा है…',
   },
 
   // ----------------------------------------------------------
@@ -5374,6 +5518,14 @@ const translations = {
     compare_row_lifetime: '💎 Oferta vitalícia',
     compare_row_price: 'Preço mensal',
     compare_exclu: 'Exclusivo',
+    yt_chip_1: '🧠 Redes neurais',
+    yt_chip_2: '🎓 Aprender em 20h',
+    yt_chip_3: '🎤 Palestra MIT',
+    guest_nudge_text: '💾 Salve este resultado — crie uma conta gratuita para o histórico, XP e sequência',
+    btn_consolidate: '🎯 Reforçar os pontos fracos',
+    history_empty_1: 'Nenhuma sessão salva ainda.',
+    history_empty_2: 'Gere conteúdo para preencher seu caderno.',
+    transcript_loading: 'Obtendo transcrição…',
   },
 
   // ----------------------------------------------------------
@@ -5655,6 +5807,14 @@ const translations = {
     compare_row_lifetime: '💎 Довічна угода',
     compare_row_price: 'Щомісячна ціна',
     compare_exclu: 'Ексклюзив',
+    yt_chip_1: '🧠 Нейронні мережі',
+    yt_chip_2: '🎓 Вчись за 20 годин',
+    yt_chip_3: '🎤 Лекція MIT',
+    guest_nudge_text: '💾 Збережи результат — створи безкоштовний акаунт для історії, XP і серії',
+    btn_consolidate: '🎯 Зміцнити слабкі місця',
+    history_empty_1: 'Ще немає збережених сесій.',
+    history_empty_2: 'Створюй контент для заповнення свого зошита.',
+    transcript_loading: 'Отримання транскрипту…',
   },
 };
 
