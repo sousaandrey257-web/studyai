@@ -490,7 +490,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
 
   window.useExample = function (btn) {
-    var content = (btn.dataset && btn.dataset.example) ? btn.dataset.example : btn.textContent.trim();
+    var content;
+    var i18nKey = btn.dataset && btn.dataset.i18n;
+    if (i18nKey && window.i18n && window.i18n.t) {
+      var translated = window.i18n.t(i18nKey + '_text');
+      if (translated && translated !== i18nKey + '_text') content = translated;
+    }
+    if (!content) content = (btn.dataset && btn.dataset.example) ? btn.dataset.example : btn.textContent.trim();
     if (!content || !courseInput) return;
     courseInput.value = content;
     courseInput.dispatchEvent(new Event('input'));
