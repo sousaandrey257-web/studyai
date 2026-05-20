@@ -294,6 +294,13 @@ const translations = {
     history_empty_2: 'Génère du contenu pour remplir ton cahier.',
     transcript_loading: 'Récupération du transcript…',
     rotating_words:        "réviser plus efficacement|maîtriser n'importe quelle matière|réussir ses examens|transformer tes cours en quiz|gagner du temps de révision",
+    compare_c1_langs:          '3 lang.',
+    compare_c2_langs:          '5 lang.',
+    compare_c3_langs:          '3 lang.',
+    compare_us_price:          '9,99€/mois',
+    compare_c1_price:          '~16$/mois',
+    compare_c2_price:          '~12$/mois',
+    compare_c3_price:          '~8€/mois',
   },
 
   // ----------------------------------------------------------
@@ -584,6 +591,13 @@ const translations = {
     history_empty_2: 'Generate content to fill your notebook.',
     transcript_loading: 'Fetching transcript…',
     rotating_words:        "study more efficiently|master any subject|ace your exams|turn notes into quizzes|save revision time",
+    compare_c1_langs:          '3 lang.',
+    compare_c2_langs:          '5 lang.',
+    compare_c3_langs:          '3 lang.',
+    compare_us_price:          '9,99€/month',
+    compare_c1_price:          '~16$/month',
+    compare_c2_price:          '~12$/month',
+    compare_c3_price:          '~8€/month',
   },
 
   // ----------------------------------------------------------
@@ -874,6 +888,13 @@ const translations = {
     history_empty_2: 'Genera contenido para llenar tu cuaderno.',
     transcript_loading: 'Obteniendo transcripción…',
     rotating_words:        "estudiar más eficientemente|dominar cualquier materia|aprobar tus exámenes|convertir apuntes en quizzes|ahorrar tiempo de estudio",
+    compare_c1_langs:          '3 idiomas',
+    compare_c2_langs:          '5 idiomas',
+    compare_c3_langs:          '3 idiomas',
+    compare_us_price:          '9,99€/mes',
+    compare_c1_price:          '~16$/mes',
+    compare_c2_price:          '~12$/mes',
+    compare_c3_price:          '~8€/mes',
   },
 
   // ----------------------------------------------------------
@@ -1164,6 +1185,13 @@ const translations = {
     history_empty_2: 'Erstelle Inhalte, um dein Notizbuch zu füllen.',
     transcript_loading: 'Transkript wird abgerufen…',
     rotating_words:        "effektiver lernen|jedes Fach meistern|Prüfungen bestehen|Notizen in Quiz umwandeln|Lernzeit sparen",
+    compare_c1_langs:          '3 Sprachen',
+    compare_c2_langs:          '5 Sprachen',
+    compare_c3_langs:          '3 Sprachen',
+    compare_us_price:          '9,99€/Monat',
+    compare_c1_price:          '~16$/Monat',
+    compare_c2_price:          '~12$/Monat',
+    compare_c3_price:          '~8€/Monat',
   },
 
   // ----------------------------------------------------------
@@ -1480,6 +1508,13 @@ const translations = {
     history_empty_2: 'Gera conteúdo para preencher o teu caderno.',
     transcript_loading: 'A obter transcrição…',
     rotating_words:        "estudar mais eficientemente|dominar qualquer matéria|ter sucesso nos exames|transformar apontamentos em quiz|poupar tempo de estudo",
+    compare_c1_langs:          '3 idiomas',
+    compare_c2_langs:          '5 idiomas',
+    compare_c3_langs:          '3 idiomas',
+    compare_us_price:          '9,99€/mês',
+    compare_c1_price:          '~16$/mês',
+    compare_c2_price:          '~12$/mês',
+    compare_c3_price:          '~8€/mês',
   },
 
   // ----------------------------------------------------------
@@ -1770,6 +1805,13 @@ const translations = {
     history_empty_2: 'Genera contenuti per riempire il tuo quaderno.',
     transcript_loading: 'Recupero trascrizione…',
     rotating_words:        "studiare in modo più efficiente|padroneggiare qualsiasi materia|superare gli esami|trasformare gli appunti in quiz|risparmiare tempo di studio",
+    compare_c1_langs:          '3 lingue',
+    compare_c2_langs:          '5 lingue',
+    compare_c3_langs:          '3 lingue',
+    compare_us_price:          '9,99€/mese',
+    compare_c1_price:          '~16$/mese',
+    compare_c2_price:          '~12$/mese',
+    compare_c3_price:          '~8€/mese',
   },
 
   // ----------------------------------------------------------
@@ -2065,6 +2107,13 @@ const translations = {
     history_empty_2: '生成内容以填充你的笔记本。',
     transcript_loading: '正在获取字幕…',
     rotating_words:        "高效学习|掌握任何科目|通过考试|将笔记转为测验|节省复习时间",
+    compare_c1_langs:          '3 语言',
+    compare_c2_langs:          '5 语言',
+    compare_c3_langs:          '3 语言',
+    compare_us_price:          '9,99€/月',
+    compare_c1_price:          '~16$/月',
+    compare_c2_price:          '~12$/月',
+    compare_c3_price:          '~8€/月',
   },
 
   // ----------------------------------------------------------
@@ -2355,6 +2404,13 @@ const translations = {
     history_empty_2: 'コンテンツを生成してノートを埋めましょう。',
     transcript_loading: '字幕を取得中…',
     rotating_words:        "効率的に学ぶ|どんな科目も習得|試験に合格する|ノートをクイズに変換|復習時間を節約",
+    compare_c1_langs:          '3 言語',
+    compare_c2_langs:          '5 言語',
+    compare_c3_langs:          '3 言語',
+    compare_us_price:          '9,99€/月',
+    compare_c1_price:          '~16$/月',
+    compare_c2_price:          '~12$/月',
+    compare_c3_price:          '~8€/月',
   },
 
   // ----------------------------------------------------------
@@ -2645,6 +2701,13 @@ const translations = {
     history_empty_2: '노트북을 채울 콘텐츠를 생성하세요.',
     transcript_loading: '자막을 가져오는 중…',
     rotating_words:        "효율적으로 공부하기|모든 과목 마스터|시험 합격하기|노트를 퀴즈로 변환|학습 시간 절약",
+    compare_c1_langs:          '3개 언어',
+    compare_c2_langs:          '5개 언어',
+    compare_c3_langs:          '3개 언어',
+    compare_us_price:          '9,99€/월',
+    compare_c1_price:          '~16$/월',
+    compare_c2_price:          '~12$/월',
+    compare_c3_price:          '~8€/월',
   },
 
   // ----------------------------------------------------------
@@ -2935,6 +2998,13 @@ const translations = {
     history_empty_2: 'Hasilkan konten untuk mengisi catatanmu.',
     transcript_loading: 'Mengambil transkrip…',
     rotating_words:        "belajar lebih efisien|menguasai mata pelajaran apapun|lulus ujian|mengubah catatan menjadi kuis|menghemat waktu belajar",
+    compare_c1_langs:          '3 bahasa',
+    compare_c2_langs:          '5 bahasa',
+    compare_c3_langs:          '3 bahasa',
+    compare_us_price:          '9,99€/bulan',
+    compare_c1_price:          '~16$/bulan',
+    compare_c2_price:          '~12$/bulan',
+    compare_c3_price:          '~8€/bulan',
   },
 
   // ----------------------------------------------------------
@@ -3225,6 +3295,13 @@ const translations = {
     history_empty_2: 'أنشئ محتوى لملء دفترك.',
     transcript_loading: 'جارٍ جلب النص…',
     rotating_words:        "الدراسة بكفاءة أكبر|إتقان أي مادة|النجاح في الامتحانات|تحويل الملاحظات إلى اختبارات|توفير وقت المراجعة",
+    compare_c1_langs:          '3 لغات',
+    compare_c2_langs:          '5 لغات',
+    compare_c3_langs:          '3 لغات',
+    compare_us_price:          '9,99€/شهر',
+    compare_c1_price:          '~16$/شهر',
+    compare_c2_price:          '~12$/شهر',
+    compare_c3_price:          '~8€/شهر',
   },
 
   // ----------------------------------------------------------
@@ -3515,6 +3592,13 @@ const translations = {
     history_empty_2: 'สร้างเนื้อหาเพื่อเติมสมุดบันทึกของคุณ',
     transcript_loading: 'กำลังดึงคำบรรยาย…',
     rotating_words:        "เรียนอย่างมีประสิทธิภาพมากขึ้น|เชี่ยวชาญทุกวิชา|สอบผ่านได้|แปลงโน้ตเป็นแบบทดสอบ|ประหยัดเวลาทบทวน",
+    compare_c1_langs:          '3 ภาษา',
+    compare_c2_langs:          '5 ภาษา',
+    compare_c3_langs:          '3 ภาษา',
+    compare_us_price:          '9,99€/เดือน',
+    compare_c1_price:          '~16$/เดือน',
+    compare_c2_price:          '~12$/เดือน',
+    compare_c3_price:          '~8€/เดือน',
   },
 
   // ----------------------------------------------------------
@@ -3805,6 +3889,13 @@ const translations = {
     history_empty_2: 'Defterini doldurmak için içerik oluştur.',
     transcript_loading: 'Transkript alınıyor…',
     rotating_words:        "daha verimli çalışmak|herhangi bir konuyu öğrenmek|sınavları geçmek|notları quize dönüştürmek|tekrar zamanı kazanmak",
+    compare_c1_langs:          '3 dil',
+    compare_c2_langs:          '5 dil',
+    compare_c3_langs:          '3 dil',
+    compare_us_price:          '9,99€/ay',
+    compare_c1_price:          '~16$/ay',
+    compare_c2_price:          '~12$/ay',
+    compare_c3_price:          '~8€/ay',
   },
 
   // ----------------------------------------------------------
@@ -4095,6 +4186,13 @@ const translations = {
     history_empty_2: 'Genereer inhoud om je notitieboek te vullen.',
     transcript_loading: 'Transcript ophalen…',
     rotating_words:        "efficiënter studeren|elk vak beheersen|examens halen|aantekeningen omzetten in quizzen|studietijd besparen",
+    compare_c1_langs:          '3 talen',
+    compare_c2_langs:          '5 talen',
+    compare_c3_langs:          '3 talen',
+    compare_us_price:          '9,99€/maand',
+    compare_c1_price:          '~16$/maand',
+    compare_c2_price:          '~12$/maand',
+    compare_c3_price:          '~8€/maand',
   },
 
   // ----------------------------------------------------------
@@ -4385,6 +4483,13 @@ const translations = {
     history_empty_2: 'Создавай контент, чтобы заполнить свой дневник.',
     transcript_loading: 'Получение транскрипта…',
     rotating_words:        "учиться эффективнее|освоить любой предмет|сдать экзамены|превратить конспекты в тесты|экономить время на повторение",
+    compare_c1_langs:          '3 языка',
+    compare_c2_langs:          '5 языков',
+    compare_c3_langs:          '3 языка',
+    compare_us_price:          '9,99€/мес',
+    compare_c1_price:          '~16$/мес',
+    compare_c2_price:          '~12$/мес',
+    compare_c3_price:          '~8€/мес',
   },
 
   // ----------------------------------------------------------
@@ -4675,6 +4780,13 @@ const translations = {
     history_empty_2: 'Generuj treści, aby wypełnić swój zeszyt.',
     transcript_loading: 'Pobieranie transkryptu…',
     rotating_words:        "uczyć się efektywniej|opanować każdy przedmiot|zdać egzaminy|zamienić notatki w quizy|oszczędzać czas nauki",
+    compare_c1_langs:          '3 języki',
+    compare_c2_langs:          '5 języków',
+    compare_c3_langs:          '3 języki',
+    compare_us_price:          '9,99€/mies.',
+    compare_c1_price:          '~16$/mies.',
+    compare_c2_price:          '~12$/mies.',
+    compare_c3_price:          '~8€/mies.',
   },
 
   // ----------------------------------------------------------
@@ -4965,6 +5077,13 @@ const translations = {
     history_empty_2: 'Tạo nội dung để điền vào sổ tay của bạn.',
     transcript_loading: 'Đang tải bản ghi…',
     rotating_words:        "học hiệu quả hơn|thành thạo bất kỳ môn học nào|vượt qua kỳ thi|chuyển ghi chú thành câu đố|tiết kiệm thời gian ôn tập",
+    compare_c1_langs:          '3 ngôn ngữ',
+    compare_c2_langs:          '5 ngôn ngữ',
+    compare_c3_langs:          '3 ngôn ngữ',
+    compare_us_price:          '9,99€/tháng',
+    compare_c1_price:          '~16$/tháng',
+    compare_c2_price:          '~12$/tháng',
+    compare_c3_price:          '~8€/tháng',
   },
 
   // ----------------------------------------------------------
@@ -5255,6 +5374,13 @@ const translations = {
     history_empty_2: 'अपनी नोटबुक भरने के लिए सामग्री उत्पन्न करें।',
     transcript_loading: 'ट्रांसक्रिप्ट प्राप्त हो रहा है…',
     rotating_words:        "अधिक प्रभावी ढंग से पढ़ना|किसी भी विषय में महारत हासिल करना|परीक्षाओं में सफलता|नोट्स को क्विज़ में बदलना|पुनरावृत्ति समय बचाना",
+    compare_c1_langs:          '3 भाषाएं',
+    compare_c2_langs:          '5 भाषाएं',
+    compare_c3_langs:          '3 भाषाएं',
+    compare_us_price:          '9,99€/माह',
+    compare_c1_price:          '~16$/माह',
+    compare_c2_price:          '~12$/माह',
+    compare_c3_price:          '~8€/माह',
   },
 
   // ----------------------------------------------------------
@@ -5545,6 +5671,13 @@ const translations = {
     history_empty_2: 'Gere conteúdo para preencher seu caderno.',
     transcript_loading: 'Obtendo transcrição…',
     rotating_words:        "estudar mais eficientemente|dominar qualquer matéria|passar nos exames|transformar notas em quiz|economizar tempo de estudo",
+    compare_c1_langs:          '3 idiomas',
+    compare_c2_langs:          '5 idiomas',
+    compare_c3_langs:          '3 idiomas',
+    compare_us_price:          '9,99€/mês',
+    compare_c1_price:          '~16$/mês',
+    compare_c2_price:          '~12$/mês',
+    compare_c3_price:          '~8€/mês',
   },
 
   // ----------------------------------------------------------
@@ -5835,6 +5968,13 @@ const translations = {
     history_empty_2: 'Створюй контент для заповнення свого зошита.',
     transcript_loading: 'Отримання транскрипту…',
     rotating_words:        "навчатися ефективніше|опанувати будь-який предмет|скласти іспити|перетворити конспекти на тести|заощадити час на повторення",
+    compare_c1_langs:          '3 мови',
+    compare_c2_langs:          '5 мов',
+    compare_c3_langs:          '3 мови',
+    compare_us_price:          '9,99€/міс',
+    compare_c1_price:          '~16$/міс',
+    compare_c2_price:          '~12$/міс',
+    compare_c3_price:          '~8€/міс',
   },
 };
 
