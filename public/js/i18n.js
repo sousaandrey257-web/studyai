@@ -3662,7 +3662,7 @@ const translations = {
     faq_a1: 'StudyAI, belgelerinizden veya YouTube videolarınızdan otomatik olarak tekrar kartları, uyarlanabilir sınavlar, özetler ve zaman çizelgeleri oluşturur.',
     faq_a2: 'Evet, ücretsiz plan kredi kartı olmadan tam içerik oluşturmaya izin verir.',
     faq_a3: 'Algorititemiz, ezberlemenizi optimize etmek için önceki yanıtlarınıza göre soruları uyarlar.',
-    faq_a4: "Bir PDF yükleyin, metin yapıştırın veya bir YouTube URL'si girin. StudyAI geri kalanını saniyeler içinde tamamlar.",
+    faq_a4: "Bir PDF yükleyin, metin yapıştırın veya bir YouTube URL'si girin. StudyAI geri kalanını saniyeler icinde tamamlar.", // tr
     faq_a5: 'Evet, kartlarınızı diğer araçlarla kullanmak için PDF veya CSV formatında dışa aktarabilirsiniz.',
     how_1_desc: 'Bir PDF yükleyin, metin yapıştırın veya bir YouTube bağlantısı ekleyin.',
     how_2_desc: 'Yapay zekamız içeriğinizi analiz eder ve kişiselleştirilmiş çalışma materyalleri oluşturur.',
