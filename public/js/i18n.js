@@ -1,5 +1,5 @@
 // ============================================================
-//  StudyAI — Internationalisation (i18n)
+//  StudyAI — Internationalisation (i18n) — v3 (2026-05-20)
 //  Langues : FR, EN, ES, DE, PT, IT, ZH, JA, KO, ID, AR, TR, TH
 // ============================================================
 
