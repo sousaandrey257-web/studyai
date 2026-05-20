@@ -54,6 +54,7 @@ const state = {
     window.lockBodyScroll && window.lockBodyScroll();
     modal.classList.remove('hidden');
     modal.setAttribute('aria-hidden', 'false');
+    if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations();
     modal.querySelectorAll('.btn-checkout').forEach(function (b) {
       if (!b.dataset.originalText) b.dataset.originalText = b.textContent.trim();
     });
