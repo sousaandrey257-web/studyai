@@ -605,7 +605,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var btn = document.createElement('button');
     btn.className = 'share-btn';
-    btn.innerHTML = '🔗 Partager';
+    btn.innerHTML = (window.i18n && window.i18n.t('btn_share')) || '🔗 Partager';
     btn.addEventListener('click', function () {
       var base   = window.location.origin + '/';
       var qTopic = '?topic=' + encodeURIComponent((topic || '').slice(0, 200));
