@@ -4977,7 +4977,8 @@ function detectLang() {
   for (const l of langs) {
     // Try full locale first (e.g. pt-BR), then base code (e.g. pt)
     const full = l.toLowerCase();
-    if (translations[full]) return full;
+    const fullMatch = Object.keys(translations).find(k => k.toLowerCase() === full);
+    if (fullMatch) return fullMatch;
     const base = full.split('-')[0];
     if (translations[base]) return base;
   }
