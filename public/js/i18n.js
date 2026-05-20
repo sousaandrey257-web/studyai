@@ -1,6 +1,7 @@
 // ============================================================
-//  StudyAI — Internationalisation (i18n) — v3 (2026-05-20)
+//  StudyAI — Internationalisation (i18n) — v3.1 (2026-05-20)
 //  Langues : FR, EN, ES, DE, PT, IT, ZH, JA, KO, ID, AR, TR, TH
+//  277 clés × 20 langues — fixes A-I complets
 // ============================================================
 
 const translations = {
