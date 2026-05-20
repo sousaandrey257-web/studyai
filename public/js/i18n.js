@@ -266,6 +266,11 @@ const translations = {
     wl_btn:           "M’inscrire à la liste",
     wl_thanks:        "🎉 Merci ! Tu seras prévenu(e) au lancement.",
     wl_already:       "✓ Tu es déjà sur la liste !",
+    stat_gen_label: 'Génération complète',
+    stat_pack_label: 'Contenus par pack',
+    stat_lang_label: 'Langues supportées',
+    stat_free_val: 'Gratuit',
+    stat_free_sub: 'pour commencer',
   },
 
   // ----------------------------------------------------------
@@ -529,6 +534,11 @@ const translations = {
     wl_btn:           "Join the waitlist",
     wl_thanks:        "🎉 Thanks! You’ll be the first to know.",
     wl_already:       "✓ You’re already on the list!",
+    stat_gen_label: 'Complete generation',
+    stat_pack_label: 'Contents per pack',
+    stat_lang_label: 'Supported languages',
+    stat_free_val: 'Free',
+    stat_free_sub: 'to get started',
   },
 
   // ----------------------------------------------------------
@@ -792,6 +802,11 @@ const translations = {
     who_1_desc: 'Transforma tus cursos en fichas y cuestionarios en segundos.',
     who_2_desc: 'Resume documentos extensos y genera preguntas de evaluación.',
     who_3_desc: 'Aprende cualquier materia nueva de forma eficaz con materiales estructurados.',
+    stat_gen_label: 'Generación completa',
+    stat_pack_label: 'Contenidos por pack',
+    stat_lang_label: 'Idiomas soportados',
+    stat_free_val: 'Gratis',
+    stat_free_sub: 'para empezar',
   },
 
   // ----------------------------------------------------------
@@ -1055,6 +1070,11 @@ const translations = {
     who_1_desc: 'Verwandle deine Kurse in Sekunden in Karten und Quizzes.',
     who_2_desc: 'Fasse umfangreiche Dokumente zusammen und erstelle Bewertungsfragen.',
     who_3_desc: 'Lerne jedes neue Fach effektiv mit strukturierten Materialien.',
+    stat_gen_label: 'Vollständige Generierung',
+    stat_pack_label: 'Inhalte pro Paket',
+    stat_lang_label: 'Unterstützte Sprachen',
+    stat_free_val: 'Kostenlos',
+    stat_free_sub: 'zum Starten',
   },
 
   // ----------------------------------------------------------
@@ -1344,6 +1364,11 @@ const translations = {
     who_1_desc: 'Transforme os seus cursos em fichas e questionários em segundos.',
     who_2_desc: 'Resuma documentos extensos e gere perguntas de avaliação.',
     who_3_desc: 'Aprenda qualquer matéria nova de forma eficaz com materiais estruturados.',
+    stat_gen_label: 'Geração completa',
+    stat_pack_label: 'Conteúdos por pacote',
+    stat_lang_label: 'Idiomas suportados',
+    stat_free_val: 'Gratuito',
+    stat_free_sub: 'para começar',
   },
 
   // ----------------------------------------------------------
@@ -1607,6 +1632,11 @@ const translations = {
     who_1_desc: 'Trasforma i tuoi corsi in schede e quiz in pochi secondi.',
     who_2_desc: 'Riassumi documenti estesi e genera domande di valutazione.',
     who_3_desc: 'Impara qualsiasi nuova materia in modo efficace con materiali strutturati.',
+    stat_gen_label: 'Generazione completa',
+    stat_pack_label: 'Contenuti per pacchetto',
+    stat_lang_label: 'Lingue supportate',
+    stat_free_val: 'Gratuito',
+    stat_free_sub: 'per iniziare',
   },
 
   // ----------------------------------------------------------
@@ -1875,6 +1905,11 @@ const translations = {
     who_1_desc: '在几秒钟内将您的课程转化为卡片和测验。',
     who_2_desc: '摘要大量文档并生成评估问题。',
     who_3_desc: '使用结构化材料有效学习任何新学科。',
+    stat_gen_label: '完整生成',
+    stat_pack_label: '每包内容',
+    stat_lang_label: '支持语言',
+    stat_free_val: '免费',
+    stat_free_sub: '即刻开始',
   },
 
   // ----------------------------------------------------------
@@ -2138,6 +2173,11 @@ const translations = {
     who_1_desc: 'コースを数秒でカードとクイズに変換します。',
     who_2_desc: '大量のドキュメントを要約し、評価問題を生成します。',
     who_3_desc: '構造化された教材で任意の新しい科目を効果的に学習します。',
+    stat_gen_label: '完全な生成',
+    stat_pack_label: 'パックあたりのコンテンツ',
+    stat_lang_label: 'サポート言語',
+    stat_free_val: '無料',
+    stat_free_sub: '始めましょう',
   },
 
   // ----------------------------------------------------------
@@ -2401,6 +2441,11 @@ const translations = {
     who_1_desc: '몇 초 안에 강의를 카드와 퀴즈로 변환하세요.',
     who_2_desc: '방대한 문서를 요약하고 평가 질문을 생성합니다.',
     who_3_desc: '구조화된 자료로 새로운 과목을 효과적으로 학습하세요.',
+    stat_gen_label: '완전한 생성',
+    stat_pack_label: '팩당 콘텐츠',
+    stat_lang_label: '지원 언어',
+    stat_free_val: '무료',
+    stat_free_sub: '시작하기',
   },
 
   // ----------------------------------------------------------
@@ -2664,6 +2709,11 @@ const translations = {
     who_1_desc: 'Ubah kursus Anda menjadi kartu dan kuis dalam hitungan detik.',
     who_2_desc: 'Ringkas dokumen yang panjang dan buat pertanyaan evaluasi.',
     who_3_desc: 'Pelajari mata pelajaran baru apa pun secara efektif dengan materi terstruktur.',
+    stat_gen_label: 'Generasi lengkap',
+    stat_pack_label: 'Konten per paket',
+    stat_lang_label: 'Bahasa yang didukung',
+    stat_free_val: 'Gratis',
+    stat_free_sub: 'untuk memulai',
   },
 
   // ----------------------------------------------------------
@@ -2927,6 +2977,11 @@ const translations = {
     who_1_desc: 'حوّل دوراتك إلى بطاقات واختبارات في ثوانٍ.',
     who_2_desc: 'لخّص المستندات الضخمة وأنشئ أسئلة التقييم.',
     who_3_desc: 'تعلّم أي مادة جديدة بفعالية باستخدام مواد منظّمة.',
+    stat_gen_label: 'توليد كامل',
+    stat_pack_label: 'محتويات لكل حزمة',
+    stat_lang_label: 'اللغات المدعومة',
+    stat_free_val: 'مجاني',
+    stat_free_sub: 'للبدء',
   },
 
   // ----------------------------------------------------------
@@ -3190,6 +3245,11 @@ const translations = {
     who_1_desc: 'แปลงหลักสูตรของคุณเป็นบัตรและแบบทดสอบในไม่กี่วินาที',
     who_2_desc: 'สรุปเอกสารขนาดใหญ่และสร้างคำถามประเมิน',
     who_3_desc: 'เรียนรู้วิชาใหม่ใดๆ อย่างมีประสิทธิภาพด้วยสื่อที่มีโครงสร้าง',
+    stat_gen_label: 'สร้างครบถ้วน',
+    stat_pack_label: 'เนื้อหาต่อแพ็ค',
+    stat_lang_label: 'ภาษาที่รองรับ',
+    stat_free_val: 'ฟรี',
+    stat_free_sub: 'เพื่อเริ่มต้น',
   },
 
   // ----------------------------------------------------------
@@ -3453,6 +3513,11 @@ const translations = {
     who_1_desc: 'Kurslarınızı saniyeler içinde kartlara ve sınavlara dönüştürün.',
     who_2_desc: 'Kapsamlı belgeleri özetleyin ve değerlendirme soruları oluşturun.',
     who_3_desc: 'Yapılandırılmış materyallerle herhangi bir yeni konuyu etkili bir şekilde öğrenin.',
+    stat_gen_label: 'Tam oluşturma',
+    stat_pack_label: 'Paket başına içerik',
+    stat_lang_label: 'Desteklenen diller',
+    stat_free_val: 'Ücretsiz',
+    stat_free_sub: 'başlamak için',
   },
 
   // ----------------------------------------------------------
@@ -3716,6 +3781,11 @@ const translations = {
     who_1_desc: 'Transformeer uw cursussen in seconden naar kaarten en quizzes.',
     who_2_desc: 'Vat uitgebreide documenten samen en genereer evaluatievragen.',
     who_3_desc: 'Leer elk nieuw vak effectief met gestructureerde materialen.',
+    stat_gen_label: 'Volledige generatie',
+    stat_pack_label: 'Inhoud per pakket',
+    stat_lang_label: 'Ondersteunde talen',
+    stat_free_val: 'Gratis',
+    stat_free_sub: 'om te beginnen',
   },
 
   // ----------------------------------------------------------
@@ -3979,6 +4049,11 @@ const translations = {
     who_1_desc: 'Превращайте курсы в карточки и тесты за несколько секунд.',
     who_2_desc: 'Резюмируйте обширные документы и создавайте оценочные вопросы.',
     who_3_desc: 'Эффективно изучайте любой новый предмет с помощью структурированных материалов.',
+    stat_gen_label: 'Полная генерация',
+    stat_pack_label: 'Контент на пакет',
+    stat_lang_label: 'Поддерживаемые языки',
+    stat_free_val: 'Бесплатно',
+    stat_free_sub: 'для начала',
   },
 
   // ----------------------------------------------------------
@@ -4242,6 +4317,11 @@ const translations = {
     who_1_desc: 'Przekształć swoje kursy w karty i quizy w kilka sekund.',
     who_2_desc: 'Streść obszerne dokumenty i generuj pytania oceniające.',
     who_3_desc: 'Skutecznie ucz się każdego nowego przedmiotu ze strukturyzowanymi materiałami.',
+    stat_gen_label: 'Pełna generacja',
+    stat_pack_label: 'Treści na pakiet',
+    stat_lang_label: 'Obsługiwane języki',
+    stat_free_val: 'Bezpłatnie',
+    stat_free_sub: 'aby zacząć',
   },
 
   // ----------------------------------------------------------
@@ -4505,6 +4585,11 @@ const translations = {
     who_1_desc: 'Chuyển đổi khóa học của bạn thành thẻ và câu hỏi trong vài giây.',
     who_2_desc: 'Tóm tắt tài liệu dài và tạo câu hỏi đánh giá.',
     who_3_desc: 'Học bất kỳ môn học mới nào một cách hiệu quả với tài liệu có cấu trúc.',
+    stat_gen_label: 'Tạo hoàn chỉnh',
+    stat_pack_label: 'Nội dung mỗi gói',
+    stat_lang_label: 'Ngôn ngữ hỗ trợ',
+    stat_free_val: 'Miễn phí',
+    stat_free_sub: 'để bắt đầu',
   },
 
   // ----------------------------------------------------------
@@ -4768,6 +4853,11 @@ const translations = {
     yt_placeholder:         "https://www.youtube.com/watch?v=…",
     yt_tip:                 "सुझाव: ऑनलाइन कोर्स, TED टॉक्स और यूनिवर्सिटी लेक्चर में आमतौर पर स्वचालित सबटाइटल (CC बटन) होते हैं।",
     yt_try_another:         "दूसरा वीडियो आज़माएं",
+    stat_gen_label: 'पूर्ण उत्पादन',
+    stat_pack_label: 'प्रति पैक सामग्री',
+    stat_lang_label: 'समर्थित भाषाएँ',
+    stat_free_val: 'मुफ़्त',
+    stat_free_sub: 'शुरू करने के लिए',
   },
 
   // ----------------------------------------------------------
@@ -5031,6 +5121,11 @@ const translations = {
     tech_feynman:     "Método Feynman",
     tech_belgium:     "Feito na Bélgica",
     footer_trust_mini: "🔒 Dados seguros · 🆓 Sem cartão · ⚡ Resultados em 45s",
+    stat_gen_label: 'Geração completa',
+    stat_pack_label: 'Conteúdos por pacote',
+    stat_lang_label: 'Idiomas suportados',
+    stat_free_val: 'Grátis',
+    stat_free_sub: 'para começar',
   },
 
   // ----------------------------------------------------------
@@ -5294,6 +5389,11 @@ const translations = {
     faq_a3:                 "ШІ генерує 10 запитань за таксономією Блума — від найпростіших до найскладніших. Слабкі сторони виявляються для цілеспрямованого повторення.",
     faq_a4:                 "Абсолютно. Ваш курс не зберігається після генерації. Ваша історія зашифрована на стороні сервера і ніколи не передається. Ви можете видалити обліковий запис будь-коли.",
     faq_a5:                 "Так. Щомісячний план без зобов'язань — скасуйте будь-коли в налаштуваннях. Річний план заощаджує 42% порівняно з місячною ціною.",
+    stat_gen_label: 'Повна генерація',
+    stat_pack_label: 'Контент на пакет',
+    stat_lang_label: 'Підтримувані мови',
+    stat_free_val: 'Безкоштовно',
+    stat_free_sub: 'щоб почати',
   },
 };
 
