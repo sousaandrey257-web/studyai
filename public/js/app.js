@@ -141,11 +141,11 @@ window.startCheckout = async function (plan) {
     });
     var data = await res.json();
     if (data.url) { window.location.href = data.url; return; }
-    if (window.showToast) window.showToast('❌ ' + (data.error || 'Erreur Stripe'), 'error');
-    else alert(data.error || 'Erreur Stripe');
+    if (window.showToast) window.showToast('❌ ' + (data.error || t('toast_stripe_error')), 'error');
+    else alert(data.error || t('toast_stripe_error'));
   } catch (_) {
-    if (window.showToast) window.showToast('❌ Connexion impossible au serveur', 'error');
-    else alert('Connexion impossible');
+    if (window.showToast) window.showToast('❌ ' + t('toast_conn_error'), 'error');
+    else alert(t('toast_conn_error'));
   }
   btns.forEach(function (b) {
     b.disabled = false;
@@ -508,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const text = courseInput.value.trim();
 
     if (text.length < 10) {
-      showToast('⚠️ Écris au moins quelques mots.', 'error');
+      showToast('⚠️ ' + t('toast_min_text'), 'error');
       courseInput.focus();
       return;
     }
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btnGenerate.disabled = false;
         if (data.error === 'limit_reached') { showSection('input'); window.showPremiumModal(); return; }
         showSection('input');
-        showToast('❌ ' + (data.error || 'Erreur serveur'), 'error');
+        showToast('❌ ' + (data.error || t('toast_server_error')), 'error');
         return;
       }
 
@@ -581,9 +581,9 @@ document.addEventListener('DOMContentLoaded', function () {
       btnGenerate.disabled = false;
       showSection('input');
       if (err.name === 'AbortError') {
-        showToast('❌ Délai dépassé — réessaie avec un texte plus court.', 'error');
+        showToast('❌ ' + t('toast_timeout'), 'error');
       } else {
-        showToast('❌ Connexion impossible au serveur.', 'error');
+        showToast('❌ ' + t('toast_conn_error'), 'error');
       }
     }
   }
@@ -631,7 +631,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function copyShareLink(url) {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(function () {
-        showToast('🔗 Lien copié — partage-le à tes amis !', 'success');
+        showToast('🔗 ' + t('toast_link_copied'), 'success');
       }).catch(function () { fallbackCopy(url); });
     } else {
       fallbackCopy(url);
@@ -647,7 +647,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ta.select();
     document.execCommand('copy');
     ta.remove();
-    showToast('🔗 Lien copié !', 'success');
+    showToast('🔗 ' + t('toast_link_copied'), 'success');
   }
 
   // Expose globally for inline onclick handlers
@@ -944,9 +944,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Chips de détail XP
     var chips = '';
     if (xpGain.base)        chips += '<span class="gami-xp-chip">Score +'  + xpGain.base + '</span>';
-    if (xpGain.perfect)     chips += '<span class="gami-xp-chip bonus">Parfait +'  + xpGain.perfect + '</span>';
-    if (xpGain.streakBonus) chips += '<span class="gami-xp-chip bonus">Série +'    + xpGain.streakBonus + '</span>';
-    if (xpGain.daily)       chips += '<span class="gami-xp-chip bonus">1er today +' + xpGain.daily + '</span>';
+    if (xpGain.perfect)     chips += '<span class="gami-xp-chip bonus">' + t('xp_perfect') + ' +' + xpGain.perfect + '</span>';
+    if (xpGain.streakBonus) chips += '<span class="gami-xp-chip bonus">' + t('xp_streak_bonus') + ' +' + xpGain.streakBonus + '</span>';
+    if (xpGain.daily)       chips += '<span class="gami-xp-chip bonus">' + t('xp_daily') + ' +' + xpGain.daily + '</span>';
 
     var panel = document.createElement('div');
     panel.id        = 'gami-score-panel';
@@ -957,9 +957,9 @@ document.addEventListener('DOMContentLoaded', function () {
         '<div class="gami-xp-details">' + chips + '</div>' +
       '</div>' +
       '<div class="gami-level-row">' +
-        '<div class="level-badge" id="gami-lv-badge">Nv ' + data.level + '</div>' +
+        '<div class="level-badge" id="gami-lv-badge">' + t('gami_lv') + ' ' + data.level + '</div>' +
         '<div class="gami-level-info">' +
-          '<div class="gami-level-label">Niveau ' + data.level + ' &nbsp;·&nbsp; 🔥 ' + data.streak + ' jour' + (data.streak > 1 ? 's' : '') + '</div>' +
+          '<div class="gami-level-label">' + t('gami_level_label').replace('{level}', data.level).replace('{streak}', data.streak) + '</div>' +
           '<div class="xp-bar-wrap"><div class="xp-bar-fill" id="gami-xp-fill" style="width:0%"></div></div>' +
           '<div class="gami-level-sub">' + (prog.current || 0) + ' / ' + (prog.needed || 100) + ' XP</div>' +
         '</div>' +
@@ -967,8 +967,8 @@ document.addEventListener('DOMContentLoaded', function () {
       (data.motivational ? '<div class="gami-motivational">' + data.motivational + '</div>' : '') +
       '<a class="engage-cta" href="#" id="engage-cta-btn">' +
         '<div class="engage-cta-text">' +
-          '<strong>📚 Révise un autre cours</strong>' +
-          '<span>Continue ta série — tu es en route !</span>' +
+          '<strong>' + t('gami_cta_strong') + '</strong>' +
+          '<span>' + t('gami_streak_msg') + '</span>' +
         '</div>' +
         '<span class="engage-cta-arrow">→</span>' +
       '</a>';
@@ -990,12 +990,14 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Noms de niveaux — tableau indexé par niveau (1-based)
-  var _LEVEL_NAMES = [
-    '', 'Novice', 'Débutant', 'Apprenti', 'Étudiant',
-    'Explorateur', 'Avancé', 'Expert', 'Maître', 'Champion', 'Légende',
-  ];
   function _getLevelName(n) {
-    return _LEVEL_NAMES[Math.min(n, _LEVEL_NAMES.length - 1)] || 'Expert';
+    try {
+      var names = JSON.parse(t('level_names'));
+      return names[Math.min(n, names.length - 1)] || t('level_up_tag');
+    } catch (_) {
+      var fallback = ['', 'Novice', 'Débutant', 'Apprenti', 'Étudiant', 'Explorateur', 'Avancé', 'Expert', 'Maître', 'Champion', 'Légende'];
+      return fallback[Math.min(n, fallback.length - 1)] || 'Expert';
+    }
   }
 
   // Confettis CSS purs — utilise .confetti-particle défini dans premium.css
@@ -1031,12 +1033,12 @@ document.addEventListener('DOMContentLoaded', function () {
     overlay.className = 'level-up-overlay';
     overlay.innerHTML =
       '<div class="level-up-card">' +
-        '<div class="level-up-tag">✨ Niveau supérieur !</div>' +
+        '<div class="level-up-tag">' + t('level_up_tag') + '</div>' +
         '<div class="level-up-num">' + level + '</div>' +
         '<div class="level-up-name">' + levelName + '</div>' +
-        '<div class="level-up-title">Bravo ! Tu es maintenant <strong>' + levelName + '</strong></div>' +
-        '<div class="level-up-sub">Continue comme ça — chaque cours compte !</div>' +
-        '<button class="level-up-close" id="lv-close">Super ! 🎉</button>' +
+        '<div class="level-up-title">' + t('level_up_msg').replace('{name}', '<strong>' + levelName + '</strong>') + '</div>' +
+        '<div class="level-up-sub">' + t('level_up_sub') + '</div>' +
+        '<button class="level-up-close" id="lv-close">' + t('level_up_close') + '</button>' +
       '</div>';
     document.body.appendChild(overlay);
     document.getElementById('lv-close').addEventListener('click', function () { overlay.remove(); });
@@ -1049,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', function () {
     toast.innerHTML =
       '<div class="badge-toast-icon">' + (m.icon || '🎯') + '</div>' +
       '<div class="badge-toast-body">' +
-        '<div class="badge-toast-tag">Mission accomplie !</div>' +
+        '<div class="badge-toast-tag">' + t('mission_done') + '</div>' +
         '<div class="badge-toast-name">' + (m.label || '') + '</div>' +
         '<div class="badge-toast-desc">+' + (m.xp || 0) + ' XP bonus</div>' +
       '</div>';
@@ -1064,7 +1066,7 @@ document.addEventListener('DOMContentLoaded', function () {
     toast.innerHTML =
       '<div class="badge-toast-icon">' + (badge.icon || '🏅') + '</div>' +
       '<div class="badge-toast-body">' +
-        '<div class="badge-toast-tag">Badge débloqué !</div>' +
+        '<div class="badge-toast-tag">' + t('badge_unlocked') + '</div>' +
         '<div class="badge-toast-name">' + (badge.name || '') + '</div>' +
         '<div class="badge-toast-desc">' + (badge.desc || '') + '</div>' +
       '</div>';
@@ -1089,7 +1091,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       const data = await res.json();
       if (!res.ok || !Array.isArray(data.questions)) {
-        showToast('❌ ' + (data.error || 'Erreur génération'), 'error');
+        showToast('❌ ' + (data.error || t('toast_server_error')), 'error');
         if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = t('quiz_consolidate', { n: state.wrongQuestions.length }); }
         return;
       }
@@ -1098,7 +1100,7 @@ document.addEventListener('DOMContentLoaded', function () {
       state.currentContentId = null;
       startQuiz();
     } catch {
-      showToast('❌ Connexion impossible.', 'error');
+      showToast('❌ ' + t('toast_conn_error'), 'error');
       if (btnConsolidate) { btnConsolidate.disabled = false; btnConsolidate.textContent = t('quiz_consolidate', { n: state.wrongQuestions.length }); }
     }
   };
@@ -1146,14 +1148,14 @@ document.addEventListener('DOMContentLoaded', function () {
   window.copyText = function (id) {
     const el = document.getElementById(id);
     if (el) navigator.clipboard.writeText(el.textContent).then(function () {
-      showToast('✓ Résumé copié !', 'success');
+      showToast('✓ ' + t('toast_summary_copied'), 'success');
     });
   };
 
   window.copyFlashcard = function () {
     const txt = state.flashcardData.map(function (p) { return '• ' + p; }).join('\n');
     navigator.clipboard.writeText(txt).then(function () {
-      showToast('✓ Fiche copiée !', 'success');
+      showToast('✓ ' + t('toast_card_copied'), 'success');
     });
   };
 
@@ -1282,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (data.success && data.token) {
         state.premiumToken = data.token;
         localStorage.setItem('studyai_premium_token', data.token);
-        showToast('🎉 Accès Premium activé !', 'success');
+        showToast('🎉 ' + t('toast_premium_activated'), 'success');
         updateUsage(null, true);
       }
     } catch (_) {}
