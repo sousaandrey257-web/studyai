@@ -45,6 +45,7 @@ const openai = USE_GROQ
 //  SERVICES
 // ============================================================
 const PricingService     = require('./services/pricing');
+const { detectSubject }  = require('./services/subject-detector.service');
 const ReferralService    = require('./services/referral');
 const GamiService        = require('./services/gamification.service');
 const AntiFraud          = require('./services/antiFraud.service');
@@ -1676,16 +1677,50 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
   };
   const langName = LANG_NAMES_EN[lang] || 'French';
 
-  // Detect exam/test intent server-side — more reliable than asking the model to self-detect
+  // ── Subject detection (multilingual) ──────────────────────────────────────
+  const subjectInfo = detectSubject(text, lang);
+  const detectedCat = subjectInfo.category;    // e.g. 'history', 'math', 'general'
+  const allowsMath  = subjectInfo.allowsMath;  // true | false | null (general)
+
+  // ── Exam mode detection ────────────────────────────────────────────────────
   const EXAM_RE = /\b(exam|examen|exams|test|tests|évaluation|evaluation|contrôle|controle|bac\b|finals|midterm|prüfung|pruefung|exame|esame|ujian|sınav|sinav|toets|egzamin|іспит|экзамен|परीक्षा|สอบ|امتحان|시험|試験|考試|考试)\b/i;
   const isExamMode = EXAM_RE.test(text);
+
+  // ── Subject-specific exam section templates ───────────────────────────────
+  const SUBJECT_SECTION_GUIDES = {
+    history:         `🔑 Key dates, events, figures & causes — NOT formulas\n💡 Model essay plan or source analysis (intro→arg1→arg2→conclusion)`,
+    philosophy:      `🔑 Core concepts, key arguments, thinkers & texts — NOT equations\n💡 Model philosophical essay: thesis → supported argument → counter-argument → conclusion`,
+    literature:      `🔑 Themes, literary devices, key quotes, context — NOT calculations\n💡 Model literary analysis: intro → textual evidence → device → interpretation → link to theme`,
+    geography:       `🔑 Key concepts, maps, data facts, processes — NOT calculus\n💡 Model case study answer: context → process → impact → evaluation`,
+    law:             `🔑 Key articles, legal principles, jurisprudence — NOT equations\n💡 Model legal analysis: rule → application → case law → conclusion`,
+    language_learning:`🔑 Grammar rules, vocabulary lists, common errors — NOT math\n💡 Model grammar exercise with full annotation`,
+    biology:         `🔑 Key processes, structures, mechanisms — minimal math, no calculus\n💡 Model diagram explanation or biological process walkthrough`,
+    economics:       `🔑 Economic concepts, theories, definitions — light stats OK, no calculus\n💡 Model economic analysis with supply/demand reasoning`,
+    math:            `🔑 Formulas, theorems, derivation steps\n💡 Fully worked calculation, every algebraic step shown`,
+    physics:         `🔑 Laws, formulas, constants, units\n💡 Fully worked physics problem with numerical answer`,
+    chemistry:       `🔑 Equations, reaction types, periodic table facts\n💡 Balanced reaction with mechanisms`,
+    computer_science:`🔑 Concepts, algorithms, data structures\n💡 Pseudocode or code snippet with explanation`,
+    general:         `🔑 Key concepts and rules relevant to this subject\n💡 One complete exam-style question with model answer`,
+  };
+
+  // ── Math prohibition block (injected for non-math subjects) ───────────────
+  const MATH_PROHIBITION = allowsMath === false ? `
+🚫 ABSOLUTE PROHIBITION — THIS IS A ${detectedCat.toUpperCase()} SUBJECT:
+- NEVER write any mathematical formula (f'(x), ∫, Σ, LaTeX, etc.)
+- NEVER use derivative, integral, trigonometry, algebra notation
+- NEVER produce content appropriate for a math/science exam
+- If you feel tempted to write a formula: STOP — replace with dates, quotes, arguments, or definitions instead
+- Violation of this rule = complete failure of the task
+` : '';
 
   const BASE_INSTRUCTIONS = `You are StudyAI, an elite AI tutor. You combine Feynman technique, Bloom's taxonomy, and spaced repetition.
 
 LANGUAGE — NON-NEGOTIABLE: Every word you write MUST be in ${langName}. No exceptions regardless of input language.
+${MATH_PROHIBITION}
+DETECTED SUBJECT: ${detectedCat} — ALL content must be relevant to THIS subject.
 
-INPUT: The student may send course notes OR a short command ("help me with derivatives", "explain photosynthesis").
-If it is a command, generate a complete study package from your own knowledge. NEVER refuse.
+INPUT: The student may send course notes OR a short command.
+If it is a short command, generate a complete study package from your knowledge on that exact topic. NEVER refuse.
 
 OUTPUT — respond ONLY with valid JSON, no markdown, no extra text:
 {
@@ -1703,55 +1738,56 @@ MCQ QUALITY (mandatory):
   const STANDARD_INSTRUCTIONS = `
 
 SUMMARY (10-14 lines, use \\n between lines):
-▸ Start: "The key idea: [most important insight]"
-▸ Explain step by step in clear full sentences
+▸ Start: "The key idea: [most important insight about ${detectedCat}]"
+▸ Explain step by step in clear full sentences adapted to ${detectedCat}
 ▸ Include 1-2 real-world analogies
 ▸ Transitions: "First… Then… This leads to…"
-▸ End: "⚠️ Common mistake: [specific error students make]"
+▸ End: "⚠️ Common mistake: [specific error students make in ${detectedCat}]"
 
 FLASHCARDS — exactly 8 items:
-Format: "CONCEPT = definition (concrete example)"
+Format: "CONCEPT = definition (concrete example from ${detectedCat})"
 Order: fundamental → nuanced
 
-QUIZ — exactly 10 questions:
+QUIZ — exactly 10 questions relevant to ${detectedCat}:
 Q1-Q3: type "mcq", difficulty 1 — RECALL
 Q4-Q7: type "mcq", difficulty 2 — APPLICATION
 Q8-Q9: type "mcq", difficulty 3 — ANALYSIS
 Q10:   type "open", difficulty 3 — SYNTHESIS`;
 
+  const sectionGuide = SUBJECT_SECTION_GUIDES[detectedCat] || SUBJECT_SECTION_GUIDES.general;
+
   const EXAM_INSTRUCTIONS = `
 
-You are generating an EXAM PREPARATION PACKAGE. The student has an exam and needs to be fully ready.
-Be comprehensive, precise, and exam-focused. CRITICAL: adapt EVERY section to the actual subject — use calculations/formulas for math & science, dates/events/analysis for history, literary analysis for literature, etc. NEVER generate math content for a non-math topic.
-
+You are generating an EXAM PREPARATION PACKAGE for the subject: ${detectedCat.toUpperCase()}.
+The student needs to be fully ready for their ${detectedCat} exam.
+Every single item you generate MUST be relevant to ${detectedCat} — not to any other subject.
+${MATH_PROHIBITION}
 SUMMARY — structured exam sheet, use \\n between lines, \\n\\n between sections:
-Write EXACTLY these 5 sections. Translate ALL labels into ${langName}. Adapt content to the subject type:
+Write EXACTLY these 5 sections with labels translated to ${langName}:
 
-📌 [ESSENTIAL THEORY label in ${langName}]
-4-6 sentences covering the core theory for THIS specific subject. Be precise and exam-ready.
+📌 [ESSENTIAL THEORY — in ${langName}]
+4-6 sentences covering the essential theory for THIS ${detectedCat} topic. Be precise and exam-ready.
 
-🔑 [KEY CONCEPTS & RULES label in ${langName}]
-List every key concept, rule, method, formula, or date needed — adapted to the subject. One per line: "Name: definition/formula/event — meaning — when/how to apply"
+${sectionGuide}
+For each item in 🔑: "Name: value/definition — meaning/context — when to use/apply"
 
-💡 [WORKED EXAMPLE label in ${langName}]
-One complete exam-style question with a full model answer. For math/science: show calculation steps. For history/literature/geography: show essay structure or analysis method. Every step explicit.
+⚠️ [CLASSIC MISTAKES — in ${langName}]
+5 concrete mistakes students lose marks on in ${detectedCat} exams:
+"Students often confuse… / forget… / lose marks by…"
 
-⚠️ [CLASSIC MISTAKES label in ${langName}]
-5 specific mistakes students lose marks on. Concrete: "Students forget to… / confuse X with Y / skip the step…"
+🎯 [WHAT THE EXAMINER LOOKS FOR — in ${langName}]
+4 specific criteria that earn full marks in a ${detectedCat} exam.
+What separates 10/10 from 6/10.
 
-🎯 [WHAT THE EXAMINER LOOKS FOR label in ${langName}]
-4 things that earn full marks. What separates 10/10 from 6/10.
+FLASHCARDS — exactly 12 items, exam-focused on ${detectedCat}:
+Format: "📝 [${detectedCat} concept/date/rule] — [context/situation] — [error to avoid]"
 
-FLASHCARDS — exactly 12 items, exam-focused:
-Format: "📝 [concept/rule/date] — [when to use / context] — [error to avoid]"
-Cover all key concepts, definitions, methods or dates needed for the exam.
-
-QUIZ — exactly 15 questions, exam-level:
-Q1-Q3:   type "mcq", difficulty 1 — EXACT RECALL (define, identify, name)
-Q4-Q8:   type "mcq", difficulty 2 — APPLY (typical exam exercises for this subject)
-Q9-Q12:  type "mcq", difficulty 3 — ANALYSE/JUSTIFY (compare, spot error, explain why)
-Q13-Q14: type "mcq", difficulty 3 — MULTI-STEP REASONING
-Q15:     type "open", difficulty 3 — COMPLETE EXAM QUESTION (full marks model answer)`;
+QUIZ — exactly 15 questions, all about ${detectedCat}:
+Q1-Q3:   type "mcq", difficulty 1 — EXACT RECALL (typical ${detectedCat} exam: identify, define, name)
+Q4-Q8:   type "mcq", difficulty 2 — APPLY (analyse a ${detectedCat} case, document, or problem)
+Q9-Q12:  type "mcq", difficulty 3 — HIGHER ORDER (compare, critique, explain causation in ${detectedCat})
+Q13-Q14: type "mcq", difficulty 3 — MULTI-STEP REASONING in ${detectedCat}
+Q15:     type "open", difficulty 3 — FULL EXAM QUESTION in ${detectedCat} with complete model answer`;
 
   const systemPrompt = BASE_INSTRUCTIONS + (isExamMode ? EXAM_INSTRUCTIONS : STANDARD_INSTRUCTIONS);
 

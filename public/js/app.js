@@ -1482,4 +1482,62 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // ── Exam Examples Grid ─────────────────────────────────────
+  var _EXAM_SUBJECTS = [
+    { key: 'history',        icon: '📜' },
+    { key: 'philosophy',     icon: '🧠' },
+    { key: 'literature',     icon: '📖' },
+    { key: 'geography',      icon: '🌍' },
+    { key: 'math',           icon: '📐' },
+    { key: 'physics',        icon: '⚛️' },
+    { key: 'chemistry',      icon: '🧪' },
+    { key: 'biology',        icon: '🧬' },
+    { key: 'economics',      icon: '📊' },
+    { key: 'computer_science', icon: '💻' },
+    { key: 'law',            icon: '⚖️' },
+  ];
+
+  function _renderExamExamples() {
+    var grid = document.getElementById('exam-examples-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    _EXAM_SUBJECTS.forEach(function (subj) {
+      var card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'exam-example-card';
+
+      var icon  = document.createElement('span');
+      icon.className = 'exam-example-card-icon';
+      icon.textContent = subj.icon;
+
+      var title = document.createElement('span');
+      title.className = 'exam-example-card-title';
+      title.textContent = t('exam_ex_' + subj.key + '_title');
+
+      var desc  = document.createElement('span');
+      desc.className = 'exam-example-card-desc';
+      desc.textContent = t('exam_ex_' + subj.key + '_desc');
+
+      card.appendChild(icon);
+      card.appendChild(title);
+      card.appendChild(desc);
+
+      card.addEventListener('click', function () {
+        var prompt = t('exam_ex_' + subj.key + '_prompt');
+        if (courseInput) {
+          courseInput.value = prompt;
+          courseInput.focus();
+          courseInput.dispatchEvent(new Event('input'));
+          courseInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  _renderExamExamples();
+  document.addEventListener('langchange', _renderExamExamples);
+  // ────────────────────────────────────────────────────────────
+
 }); // fin DOMContentLoaded
