@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function () {
       topics: ['math_add_sub','math_mul_div','math_fractions','math_percent','math_equations','math_geometry','math_algebra','math_functions','math_stats','math_trig']
     },
     physics: {
-      re: /physique|physic|física|physik|fisik|fizik|fizica|физик|фізик|物理|물리|ฟิสิกส์|فيزياء/i,
+      re: /physique|physic|física|physik|fisic|fisik|fyzic|fizik|fizyk|візик|физик|фізик|物理|물리|ฟิสิกส์|فيزياء|vật/i,
       topics: ['phy_mechanics','phy_electricity','phy_optics','phy_thermo','phy_waves','phy_nuclear']
     },
     chemistry: {
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function () {
       topics: ['bio_cell','bio_genetics','bio_evolution','bio_ecology','bio_body','bio_plants']
     },
     history: {
-      re: /histoir|histor|geschicht|sejarah|tarih|истори|істори|历史|역사|ประวัติ|تاريخ|lịch\s*sử/i,
+      re: /histoir|histor|geschicht|geschied|sejarah|tarih|storia|歴史|истори|істори|历史|역사|ประวัติ|تاريخ|lịch\s*sử/i,
       topics: ['hist_ancient','hist_medieval','hist_modern','hist_ww','hist_cold','hist_contemp']
     },
     geography: {
@@ -531,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function () {
       topics: ['geo_climate','geo_countries','geo_resources','geo_population','geo_continents','geo_economy']
     },
     literature: {
-      re: /littératur|literatur|sastra|edebiyat|литератур|літератур|文学|문학|วรรณ|أدب|văn\s*học/i,
+      re: /littératur|literatur|letteratur|sastra|edebiyat|литератур|літератур|文学|문학|วรรณ|أدب|văn\s*học/i,
       topics: ['lit_analysis','lit_poetry','lit_novel','lit_essay','lit_movements']
     }
   };
