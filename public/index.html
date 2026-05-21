@@ -312,6 +312,14 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <span id="btn-generate-label" data-i18n="btn_generate">Analyser avec l'IA ⚡</span>
         </button>
 
+        <!-- ── Topic picker ── -->
+        <div id="topic-picker" class="topic-picker hidden" role="region" aria-live="polite">
+          <p class="topic-picker-title" id="topic-picker-title"></p>
+          <p class="topic-picker-sub" id="topic-picker-sub"></p>
+          <div class="topic-chips" id="topic-chips"></div>
+          <button class="topic-skip-btn" id="topic-skip-btn" type="button"></button>
+        </div>
+
       </div>
 
       <!-- ===== CAROUSEL ROTATIF ===== -->
@@ -901,9 +909,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <script src="js/fingerprint.js?v=1" defer></script>
   <script src="js/pow.js?v=1" defer></script>
   <!-- i18n must load BEFORE app.js -->
-  <script src="js/i18n.js?v=22"></script>
+  <script src="js/i18n.js?v=23"></script>
   <script src="js/auth.js?v=7"></script>
-  <script src="js/app.js?v=29"></script>
+  <script src="js/app.js?v=30"></script>
   <script src="js/ui.js?v=2"></script>
   <script src="js/share-card.js?v=1" defer></script>
   <script>

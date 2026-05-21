@@ -504,6 +504,96 @@ document.addEventListener('DOMContentLoaded', function () {
     courseInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
+  // ── Topic picker ────────────────────────────────────────────
+  var _SUBJECTS = {
+    math: {
+      re: /\b(math|maths|mathématiques|matematicas|matemáticas|matematika|matematik|математика|математики|数学|수학|toán|คณิตศาสตร์|riyaziyyat|riazi|رياضيات|matematică)\b/i,
+      topics: ['math_add_sub','math_mul_div','math_fractions','math_percent','math_equations','math_geometry','math_algebra','math_functions','math_stats','math_trig']
+    },
+    physics: {
+      re: /\b(physique|physics|física|physik|fisika|fizik|фізика|физика|فيزياء|物理|물리|vật\s*lý|ฟิสิกส์|fizika|fizică)\b/i,
+      topics: ['phy_mechanics','phy_electricity','phy_optics','phy_thermo','phy_waves','phy_nuclear']
+    },
+    chemistry: {
+      re: /\b(chimie|chemistry|química|chemie|chemia|kimia|kimya|хімія|химия|كيمياء|化学|화학|hóa\s*học|เคมี|chimică)\b/i,
+      topics: ['chem_reactions','chem_periodic','chem_acids','chem_organic','chem_stoich','chem_solutions']
+    },
+    biology: {
+      re: /\b(biologie|biology|biología|biologia|biologiya|biyoloji|біологія|биология|بيولوجيا|生物|생물|sinh\s*học|ชีววิทยา|biologie)\b/i,
+      topics: ['bio_cell','bio_genetics','bio_evolution','bio_ecology','bio_body','bio_plants']
+    },
+    history: {
+      re: /\b(histoire|history|historia|geschichte|sejarah|tarih|історія|история|تاريخ|历史|역사|lịch\s*sử|ประวัติศาสตร์|istoric)\b/i,
+      topics: ['hist_ancient','hist_medieval','hist_modern','hist_ww','hist_cold','hist_contemp']
+    },
+    geography: {
+      re: /\b(géographie|geography|geografía|geographie|geografia|geografi|coğrafya|географія|география|جغرافيا|地理|지리|địa\s*lý|ภูมิศาสตร์|geografie)\b/i,
+      topics: ['geo_climate','geo_countries','geo_resources','geo_population','geo_continents','geo_economy']
+    },
+    literature: {
+      re: /\b(littérature|literature|literatura|literatur|sastra|edebiyat|літерatura|литература|أدب|文学|문학|văn\s*học|วรรณคดี|literatură|littérature)\b/i,
+      topics: ['lit_analysis','lit_poetry','lit_novel','lit_essay','lit_movements']
+    }
+  };
+  var _TRIGGER_RE = /\b(aide|help|ayuda|hilf|ajuda|aiuto|帮助|도와|помог|помомож|bantuan|مساعدة|ช่วย|yardım|devoir|homework|examen|exam|révision|revision|étude|study|prépare|prepare|prepara|prüfung|練習|복습|ôn|تحضير)\b/i;
+  var _skipPicker = false;
+
+  function _detectSubject(text) {
+    if (text.length > 350) return null;
+    if (!_TRIGGER_RE.test(text)) return null;
+    for (var s in _SUBJECTS) {
+      if (_SUBJECTS[s].re.test(text)) return s;
+    }
+    return null;
+  }
+
+  function _showTopicPicker(subject) {
+    var picker  = document.getElementById('topic-picker');
+    var chips   = document.getElementById('topic-chips');
+    var titleEl = document.getElementById('topic-picker-title');
+    var subEl   = document.getElementById('topic-picker-sub');
+    var skipEl  = document.getElementById('topic-skip-btn');
+    if (!picker) return;
+
+    titleEl.textContent = t('topic_picker_title');
+    subEl.textContent   = t('topic_picker_sub');
+    skipEl.textContent  = t('topic_picker_skip');
+
+    chips.innerHTML = '';
+    _SUBJECTS[subject].topics.forEach(function (key) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'topic-chip';
+      btn.textContent = t(key);
+      btn.addEventListener('click', function () { _onTopicChip(key); });
+      chips.appendChild(btn);
+    });
+
+    skipEl.onclick = function () {
+      _hideTopicPicker();
+      _skipPicker = true;
+      generate();
+    };
+
+    picker.classList.remove('hidden');
+    picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function _hideTopicPicker() {
+    var picker = document.getElementById('topic-picker');
+    if (picker) picker.classList.add('hidden');
+  }
+
+  function _onTopicChip(topicKey) {
+    var topicName = t(topicKey);
+    var original  = courseInput.value.trim();
+    courseInput.value = original + ' — ' + topicName;
+    _hideTopicPicker();
+    _skipPicker = true;
+    generate();
+  }
+  // ────────────────────────────────────────────────────────────
+
   async function generate() {
     const text = courseInput.value.trim();
 
@@ -519,6 +609,13 @@ document.addEventListener('DOMContentLoaded', function () {
       courseInput.focus();
       return;
     }
+
+    // Show topic picker for short subject-related commands
+    if (!_skipPicker) {
+      const subj = _detectSubject(text);
+      if (subj) { _showTopicPicker(subj); return; }
+    }
+    _skipPicker = false;
 
     // Guard against double-clicks and race conditions
     if (btnGenerate.disabled || state._generating) return;
