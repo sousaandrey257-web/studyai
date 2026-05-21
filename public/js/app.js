@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
   // Triggers: stem-based, no \b needed — inputs are short (≤350 chars)
-  var _TRIGGER_RE = /aide|help|ayuda|hilf|ajuda|aiuto|bantuan|yardım|devoir|homework|examen|exam|revision|study|prepare|prépare|prepara|prüfung|помог|помомож|допомож|экзамен|іспит|екзамен|도와|시험|복습|ช่วย|สอบ|手伝|試験|帮|練|勉強|مساعد|امتحان|تحضير|ôn\s|révision|étude|मदद|परीक्षा|पढ़/i;
+  var _TRIGGER_RE = /aide|help|ayuda|hilf|ajuda|aiuto|bantuan|yardım|devoir|homework|examen|exam|revision|study|prepare|prépare|prepara|prüfung|помог|помомож|допомож|экзамен|іспит|екзамен|도와|도움|시험|복습|ช่วย|สอบ|手伝|試験|帮|練|勉強|مساعد|امتحان|تحضير|ôn\s|révision|étude|मदद|परीक्षा|पढ़/i;
   var _skipPicker = false;
 
   function _detectSubject(text) {
