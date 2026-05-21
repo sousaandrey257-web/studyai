@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ── Topic picker ────────────────────────────────────────────
   var _SUBJECTS = {
     math: {
-      re: /math|algebr|geometr|trigon|calcul|matematik|matematica|matematicas|matematika|wiskund|математик|数学|수학|toán|คณิต|رياض|गणित/i,
+      re: /math|algebr|geometr|trigon|calcul|matematy|matematik|matematica|matematicas|matematika|wiskund|математик|数学|수학|toán|คณิต|رياض|गणित/i,
       topics: ['math_add_sub','math_mul_div','math_fractions','math_percent','math_equations','math_geometry','math_algebra','math_functions','math_stats','math_trig']
     },
     physics: {
@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
   // Triggers: stem-based, no \b needed — inputs are short (≤350 chars)
-  var _TRIGGER_RE = /aide|help|ayuda|hilf|ajuda|aiuto|bantuan|yardım|hulp|studeren|oefenen|devoir|homework|examen|exam|revision|study|prepare|prépare|prepara|prüfung|помог|помомож|допомож|экзамен|іспит|екзамен|도와|도움|시험|복습|ช่วย|สอบ|手伝|試験|帮|練|勉強|مساعد|امتحان|تحضير|ôn\s|révision|étude|मदद|परीक्षा|पढ़/i;
+  var _TRIGGER_RE = /aide|help|ayuda|hilf|ajuda|aiuto|bantuan|yardım|hulp|studeren|oefenen|pomoc|egzamin|nauka|devoir|homework|examen|exam|revision|study|prepare|prépare|prepara|prüfung|помог|помомож|допомож|экзамен|іспит|екзамен|도와|도움|시험|복습|ช่วย|สอบ|手伝|試験|帮|練|勉強|مساعد|امتحان|تحضير|ôn\s|révision|étude|मदद|परीक्षा|पढ़/i;
   var _skipPicker = false;
 
   function _detectSubject(text) {
