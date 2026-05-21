@@ -40,7 +40,7 @@
   };
 
   function _getLang() {
-    try { return localStorage.getItem('lang') || 'fr'; } catch (_) { return 'fr'; }
+    try { return localStorage.getItem('studyai_lang') || 'fr'; } catch (_) { return 'fr'; }
   }
   function _ui() { return _UI[_getLang()] || _UI['fr']; }
 
@@ -125,6 +125,17 @@
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && _open) _close();
+    });
+
+    // When user switches UI language, update status + reset welcome if no history
+    document.addEventListener('langchange', function () {
+      var statusEl = document.getElementById('support-header-status');
+      if (statusEl) statusEl.textContent = _ui().status;
+      if (_history.length === 0) {
+        if (_messages) _messages.innerHTML = '';
+        _appendBotMsg(_ui().welcome);
+        _renderSuggestions(_ui().suggest);
+      }
     });
   }
 
