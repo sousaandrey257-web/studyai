@@ -874,6 +874,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             <option value="vi">🇻🇳 Tiếng Việt</option>
             <option value="id">🇮🇩 Bahasa Indonesia</option>
             <option value="th">🇹🇭 ภาษาไทย</option>
+            <option value="pt-BR">🇧🇷 Português (BR)</option>
             <option value="uk">🇺🇦 Українська</option>
           </select>
         </div>
@@ -959,6 +960,10 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           rotEl.style.transform = 'translateY(0)';
         }, 300);
       }, 2800);
+      document.addEventListener('langchange', function() {
+        var raw = window.i18n ? window.i18n.t('rotating_words') : '';
+        if (raw && raw.indexOf('|') > -1) { words = raw.split('|'); rotIdx = 0; }
+      });
     }
 
     /* 3. Stats counter animation */
