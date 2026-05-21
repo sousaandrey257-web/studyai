@@ -508,31 +508,31 @@ document.addEventListener('DOMContentLoaded', function () {
   var _SUBJECTS = {
     math: {
       re: /math|algebr|geometr|trigon|calcul|matematy|matematik|matematica|matematicas|matematika|wiskund|математик|数学|수학|toán|คณิต|رياض|गणित/i,
-      topics: ['math_add_sub','math_mul_div','math_fractions','math_percent','math_equations','math_geometry','math_algebra','math_functions','math_stats','math_trig']
+      topics: ['ma_arith','ma_frac','ma_pct','ma_eq1','ma_eq2','ma_func','ma_geom','ma_vol','ma_trig','ma_stat','ma_seq','ma_calc']
     },
     physics: {
       re: /physique|physic|física|physik|fisic|fisik|fyzic|fizik|fizyk|natuurk|визик|физик|фізик|物理|물리|ฟิสิกส์|فيزياء|vật|भौतिक/i,
-      topics: ['phy_mechanics','phy_electricity','phy_optics','phy_thermo','phy_waves','phy_nuclear']
+      topics: ['ph_kine','ph_dyn','ph_enrg','ph_circ','ph_magn','ph_opti','ph_wave','ph_thermo','ph_fluid','ph_mod']
     },
     chemistry: {
       re: /chimi|chemist|quím|chemi|scheik|kimia|kimya|chimică|хими|хімі|化学|화학|เคมี|كيمياء|hóa|रसायन/i,
-      topics: ['chem_reactions','chem_periodic','chem_acids','chem_organic','chem_stoich','chem_solutions']
+      topics: ['ch_atom','ch_table','ch_react','ch_acid','ch_redox','ch_therm','ch_kinet','ch_org','ch_stoich','ch_sol']
     },
     biology: {
       re: /biolog|biyoloj|биолог|біолог|sinh\s*học|生物|생물|ชีว|بيولوج|जीव/i,
-      topics: ['bio_cell','bio_genetics','bio_evolution','bio_ecology','bio_body','bio_plants']
+      topics: ['bi_cell','bi_divis','bi_dna','bi_genet','bi_evol','bi_class','bi_body','bi_immun','bi_eco','bi_photo']
     },
     history: {
       re: /histoir|histor|geschicht|geschied|sejarah|tarih|storia|歴史|истори|істори|历史|역사|ประวัติ|تاريخ|lịch\s*sử|इतिहास/i,
-      topics: ['hist_ancient','hist_medieval','hist_modern','hist_ww','hist_cold','hist_contemp']
+      topics: ['hi_anc','hi_rome','hi_midage','hi_crusad','hi_plague','hi_renais','hi_revol','hi_imper','hi_ww1','hi_ww2','hi_cold','hi_contem']
     },
     geography: {
       re: /géograph|geograph|geografí|geografi|aardrijks|coğrafya|географ|地理|지리|ภูมิ|جغرافي|địa\s*lý|भूगोल/i,
-      topics: ['geo_climate','geo_countries','geo_resources','geo_population','geo_continents','geo_economy']
+      topics: ['ge_relief','ge_ocean','ge_clima','ge_pop','ge_urban','ge_resrc','ge_enrg','ge_glob','ge_inequ','ge_geopo']
     },
     literature: {
       re: /littératur|literatur|letteratur|sastra|edebiyat|литератур|літератур|文学|문학|วรรณ|أدب|văn\s*học|साहित्य/i,
-      topics: ['lit_analysis','lit_poetry','lit_novel','lit_essay','lit_movements']
+      topics: ['li_text','li_style','li_poet','li_novel','li_theat','li_essay','li_human','li_class','li_romant','li_modern']
     }
   };
   // Triggers: stem-based, no \b needed — inputs are short (≤350 chars)
