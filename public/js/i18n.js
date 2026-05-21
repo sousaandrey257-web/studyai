@@ -497,6 +497,9 @@ const translations = {
     exam_ex_law_prompt: 'Aide-moi pour mon examen de droit sur…',
     exam_ex_section_title: 'Prépare-toi pour n\'importe quel examen',
     exam_ex_section_sub: 'Clique sur une matière pour lancer la préparation',
+    exam_ex_medicine_title: 'Médecine',
+    exam_ex_medicine_desc: 'Anatomie, physiologie, pathologie, pharmacologie',
+    exam_ex_medicine_prompt: 'Aide-moi pour mon examen de médecine sur…',
   },
 
   // ----------------------------------------------------------
@@ -990,6 +993,9 @@ const translations = {
     exam_ex_law_prompt: 'Help me prepare my law exam on…',
     exam_ex_section_title: 'Prepare for any exam',
     exam_ex_section_sub: 'Click a subject to start your exam preparation',
+    exam_ex_medicine_title: 'Medicine',
+    exam_ex_medicine_desc: 'Anatomy, physiology, pathology, pharmacology',
+    exam_ex_medicine_prompt: 'Help me prepare my medicine exam on…',
   },
 
   // ----------------------------------------------------------
@@ -1483,6 +1489,9 @@ const translations = {
     exam_ex_law_prompt: 'Ayúdame con mi examen de derecho sobre…',
     exam_ex_section_title: 'Prepárate para cualquier examen',
     exam_ex_section_sub: 'Haz clic en una materia para empezar',
+    exam_ex_medicine_title: 'Medicina',
+    exam_ex_medicine_desc: 'Anatomía, fisiología, patología, farmacología',
+    exam_ex_medicine_prompt: 'Ayúdame con mi examen de medicina sobre…',
   },
 
   // ----------------------------------------------------------
@@ -1976,6 +1985,9 @@ const translations = {
     exam_ex_law_prompt: 'Hilf mir bei meiner Rechtsprüfung über…',
     exam_ex_section_title: 'Bereite dich auf jede Prüfung vor',
     exam_ex_section_sub: 'Klicke auf ein Fach, um die Vorbereitung zu starten',
+    exam_ex_medicine_title: 'Medizin',
+    exam_ex_medicine_desc: 'Anatomie, Physiologie, Pathologie, Pharmakologie',
+    exam_ex_medicine_prompt: 'Hilf mir bei meiner Medizinprüfung über…',
   },
 
   // ----------------------------------------------------------
@@ -2495,6 +2507,9 @@ const translations = {
     exam_ex_law_prompt: 'Ajuda-me no exame de direito sobre…',
     exam_ex_section_title: 'Prepara-te para qualquer exame',
     exam_ex_section_sub: 'Clica numa matéria para começar a preparação',
+    exam_ex_medicine_title: 'Medicina',
+    exam_ex_medicine_desc: 'Anatomia, fisiologia, patologia, farmacologia',
+    exam_ex_medicine_prompt: 'Ajuda-me no exame de medicina sobre…',
   },
 
   // ----------------------------------------------------------
@@ -2988,6 +3003,9 @@ const translations = {
     exam_ex_law_prompt: 'Me ajuda no exame de direito sobre…',
     exam_ex_section_title: 'Prepare-se para qualquer exame',
     exam_ex_section_sub: 'Clique em uma matéria para começar a preparação',
+    exam_ex_medicine_title: 'Medicina',
+    exam_ex_medicine_desc: 'Anatomia, fisiologia, patologia, farmacologia',
+    exam_ex_medicine_prompt: 'Me ajuda no exame de medicina sobre…',
   },
 
   // ----------------------------------------------------------
@@ -3486,6 +3504,9 @@ const translations = {
     exam_ex_law_prompt: 'Aiutami per l\'esame di diritto su…',
     exam_ex_section_title: 'Preparati per qualsiasi esame',
     exam_ex_section_sub: 'Clicca su una materia per iniziare la preparazione',
+    exam_ex_medicine_title: 'Medicina',
+    exam_ex_medicine_desc: 'Anatomia, fisiologia, patologia, farmacologia',
+    exam_ex_medicine_prompt: 'Aiutami per l\'esame di medicina su…',
   },
 
   // ----------------------------------------------------------
@@ -3979,6 +4000,9 @@ const translations = {
     exam_ex_law_prompt: 'Help me met mijn rechtsexamen over…',
     exam_ex_section_title: 'Bereid je voor op elk examen',
     exam_ex_section_sub: 'Klik op een vak om de voorbereiding te starten',
+    exam_ex_medicine_title: 'Geneeskunde',
+    exam_ex_medicine_desc: 'Anatomie, fysiologie, pathologie, farmacologie',
+    exam_ex_medicine_prompt: 'Help me met mijn geneeskunde-examen over…',
   },
 
   // ----------------------------------------------------------
@@ -4472,6 +4496,9 @@ const translations = {
     exam_ex_law_prompt: '帮我准备关于…的法学考试',
     exam_ex_section_title: '为任何考试做准备',
     exam_ex_section_sub: '点击科目开始备考',
+    exam_ex_medicine_title: '医学',
+    exam_ex_medicine_desc: '解剖学、生理学、病理学、药理学',
+    exam_ex_medicine_prompt: '帮我准备关于…的医学考试',
   },
 
   // ----------------------------------------------------------
@@ -4965,6 +4992,9 @@ const translations = {
     exam_ex_law_prompt: '…についての法学試験を手伝ってください',
     exam_ex_section_title: 'どんな試験にも対応',
     exam_ex_section_sub: '科目をクリックして試験対策を始める',
+    exam_ex_medicine_title: '医学',
+    exam_ex_medicine_desc: '解剖学、生理学、病理学、薬理学',
+    exam_ex_medicine_prompt: '…についての医学試験を手伝ってください',
   },
 
   // ----------------------------------------------------------
@@ -5458,6 +5488,9 @@ const translations = {
     exam_ex_law_prompt: '…에 관한 법학 시험 준비를 도와주세요',
     exam_ex_section_title: '모든 시험을 준비하세요',
     exam_ex_section_sub: '과목을 클릭하여 시험 준비를 시작하세요',
+    exam_ex_medicine_title: '의학',
+    exam_ex_medicine_desc: '해부학, 생리학, 병리학, 약리학',
+    exam_ex_medicine_prompt: '…에 관한 의학 시험 준비를 도와주세요',
   },
 
   // ----------------------------------------------------------
@@ -5951,6 +5984,9 @@ const translations = {
     exam_ex_law_prompt: 'Bantu saya mempersiapkan ujian hukum tentang…',
     exam_ex_section_title: 'Persiapkan ujian apa pun',
     exam_ex_section_sub: 'Klik mata pelajaran untuk memulai persiapan',
+    exam_ex_medicine_title: 'Kedokteran',
+    exam_ex_medicine_desc: 'Anatomi, fisiologi, patologi, farmakologi',
+    exam_ex_medicine_prompt: 'Bantu saya mempersiapkan ujian kedokteran tentang…',
   },
 
   // ----------------------------------------------------------
@@ -6444,6 +6480,9 @@ const translations = {
     exam_ex_law_prompt: 'ساعدني في التحضير لامتحان القانون عن…',
     exam_ex_section_title: 'استعد لأي امتحان',
     exam_ex_section_sub: 'انقر على مادة للبدء في التحضير',
+    exam_ex_medicine_title: 'الطب',
+    exam_ex_medicine_desc: 'التشريح، الفسيولوجيا، الأمراض، الصيدلة',
+    exam_ex_medicine_prompt: 'ساعدني في التحضير لامتحان الطب عن…',
   },
 
   // ----------------------------------------------------------
@@ -6937,6 +6976,9 @@ const translations = {
     exam_ex_law_prompt: '… hakkında hukuk sınavıma hazırlanmama yardım et',
     exam_ex_section_title: 'Her sınava hazırlan',
     exam_ex_section_sub: 'Hazırlığa başlamak için bir ders seç',
+    exam_ex_medicine_title: 'Tıp',
+    exam_ex_medicine_desc: 'Anatomi, fizyoloji, patoloji, farmakoloji',
+    exam_ex_medicine_prompt: '… hakkında tıp sınavıma hazırlanmama yardım et',
   },
 
   // ----------------------------------------------------------
@@ -7430,6 +7472,9 @@ const translations = {
     exam_ex_law_prompt: 'ช่วยฉันเตรียมสอบกฎหมายเกี่ยวกับ…',
     exam_ex_section_title: 'เตรียมตัวสำหรับทุกการสอบ',
     exam_ex_section_sub: 'คลิกวิชาเพื่อเริ่มการเตรียมสอบ',
+    exam_ex_medicine_title: 'การแพทย์',
+    exam_ex_medicine_desc: 'กายวิภาค สรีรวิทยา พยาธิวิทยา เภสัชวิทยา',
+    exam_ex_medicine_prompt: 'ช่วยฉันเตรียมสอบแพทย์เกี่ยวกับ…',
   },
 
   // ----------------------------------------------------------
@@ -7923,6 +7968,9 @@ const translations = {
     exam_ex_law_prompt: 'Помоги подготовиться к экзамену по праву на тему…',
     exam_ex_section_title: 'Подготовься к любому экзамену',
     exam_ex_section_sub: 'Нажми на предмет, чтобы начать подготовку',
+    exam_ex_medicine_title: 'Медицина',
+    exam_ex_medicine_desc: 'Анатомия, физиология, патология, фармакология',
+    exam_ex_medicine_prompt: 'Помоги подготовиться к экзамену по медицине на тему…',
   },
 
   // ----------------------------------------------------------
@@ -8416,6 +8464,9 @@ const translations = {
     exam_ex_law_prompt: 'Pomóż mi przygotować się do egzaminu z prawa na temat…',
     exam_ex_section_title: 'Przygotuj się na każdy egzamin',
     exam_ex_section_sub: 'Kliknij przedmiot, aby rozpocząć przygotowania',
+    exam_ex_medicine_title: 'Medycyna',
+    exam_ex_medicine_desc: 'Anatomia, fizjologia, patologia, farmakologia',
+    exam_ex_medicine_prompt: 'Pomóż mi przygotować się do egzaminu z medycyny na temat…',
   },
 
   // ----------------------------------------------------------
@@ -8909,6 +8960,9 @@ const translations = {
     exam_ex_law_prompt: 'Giúp tôi chuẩn bị thi luật về…',
     exam_ex_section_title: 'Chuẩn bị cho bất kỳ kỳ thi nào',
     exam_ex_section_sub: 'Nhấp vào môn học để bắt đầu chuẩn bị',
+    exam_ex_medicine_title: 'Y học',
+    exam_ex_medicine_desc: 'Giải phẫu, sinh lý, bệnh lý, dược lý',
+    exam_ex_medicine_prompt: 'Giúp tôi chuẩn bị thi y học về…',
   },
 
   // ----------------------------------------------------------
@@ -9402,6 +9456,9 @@ const translations = {
     exam_ex_law_prompt: '…पर कानून परीक्षा की तैयारी में मदद करें',
     exam_ex_section_title: 'किसी भी परीक्षा की तैयारी करें',
     exam_ex_section_sub: 'तैयारी शुरू करने के लिए कोई विषय चुनें',
+    exam_ex_medicine_title: 'चिकित्सा',
+    exam_ex_medicine_desc: 'शरीर रचना, शरीर क्रिया, विकृति विज्ञान, औषध विज्ञान',
+    exam_ex_medicine_prompt: '…पर चिकित्सा परीक्षा की तैयारी में मदद करें',
   },
 
   // ----------------------------------------------------------
@@ -9895,6 +9952,9 @@ const translations = {
     exam_ex_law_prompt: 'Допоможи підготуватися до іспиту з права на тему…',
     exam_ex_section_title: 'Підготуйся до будь-якого іспиту',
     exam_ex_section_sub: 'Натисни на предмет, щоб почати підготовку',
+    exam_ex_medicine_title: 'Медицина',
+    exam_ex_medicine_desc: 'Анатомія, фізіологія, патологія, фармакологія',
+    exam_ex_medicine_prompt: 'Допоможи підготуватися до іспиту з медицини на тему…',
   },
 };
 

@@ -1700,6 +1700,7 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
     physics:         `🔑 Laws, formulas, constants, units\n💡 Fully worked physics problem with numerical answer`,
     chemistry:       `🔑 Equations, reaction types, periodic table facts\n💡 Balanced reaction with mechanisms`,
     computer_science:`🔑 Concepts, algorithms, data structures\n💡 Pseudocode or code snippet with explanation`,
+    medicine:        `🔑 Anatomy, physiology, pathology mechanisms, clinical signs — NOT math formulas\n💡 Model clinical case: presentation → diagnosis → pathophysiology → treatment`,
     general:         `🔑 Key concepts and rules relevant to this subject\n💡 One complete exam-style question with model answer`,
   };
 

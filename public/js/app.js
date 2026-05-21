@@ -1493,8 +1493,9 @@ document.addEventListener('DOMContentLoaded', function () {
     { key: 'chemistry',      icon: '🧪' },
     { key: 'biology',        icon: '🧬' },
     { key: 'economics',      icon: '📊' },
-    { key: 'computer_science', icon: '💻' },
+    { key: 'cs',             icon: '💻' },
     { key: 'law',            icon: '⚖️' },
+    { key: 'medicine',       icon: '🏥' },
   ];
 
   function _renderExamExamples() {
