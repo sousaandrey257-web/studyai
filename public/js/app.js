@@ -507,36 +507,36 @@ document.addEventListener('DOMContentLoaded', function () {
   // ── Topic picker ────────────────────────────────────────────
   var _SUBJECTS = {
     math: {
-      re: /math|algebr|geometr|trigon|calcul|matematik|matematica|matematicas|matematik|matematika|математик|数学|수학|toán|คณิต|رياض/i,
+      re: /math|algebr|geometr|trigon|calcul|matematik|matematica|matematicas|matematika|математик|数学|수학|toán|คณิต|رياض|गणित/i,
       topics: ['math_add_sub','math_mul_div','math_fractions','math_percent','math_equations','math_geometry','math_algebra','math_functions','math_stats','math_trig']
     },
     physics: {
-      re: /physique|physic|física|physik|fisic|fisik|fyzic|fizik|fizyk|візик|физик|фізик|物理|물리|ฟิสิกส์|فيزياء|vật/i,
+      re: /physique|physic|física|physik|fisic|fisik|fyzic|fizik|fizyk|визик|физик|фізик|物理|물리|ฟิสิกส์|فيزياء|vật|भौतिक/i,
       topics: ['phy_mechanics','phy_electricity','phy_optics','phy_thermo','phy_waves','phy_nuclear']
     },
     chemistry: {
-      re: /chimi|chemist|quím|chemi|kimia|kimya|chimică|хими|хімі|化学|화학|เคมี|كيمياء|hóa/i,
+      re: /chimi|chemist|quím|chemi|kimia|kimya|chimică|хими|хімі|化学|화학|เคมี|كيمياء|hóa|रसायन/i,
       topics: ['chem_reactions','chem_periodic','chem_acids','chem_organic','chem_stoich','chem_solutions']
     },
     biology: {
-      re: /biolog|biyoloj|биолог|біолог|sinh\s*học|生物|생물|ชีว|بيولوج/i,
+      re: /biolog|biyoloj|биолог|біолог|sinh\s*học|生物|생물|ชีว|بيولوج|जीव/i,
       topics: ['bio_cell','bio_genetics','bio_evolution','bio_ecology','bio_body','bio_plants']
     },
     history: {
-      re: /histoir|histor|geschicht|geschied|sejarah|tarih|storia|歴史|истори|істори|历史|역사|ประวัติ|تاريخ|lịch\s*sử/i,
+      re: /histoir|histor|geschicht|geschied|sejarah|tarih|storia|歴史|истори|істори|历史|역사|ประวัติ|تاريخ|lịch\s*sử|इतिहास/i,
       topics: ['hist_ancient','hist_medieval','hist_modern','hist_ww','hist_cold','hist_contemp']
     },
     geography: {
-      re: /géograph|geograph|geografí|geografi|coğrafya|географ|地理|지리|ภูมิ|جغرافي|địa\s*lý/i,
+      re: /géograph|geograph|geografí|geografi|coğrafya|географ|地理|지리|ภูมิ|جغرافي|địa\s*lý|भूगोल/i,
       topics: ['geo_climate','geo_countries','geo_resources','geo_population','geo_continents','geo_economy']
     },
     literature: {
-      re: /littératur|literatur|letteratur|sastra|edebiyat|литератур|літератур|文学|문학|วรรณ|أدب|văn\s*học/i,
+      re: /littératur|literatur|letteratur|sastra|edebiyat|литератур|літератур|文学|문학|วรรณ|أدب|văn\s*học|साहित्य/i,
       topics: ['lit_analysis','lit_poetry','lit_novel','lit_essay','lit_movements']
     }
   };
   // Triggers: stem-based, no \b needed — inputs are short (≤350 chars)
-  var _TRIGGER_RE = /aide|help|ayuda|hilf|ajuda|aiuto|bantuan|yardım|devoir|homework|examen|exam|revision|study|prepare|prépare|prepara|prüfung|помог|помомож|допомож|экзамен|іспит|екзамен|도와|시험|복습|ช่วย|สอบ|手伝|試験|帮|練|勉強|مساعد|امتحان|تحضير|ôn\s|révision|étude/i;
+  var _TRIGGER_RE = /aide|help|ayuda|hilf|ajuda|aiuto|bantuan|yardım|devoir|homework|examen|exam|revision|study|prepare|prépare|prepara|prüfung|помог|помомож|допомож|экзамен|іспит|екзамен|도와|시험|복습|ช่วย|สอบ|手伝|試験|帮|練|勉強|مساعد|امتحان|تحضير|ôn\s|révision|étude|मदद|परीक्षा|पढ़/i;
   var _skipPicker = false;
 
   function _detectSubject(text) {
