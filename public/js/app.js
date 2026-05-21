@@ -683,7 +683,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     state.quizQuestions = data.quiz || [];
     const n = state.quizQuestions.length;
-    quizQCount.textContent = n + ' question' + (n > 1 ? 's' : '') + ' — du facile au difficile';
+    var examLabel = n >= 14 ? (t('quiz_exam_mode') || '🎯 Mode Examen') : (t('quiz_standard_label') || '— du facile au difficile');
+    quizQCount.textContent = n + ' question' + (n > 1 ? 's' : '') + ' ' + examLabel;
 
     const mode = data.mode || 'full';
     showSection('results');
