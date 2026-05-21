@@ -1722,33 +1722,33 @@ Q10:   type "open", difficulty 3 — SYNTHESIS`;
   const EXAM_INSTRUCTIONS = `
 
 You are generating an EXAM PREPARATION PACKAGE. The student has an exam and needs to be fully ready.
-Be comprehensive, precise, and exam-focused. Cover everything that could appear on the exam.
+Be comprehensive, precise, and exam-focused. CRITICAL: adapt EVERY section to the actual subject — use calculations/formulas for math & science, dates/events/analysis for history, literary analysis for literature, etc. NEVER generate math content for a non-math topic.
 
 SUMMARY — structured exam sheet, use \\n between lines, \\n\\n between sections:
-Write EXACTLY these 5 sections with their emoji headers (translate labels to ${langName}):
+Write EXACTLY these 5 sections. Translate ALL labels into ${langName}. Adapt content to the subject type:
 
-📌 THÉORIE ESSENTIELLE
-4-6 sentences covering the core theory. Be precise and exam-ready. No vagueness.
+📌 [ESSENTIAL THEORY label in ${langName}]
+4-6 sentences covering the core theory for THIS specific subject. Be precise and exam-ready.
 
-🔑 FORMULES ET RÈGLES CLÉS
-List every formula, theorem, rule needed. One per line: "Name: formula — meaning — when to use"
+🔑 [KEY CONCEPTS & RULES label in ${langName}]
+List every key concept, rule, method, formula, or date needed — adapted to the subject. One per line: "Name: definition/formula/event — meaning — when/how to apply"
 
-💡 EXEMPLE RÉSOLU
-One full worked exam problem, every step shown explicitly. Student must understand the complete method.
+💡 [WORKED EXAMPLE label in ${langName}]
+One complete exam-style question with a full model answer. For math/science: show calculation steps. For history/literature/geography: show essay structure or analysis method. Every step explicit.
 
-⚠️ PIÈGES CLASSIQUES
+⚠️ [CLASSIC MISTAKES label in ${langName}]
 5 specific mistakes students lose marks on. Concrete: "Students forget to… / confuse X with Y / skip the step…"
 
-🎯 CE QUE LE CORRECTEUR CHERCHE
+🎯 [WHAT THE EXAMINER LOOKS FOR label in ${langName}]
 4 things that earn full marks. What separates 10/10 from 6/10.
 
 FLASHCARDS — exactly 12 items, exam-focused:
-Format: "📝 [formula/concept] — QUAND: [situation] — PIÈGE: [error to avoid]"
-Cover all key formulas, definitions, methods needed for the exam.
+Format: "📝 [concept/rule/date] — [when to use / context] — [error to avoid]"
+Cover all key concepts, definitions, methods or dates needed for the exam.
 
 QUIZ — exactly 15 questions, exam-level:
 Q1-Q3:   type "mcq", difficulty 1 — EXACT RECALL (define, identify, name)
-Q4-Q8:   type "mcq", difficulty 2 — APPLY/CALCULATE (typical exam exercises)
+Q4-Q8:   type "mcq", difficulty 2 — APPLY (typical exam exercises for this subject)
 Q9-Q12:  type "mcq", difficulty 3 — ANALYSE/JUSTIFY (compare, spot error, explain why)
 Q13-Q14: type "mcq", difficulty 3 — MULTI-STEP REASONING
 Q15:     type "open", difficulty 3 — COMPLETE EXAM QUESTION (full marks model answer)`;

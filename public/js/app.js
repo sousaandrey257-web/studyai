@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ── Topic picker ────────────────────────────────────────────
   var _SUBJECTS = {
     math: {
-      re: /math|algebr|geometr|trigon|calcul|matematy|matematik|matematica|matematicas|matematika|wiskund|математик|数学|수학|toán|คณิต|رياض|गणित/i,
+      re: /\bmath|algebr|geometr|trigon|dérivée|derivada|derivativ|intégral|integral|équation|ecuacion|equation|fraction|probabilit|logarithm|polynôm|polynom|vecteur|vector|matematy|matematik|matematica|matematicas|matematika|wiskund|математик|数学|수학|toán|คณิต|رياض|गणित/i,
       topics: ['ma_arith','ma_frac','ma_pct','ma_eq1','ma_eq2','ma_func','ma_geom','ma_vol','ma_trig','ma_stat','ma_seq','ma_calc']
     },
     physics: {
