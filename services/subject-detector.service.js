@@ -351,6 +351,35 @@ const SUBJECTS = {
       uk: ['інформатика','програмування','алгоритм','python','javascript','java','код','програмне забезпечення','структури даних','мережа','база даних'],
     }
   },
+  // ── MEDICINE — minimal math, no calculus ───────────────────────────────────
+  medicine: {
+    allowsMath: false,
+    sectionStyle: 'clinical',
+    focus: ['anatomy', 'physiology', 'pathology', 'diagnosis', 'treatment', 'pharmacology'],
+    kw: {
+      fr: ['médecine','médical','anatomie','physiologie','pathologie','pharmacologie','diagnostic','traitement','chirurgie','symptôme','maladie','organe','système nerveux','cardiovasculaire','respiratoire','infectieux','immunologie','neurologie','cardiologie','pédiatrie','gynécologie','oncologie','sémiologie'],
+      en: ['medicine','medical','anatomy','physiology','pathology','pharmacology','diagnosis','treatment','surgery','symptom','disease','organ','nervous system','cardiovascular','respiratory','infectious','immunology','neurology','cardiology','pediatrics','oncology','semiology','clinical'],
+      es: ['medicina','médico','anatomía','fisiología','patología','farmacología','diagnóstico','tratamiento','cirugía','síntoma','enfermedad','órgano','sistema nervioso','cardiovascular','respiratorio','inmunología','neurología','cardiología','pediatría','oncología'],
+      de: ['medizin','medizinisch','anatomie','physiologie','pathologie','pharmakologie','diagnose','behandlung','chirurgie','symptom','krankheit','organ','nervensystem','herz-kreislauf','atemwege','immunologie','neurologie','kardiologie','pädiatrie','onkologie'],
+      pt: ['medicina','médico','anatomia','fisiologia','patologia','farmacologia','diagnóstico','tratamento','cirurgia','sintoma','doença','órgão','sistema nervoso','cardiovascular','respiratório','imunologia','neurologia','cardiologia','pediatria','oncologia'],
+      'pt-BR': ['medicina','médico','anatomia','fisiologia','patologia','farmacologia','diagnóstico','tratamento','cirurgia','sintoma','doença','sistema nervoso','cardiovascular','imunologia','neurologia','cardiologia'],
+      it: ['medicina','medico','anatomia','fisiologia','patologia','farmacologia','diagnosi','trattamento','chirurgia','sintomo','malattia','organo','sistema nervoso','cardiovascolare','respiratorio','immunologia','neurologia','cardiologia','pediatria','oncologia'],
+      nl: ['geneeskunde','medisch','anatomie','fysiologie','pathologie','farmacologie','diagnose','behandeling','chirurgie','symptoom','ziekte','orgaan','zenuwstelsel','cardiovasculair','immunologie','neurologie','cardiologie','pediatrie','oncologie'],
+      zh: ['医学','医疗','解剖','生理','病理','药理','诊断','治疗','手术','症状','疾病','器官','神经系统','心血管','呼吸','免疫学','神经学','心脏病学','儿科','肿瘤学'],
+      ja: ['医学','医療','解剖','生理学','病理','薬理学','診断','治療','手術','症状','疾患','臓器','神経系','循環器','免疫学','神経学','心臓病学','小児科','腫瘍学'],
+      ko: ['의학','의료','해부학','생리학','병리학','약리학','진단','치료','수술','증상','질병','기관','신경계','심혈관','면역학','신경학','심장학','소아과','종양학'],
+      id: ['kedokteran','medis','anatomi','fisiologi','patologi','farmakologi','diagnosis','pengobatan','bedah','gejala','penyakit','organ','sistem saraf','kardiovaskular','pernapasan','imunologi','neurologi','kardiologi','pediatri','onkologi'],
+      ar: ['طب','طبي','تشريح','فسيولوجيا','علم الأمراض','صيدلة','تشخيص','علاج','جراحة','أعراض','مرض','عضو','جهاز عصبي','قلب وأوعية','تنفسي','مناعة','أعصاب','قلبية','أطفال','أورام'],
+      tr: ['tıp','tıbbi','anatomi','fizyoloji','patoloji','farmakoloji','tanı','tedavi','cerrahi','belirti','hastalık','organ','sinir sistemi','kardiyovasküler','solunum','immunoloji','nöroloji','kardiyoloji','pediatri','onkoloji'],
+      th: ['แพทย์','การแพทย์','กายวิภาค','สรีรวิทยา','พยาธิวิทยา','เภสัชวิทยา','การวินิจฉัย','การรักษา','ศัลยกรรม','อาการ','โรค','อวัยวะ','ระบบประสาท','หัวใจ','ภูมิคุ้มกัน','ประสาทวิทยา','กุมารเวชศาสตร์'],
+      ru: ['медицин','медицинск','анатоми','физиологи','патологи','фармакологи','диагноз','лечени','хирурги','симптом','заболеван','орган','нервная система','сердечно-сосудист','иммунологи','неврологи','кардиологи','педиатри','онкологи'],
+      pl: ['medycyn','medyczn','anatomia','fizjologia','patologi','farmakologi','diagnoz','leczeni','chirurgi','objaw','chorob','narząd','układ nerwowy','sercowo-naczyniowy','immunologi','neurologi','kardiologi','pediatri','onkologi'],
+      vi: ['y học','y tế','giải phẫu','sinh lý','bệnh lý','dược lý','chẩn đoán','điều trị','phẫu thuật','triệu chứng','bệnh','cơ quan','hệ thần kinh','tim mạch','hô hấp','miễn dịch','thần kinh học','tim học','nhi khoa','ung thư'],
+      hi: ['चिकित्सा','चिकित्सक','शरीर रचना','शरीर क्रिया','विकृति विज्ञान','औषध विज्ञान','निदान','उपचार','शल्य चिकित्सा','लक्षण','रोग','अंग','तंत्रिका तंत्र','हृदय','प्रतिरक्षा','तंत्रिका विज्ञान','हृदय रोग','बाल रोग','ऑन्कोलॉजी'],
+      uk: ['медицин','медичн','анатомі','фізіологі','патологі','фармакологі','діагноз','лікуван','хірургі','симптом','захворюван','орган','нервова система','серцево-судинн','імунологі','неврологі','кардіологі','педіатрі','онкологі'],
+    }
+  },
+
 };
 
 // ── detectSubject ────────────────────────────────────────────────────────────
