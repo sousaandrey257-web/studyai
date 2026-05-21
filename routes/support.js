@@ -62,7 +62,7 @@ function _saveTickets(tickets) {
 
 // ── POST /api/support/chat ────────────────────────────────────
 router.post('/chat', chatLimiter, optionalAuth, async (req, res) => {
-  const { message, sessionId, conversationHistory = [] } = req.body || {};
+  const { message, sessionId, conversationHistory = [], language } = req.body || {};
 
   if (!message || typeof message !== 'string' || !message.trim()) {
     return res.status(400).json({ error: 'Message requis.' });
@@ -71,16 +71,18 @@ router.post('/chat', chatLimiter, optionalAuth, async (req, res) => {
     return res.status(400).json({ error: 'Message trop long (max 1000 caractères).' });
   }
 
+  // Validate language: 2-letter code or pt-BR
+  const safeLang = (typeof language === 'string' && /^[a-z]{2}(-BR)?$/.test(language))
+    ? language : 'fr';
+
   const safeHistory = Array.isArray(conversationHistory)
     ? conversationHistory.slice(-10).filter(m => m && m.role && m.content)
     : [];
 
   try {
-    const { reply, needsHuman } = await askBot(message.trim(), req.user || null, safeHistory);
+    const { reply, needsHuman } = await askBot(message.trim(), req.user || null, safeHistory, safeLang);
 
-    const suggestions = needsHuman
-      ? ['Contacter le support', 'Réessayer plus tard']
-      : ['Comment ça marche ?', 'Mon paiement', 'Bug', 'Étudier mieux'];
+    const suggestions = needsHuman ? [] : [];
 
     return res.json({ reply, needsHuman, suggestions, sessionId: sessionId || null });
   } catch (err) {

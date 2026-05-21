@@ -15,6 +15,35 @@
   var _waiting       = false;
   var _needsHuman    = false;
 
+  // Per-language UI strings (welcome, suggestions, status)
+  var _UI = {
+    fr:    { welcome: 'Salut ! 👋 Je suis Studio, l\'assistant StudyAI. Comment puis-je t\'aider ?', status: 'En ligne',     suggest: ['Comment ça marche ?', 'Tarifs', 'Bug', 'Mieux réviser'],      escalate: '⚠️ Parler à un humain ?',         ticket: 'Envoyer un ticket',    error: 'Une erreur est survenue. Vérifie ta connexion.' },
+    en:    { welcome: 'Hi! 👋 I\'m Studio, the StudyAI assistant. How can I help you?',             status: 'Online',       suggest: ['How does it work?', 'Pricing', 'Bug', 'Study tips'],            escalate: '⚠️ Talk to a human?',             ticket: 'Send a ticket',        error: 'An error occurred. Check your connection.' },
+    es:    { welcome: '¡Hola! 👋 Soy Studio, el asistente de StudyAI. ¿En qué puedo ayudarte?',   status: 'En línea',     suggest: ['¿Cómo funciona?', 'Precios', 'Error', 'Estudiar mejor'],       escalate: '⚠️ ¿Hablar con una persona?',     ticket: 'Enviar ticket',        error: 'Ocurrió un error. Verifica tu conexión.' },
+    de:    { welcome: 'Hallo! 👋 Ich bin Studio, der StudyAI-Assistent. Wie kann ich dir helfen?', status: 'Online',       suggest: ['Wie funktioniert es?', 'Preise', 'Fehler', 'Besser lernen'],   escalate: '⚠️ Mit einer Person sprechen?',   ticket: 'Ticket senden',        error: 'Ein Fehler ist aufgetreten. Prüfe deine Verbindung.' },
+    pt:    { welcome: 'Olá! 👋 Sou o Studio, o assistente do StudyAI. Como posso ajudar-te?',      status: 'Online',       suggest: ['Como funciona?', 'Preços', 'Bug', 'Estudar melhor'],           escalate: '⚠️ Falar com uma pessoa?',        ticket: 'Enviar ticket',        error: 'Ocorreu um erro. Verifica a tua ligação.' },
+    it:    { welcome: 'Ciao! 👋 Sono Studio, l\'assistente di StudyAI. Come posso aiutarti?',      status: 'Online',       suggest: ['Come funziona?', 'Prezzi', 'Bug', 'Studiare meglio'],          escalate: '⚠️ Parlare con una persona?',     ticket: 'Invia ticket',         error: 'Si è verificato un errore. Controlla la connessione.' },
+    zh:    { welcome: '你好！👋 我是 Studio，StudyAI 的助手。有什么可以帮您的？',                   status: '在线',          suggest: ['怎么使用？', '价格', '报告错误', '学习技巧'],                  escalate: '⚠️ 联系人工客服？',                ticket: '发送工单',              error: '发生错误，请检查网络连接。' },
+    ja:    { welcome: 'こんにちは！👋 StudyAI のアシスタント Studio です。お手伝いできますか？',     status: 'オンライン',    suggest: ['使い方は？', '料金', 'バグ報告', '学習のコツ'],                 escalate: '⚠️ 担当者に連絡？',               ticket: 'チケット送信',          error: 'エラーが発生しました。接続を確認してください。' },
+    ko:    { welcome: '안녕하세요! 👋 저는 StudyAI 어시스턴트 Studio입니다. 어떻게 도와드릴까요?', status: '온라인',        suggest: ['어떻게 사용하나요?', '요금제', '버그 신고', '공부 팁'],        escalate: '⚠️ 담당자에게 연결?',             ticket: '티켓 보내기',           error: '오류가 발생했습니다. 연결을 확인하세요.' },
+    id:    { welcome: 'Halo! 👋 Saya Studio, asisten StudyAI. Ada yang bisa saya bantu?',          status: 'Online',       suggest: ['Cara kerja?', 'Harga', 'Bug', 'Tips belajar'],                  escalate: '⚠️ Bicara dengan manusia?',       ticket: 'Kirim tiket',          error: 'Terjadi kesalahan. Periksa koneksimu.' },
+    ar:    { welcome: 'مرحباً! 👋 أنا Studio، مساعد StudyAI. كيف يمكنني مساعدتك؟',               status: 'متصل',          suggest: ['كيف يعمل؟', 'الأسعار', 'إبلاغ عن خطأ', 'نصائح الدراسة'],    escalate: '⚠️ التحدث مع شخص؟',              ticket: 'إرسال تذكرة',          error: 'حدث خطأ. تحقق من اتصالك.' },
+    th:    { welcome: 'สวัสดี! 👋 ฉันคือ Studio ผู้ช่วย StudyAI มีอะไรให้ช่วยไหม?',              status: 'ออนไลน์',       suggest: ['วิธีใช้งาน?', 'ราคา', 'รายงานบัก', 'เคล็ดลับการเรียน'],     escalate: '⚠️ คุยกับเจ้าหน้าที่?',          ticket: 'ส่งตั๋ว',               error: 'เกิดข้อผิดพลาด ตรวจสอบการเชื่อมต่อ' },
+    tr:    { welcome: 'Merhaba! 👋 Ben Studio, StudyAI asistanı. Nasıl yardımcı olabilirim?',      status: 'Çevrimiçi',    suggest: ['Nasıl çalışır?', 'Fiyatlar', 'Hata bildir', 'Çalışma ipuçları'], escalate: '⚠️ İnsan ile konuş?',            ticket: 'Ticket gönder',        error: 'Bir hata oluştu. Bağlantını kontrol et.' },
+    nl:    { welcome: 'Hoi! 👋 Ik ben Studio, de StudyAI-assistent. Hoe kan ik je helpen?',       status: 'Online',       suggest: ['Hoe werkt het?', 'Prijzen', 'Bug melden', 'Studeertips'],      escalate: '⚠️ Met een persoon praten?',      ticket: 'Ticket sturen',        error: 'Er is een fout opgetreden. Controleer je verbinding.' },
+    ru:    { welcome: 'Привет! 👋 Я Studio, ассистент StudyAI. Чем могу помочь?',                 status: 'Онлайн',        suggest: ['Как это работает?', 'Цены', 'Ошибка', 'Советы по учёбе'],    escalate: '⚠️ Поговорить с человеком?',      ticket: 'Отправить тикет',      error: 'Произошла ошибка. Проверь соединение.' },
+    pl:    { welcome: 'Cześć! 👋 Jestem Studio, asystentem StudyAI. Jak mogę ci pomóc?',          status: 'Online',       suggest: ['Jak to działa?', 'Ceny', 'Błąd', 'Wskazówki do nauki'],       escalate: '⚠️ Porozmawiać z człowiekiem?',   ticket: 'Wyślij zgłoszenie',    error: 'Wystąpił błąd. Sprawdź połączenie.' },
+    vi:    { welcome: 'Xin chào! 👋 Tôi là Studio, trợ lý của StudyAI. Tôi có thể giúp gì?',    status: 'Trực tuyến',   suggest: ['Cách hoạt động?', 'Giá cả', 'Báo lỗi', 'Mẹo học tập'],      escalate: '⚠️ Nói chuyện với người thật?',   ticket: 'Gửi yêu cầu',         error: 'Đã xảy ra lỗi. Kiểm tra kết nối.' },
+    hi:    { welcome: 'नमस्ते! 👋 मैं Studio हूँ, StudyAI का सहायक। कैसे मदद कर सकता हूँ?',     status: 'ऑनलाइन',       suggest: ['यह कैसे काम करता है?', 'कीमत', 'बग रिपोर्ट', 'पढ़ाई के टिप्स'], escalate: '⚠️ किसी व्यक्ति से बात करें?', ticket: 'टिकट भेजें',           error: 'त्रुटि हुई। अपना कनेक्शन जाँचें।' },
+    'pt-BR': { welcome: 'Olá! 👋 Sou o Studio, assistente do StudyAI. Como posso ajudar?',        status: 'Online',       suggest: ['Como funciona?', 'Preços', 'Bug', 'Dicas de estudo'],           escalate: '⚠️ Falar com uma pessoa?',        ticket: 'Enviar ticket',        error: 'Ocorreu um erro. Verifique sua conexão.' },
+    uk:    { welcome: 'Привіт! 👋 Я Studio, асистент StudyAI. Чим можу допомогти?',               status: 'Онлайн',        suggest: ['Як це працює?', 'Ціни', 'Помилка', 'Поради з навчання'],     escalate: '⚠️ Поговорити з людиною?',        ticket: 'Надіслати тікет',      error: 'Сталася помилка. Перевір з\'єднання.' },
+  };
+
+  function _getLang() {
+    try { return localStorage.getItem('lang') || 'fr'; } catch (_) { return 'fr'; }
+  }
+  function _ui() { return _UI[_getLang()] || _UI['fr']; }
+
   var _bubble, _window, _messages, _input, _sendBtn, _suggestions, _escalateBar;
 
   // ── Init ─────────────────────────────────────────────────
@@ -30,8 +59,8 @@
 
     // Show welcome message if first visit this session
     if (_history.length === 0) {
-      _appendBotMsg('Salut ! 👋 Je suis l\'assistant StudyAI. Comment puis-je t\'aider ?');
-      _renderSuggestions(['Comment ça marche ?', 'Mon paiement', 'Bug', 'Étudier mieux']);
+      _appendBotMsg(_ui().welcome);
+      _renderSuggestions(_ui().suggest);
     } else {
       _rebuildMessages();
     }
@@ -58,7 +87,7 @@
           '<div class="support-header-avatar" aria-hidden="true">⚡</div>' +
           '<div class="support-header-info">' +
             '<div class="support-header-name">StudyAI Helper</div>' +
-            '<div class="support-header-status">En ligne</div>' +
+            '<div class="support-header-status" id="support-header-status">En ligne</div>' +
           '</div>' +
           '<button class="support-close-btn" id="support-close-btn" aria-label="Fermer le chat">✕</button>' +
         '</div>' +
@@ -76,6 +105,10 @@
     _input       = document.getElementById('support-input');
     _sendBtn     = document.getElementById('support-send-btn');
     _suggestions = document.getElementById('support-suggestions');
+
+    // Set status label in current language
+    var statusEl = document.getElementById('support-header-status');
+    if (statusEl) statusEl.textContent = _ui().status;
   }
 
   function _bindEvents() {
@@ -176,8 +209,8 @@
     bar.className = 'support-escalate-bar';
     bar.id = 'support-escalate-bar';
     bar.innerHTML =
-      '⚠️ Contacter un humain ?' +
-      '<button id="support-escalate-btn">Envoyer un ticket</button>';
+      _ui().escalate +
+      '<button id="support-escalate-btn">' + _ui().ticket + '</button>';
     _window.insertBefore(bar, _window.querySelector('.support-input-row'));
     document.getElementById('support-escalate-btn').addEventListener('click', _escalate);
   }
@@ -205,10 +238,10 @@
       .then(function (data) {
         var bar = document.getElementById('support-escalate-bar');
         if (bar) bar.remove();
-        _appendBotMsg('Ticket #' + data.ticketId + ' créé ✓ Notre équipe te répondra par email dès que possible.');
+        _appendBotMsg('🎫 #' + data.ticketId + ' ✓');
       })
       .catch(function () {
-        _appendBotMsg('Impossible d\'envoyer le ticket pour l\'instant. Réessaie dans un moment.');
+        _appendBotMsg('❌');
       });
   }
 
@@ -245,6 +278,7 @@
         message: text,
         sessionId: _sessionId,
         conversationHistory: _history.slice(-10),
+        language: _getLang(),
       }),
     })
       .then(function (r) {
@@ -256,7 +290,7 @@
         _waiting = false;
         _sendBtn.disabled = false;
 
-        var reply = data.reply || 'Désolé, je n\'ai pas pu répondre.';
+        var reply = data.reply || _ui().welcome;
         _appendBotMsg(reply);
         _history.push({ role: 'assistant', content: reply });
         _saveHistory();
@@ -274,7 +308,7 @@
         _removeTyping();
         _waiting = false;
         _sendBtn.disabled = false;
-        _appendBotMsg('Une erreur est survenue. Vérifie ta connexion et réessaie.');
+        _appendBotMsg('❌ ' + _ui().error);
       });
   }
 
