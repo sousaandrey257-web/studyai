@@ -537,7 +537,9 @@ document.addEventListener('DOMContentLoaded', function () {
   };
   // Triggers: stem-based, no \b needed — inputs are short (≤350 chars)
   var _TRIGGER_RE = /aide|help|ayuda|hilf|ajuda|aiuto|bantuan|yardım|hulp|studeren|oefenen|pomoc|egzamin|nauka|devoir|homework|examen|exam|revision|study|prepare|prépare|prepara|prüfung|помог|помомож|допомож|экзамен|іспит|екзамен|도와|도움|시험|복습|ช่วย|สอบ|手伝|試験|帮|練|勉強|مساعد|امتحان|تحضير|ôn\s|révision|étude|मदद|परीक्षा|पढ़/i;
-  var _skipPicker = false;
+  var _skipPicker      = false;
+  var _currentSubject  = null;
+  var _currentTopicKey = null;
 
   function _detectSubject(text) {
     if (text.length > 350) return null;
@@ -556,6 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var skipEl  = document.getElementById('topic-skip-btn');
     if (!picker) return;
 
+    _hideModePicker();
     titleEl.textContent = t('topic_picker_title');
     subEl.textContent   = t('topic_picker_sub');
     skipEl.textContent  = t('topic_picker_skip');
@@ -566,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.type = 'button';
       btn.className = 'topic-chip';
       btn.textContent = t(key);
-      btn.addEventListener('click', function () { _onTopicChip(key); });
+      btn.addEventListener('click', function () { _onTopicChip(key, subject); });
       chips.appendChild(btn);
     });
 
@@ -581,15 +584,61 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function _hideTopicPicker() {
-    var picker = document.getElementById('topic-picker');
-    if (picker) picker.classList.add('hidden');
+    var el = document.getElementById('topic-picker');
+    if (el) el.classList.add('hidden');
   }
 
-  function _onTopicChip(topicKey) {
-    var topicName = t(topicKey);
-    var original  = courseInput.value.trim();
-    courseInput.value = original + ' — ' + topicName;
+  function _onTopicChip(topicKey, subjectKey) {
+    _currentTopicKey = topicKey;
+    _currentSubject  = subjectKey;
     _hideTopicPicker();
+    _showModePicker(topicKey);
+  }
+
+  // ── Mode picker (step 2) ─────────────────────────────────────
+  var _MODE_DEFS = [
+    { key: 'revise', color: '#3b82f6' },
+    { key: 'stuck',  color: '#f59e0b' },
+    { key: 'exam',   color: '#ef4444' },
+    { key: 'deep',   color: '#8b5cf6' },
+  ];
+
+  function _showModePicker(topicKey) {
+    var picker  = document.getElementById('mode-picker');
+    var cards   = document.getElementById('mode-cards');
+    var titleEl = document.getElementById('mode-picker-title');
+    if (!picker) return;
+
+    var topicName = t(topicKey);
+    titleEl.textContent = t('mode_picker_title').replace('{topic}', topicName);
+
+    cards.innerHTML = '';
+    _MODE_DEFS.forEach(function (mode) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'mode-card';
+      btn.setAttribute('data-color', mode.color);
+      btn.textContent = t('mode_' + mode.key);
+      btn.style.setProperty('--mode-color', mode.color);
+      btn.addEventListener('click', function () { _onModePick(mode.key); });
+      cards.appendChild(btn);
+    });
+
+    picker.classList.remove('hidden');
+    picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function _hideModePicker() {
+    var el = document.getElementById('mode-picker');
+    if (el) el.classList.add('hidden');
+  }
+
+  function _onModePick(modeKey) {
+    var topicName  = t(_currentTopicKey);
+    var promptTpl  = t('mode_prompt_' + modeKey);
+    var richPrompt = promptTpl.replace(/\{topic\}/g, topicName);
+    courseInput.value = richPrompt;
+    _hideModePicker();
     _skipPicker = true;
     generate();
   }
