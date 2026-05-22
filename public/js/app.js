@@ -2,6 +2,26 @@
 //  StudyAI — Frontend
 // ============================================================
 
+// Mode test admin — injecte x-admin-key dans tous les appels /api/
+(function () {
+  var _adminKey = localStorage.getItem('studyai_test_admin_key');
+  if (!_adminKey) return;
+  var _origFetch = window.fetch.bind(window);
+  window.fetch = function (url, opts) {
+    if (typeof url === 'string' && url.includes('/api/')) {
+      opts = opts || {};
+      opts.headers = Object.assign({}, opts.headers, { 'x-admin-key': _adminKey });
+    }
+    return _origFetch(url, opts);
+  };
+  // Bandeau visible
+  var banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#7c3aed;color:#fff;text-align:center;font-size:13px;font-weight:700;padding:6px;z-index:99999;cursor:pointer';
+  banner.textContent = '⚡ MODE TEST ADMIN ACTIF — cliquer pour désactiver';
+  banner.onclick = function () { localStorage.removeItem('studyai_test_admin_key'); banner.remove(); location.reload(); };
+  document.addEventListener('DOMContentLoaded', function () { document.body.prepend(banner); });
+}());
+
 // Traduction (i18n.js chargé avant ce fichier)
 function t(key, vars) {
   if (!window.i18n) return key;
