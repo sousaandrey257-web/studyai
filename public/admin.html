@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyAI — Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f0f13; color: #e2e8f0; min-height: 100vh; }
+    .login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-card { background: #1a1a2e; border: 1px solid #2d2d44; border-radius: 16px; padding: 40px; width: 360px; text-align: center; }
+    .login-card h1 { font-size: 1.5rem; margin-bottom: 8px; }
+    .login-card p { color: #94a3b8; font-size: .9rem; margin-bottom: 24px; }
+    .login-card input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #3d3d5c; background: #111128; color: #e2e8f0; font-size: .95rem; margin-bottom: 12px; }
+    .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-size: .95rem; font-weight: 600; transition: opacity .2s; }
+    .btn:hover { opacity: .85; }
+    .btn-primary { background: #7c3aed; color: #fff; }
+    .btn-danger  { background: #dc2626; color: #fff; }
+    .btn-green   { background: #16a34a; color: #fff; }
+    .btn-blue    { background: #2563eb; color: #fff; }
+    .btn-orange  { background: #ea580c; color: #fff; }
+    .btn-sm { width: auto; padding: 8px 16px; font-size: .82rem; border-radius: 8px; }
+    .err { color: #f87171; font-size: .85rem; margin-top: 8px; }
+
+    .admin-panel { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid #2d2d44; }
+    .topbar h1 { font-size: 1.3rem; }
+    .badge-admin { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; padding: 4px 12px; border-radius: 20px; font-size: .8rem; font-weight: 600; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card { background: #1a1a2e; border: 1px solid #2d2d44; border-radius: 14px; padding: 20px; }
+    .card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #2d2d4430; font-size: .88rem; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-val { font-weight: 700; color: #a78bfa; }
+    .stat-val.ok { color: #4ade80; }
+    .stat-val.warn { color: #fbbf24; }
+    .stat-val.err { color: #f87171; }
+    .actions { display: flex; flex-direction: column; gap: 10px; }
+    .test-section { margin-top: 24px; }
+    .test-section h2 { font-size: 1.1rem; margin-bottom: 16px; }
+    .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .test-btn { padding: 10px 14px; border-radius: 10px; border: 1px solid #3d3d5c; background: #111128; color: #e2e8f0; cursor: pointer; font-size: .83rem; text-align: left; transition: border-color .2s, background .2s; }
+    .test-btn:hover { border-color: #7c3aed; background: #1a1a2e; }
+    .test-btn .lang { font-weight: 700; color: #a78bfa; }
+    .test-btn .subj { color: #94a3b8; font-size: .78rem; }
+    .result-box { background: #111128; border: 1px solid #2d2d44; border-radius: 10px; padding: 16px; font-size: .83rem; line-height: 1.6; white-space: pre-wrap; max-height: 300px; overflow-y: auto; color: #94a3b8; margin-top: 12px; }
+    .result-box.ok { border-color: #4ade8040; }
+    .result-box.fail { border-color: #f8717140; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #ffffff44; border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .mode-banner { position: fixed; bottom: 16px; right: 16px; background: #7c3aed; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: .85rem; font-weight: 700; z-index: 9999; box-shadow: 0 4px 20px #7c3aed66; cursor: pointer; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: .75rem; font-weight: 600; }
+    .tag-ok   { background: #4ade8022; color: #4ade80; }
+    .tag-fail { background: #f8717122; color: #f87171; }
+    select, textarea { background: #111128; border: 1px solid #3d3d5c; color: #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: .88rem; width: 100%; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div style="font-size:2rem;margin-bottom:12px">🔐</div>
+    <h1>StudyAI Admin</h1>
+    <p>Accès réservé à l'administrateur</p>
+    <input type="password" id="key-input" placeholder="Clé admin…" autocomplete="off" />
+    <button class="btn btn-primary" onclick="login()">Accéder →</button>
+    <div class="err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div class="admin-panel" id="admin-panel" style="display:none">
+  <div class="topbar">
+    <h1>⚡ StudyAI Admin</h1>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="badge-admin">Admin connecté</span>
+      <button class="btn btn-sm btn-primary" onclick="activateTestMode()">🧪 Activer mode test sur le site</button>
+      <button class="btn btn-sm" style="background:#2d2d44" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid">
+    <div class="card">
+      <h2>📊 Statut système</h2>
+      <div id="stats-content">Chargement…</div>
+    </div>
+    <div class="card">
+      <h2>🔑 API Groq</h2>
+      <div id="groq-status">Vérification…</div>
+    </div>
+    <div class="card">
+      <h2>⚙️ Actions</h2>
+      <div class="actions">
+        <button class="btn btn-orange" onclick="resetUsage()">🔄 Réinitialiser les compteurs IP</button>
+        <button class="btn btn-blue" onclick="loadStats()">↺ Actualiser les stats</button>
+        <button class="btn btn-green" onclick="activateTestMode()">🧪 Mode test sur le site principal</button>
+        <button class="btn btn-danger" onclick="deactivateTestMode()">✕ Désactiver mode test</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST RAPIDE -->
+  <div class="test-section">
+    <h2>🧪 Test rapide — Génération IA</h2>
+    <div class="row" style="margin-bottom:12px">
+      <select id="test-lang" style="width:160px">
+        <option value="fr">🇫🇷 Français</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="pt-BR">🇧🇷 PT-BR</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="ar">🇸🇦 العربية</option>
+        <option value="nl">🇳🇱 Nederlands</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="tr">🇹🇷 Türkçe</option>
+        <option value="vi">🇻🇳 Tiếng Việt</option>
+        <option value="hi">🇮🇳 हिन्दी</option>
+        <option value="uk">🇺🇦 Українська</option>
+        <option value="id">🇮🇩 Indonesia</option>
+        <option value="th">🇹🇭 ภาษาไทย</option>
+      </select>
+      <textarea id="test-text" rows="2" placeholder="Texte ou commande (ex: aide moi examen maths dérivées)" style="flex:1;min-width:200px"></textarea>
+      <button class="btn btn-primary btn-sm" onclick="runTest()">▶ Tester</button>
+    </div>
+
+    <!-- Quick-launch buttons -->
+    <div class="test-grid" id="quick-tests"></div>
+
+    <div id="test-result" class="result-box" style="display:none"></div>
+  </div>
+
+  <!-- TESTS MULTI-LANGUES -->
+  <div class="test-section" style="margin-top:32px">
+    <h2>🌍 Test complet 20 langues</h2>
+    <p style="color:#94a3b8;font-size:.85rem;margin-bottom:12px">Lance une génération dans toutes les langues et vérifie l'absence d'anglais parasite.</p>
+    <button class="btn btn-primary btn-sm" onclick="runAllLangs()" id="btn-all-langs">▶ Lancer 20 tests</button>
+    <div id="all-langs-result" style="margin-top:16px"></div>
+  </div>
+</div>
+
+<script>
+const BASE = '';
+let adminKey = '';
+
+const QUICK = [
+  {lang:'fr', subj:'math',      text:'aide moi examen mathematiques derivees integrales'},
+  {lang:'en', subj:'physics',   text:'help me physics exam forces motion Newton'},
+  {lang:'es', subj:'histoire',  text:'examen historia segunda guerra mundial'},
+  {lang:'de', subj:'chimie',    text:'Prüfung Chemie organische Reaktionen'},
+  {lang:'ru', subj:'biologie',  text:'экзамен биология клетка ДНК'},
+  {lang:'zh', subj:'économie',  text:'经济学考试 供求关系'},
+  {lang:'ja', subj:'droit',     text:'法律の試験 契約法の基礎'},
+  {lang:'ar', subj:'médecine',  text:'امتحان الطب التشريح'},
+  {lang:'ko', subj:'littéra',   text:'문학 시험 한국 현대 소설'},
+  {lang:'pt', subj:'philo',     text:'exame filosofia Platão ética'},
+  {lang:'it', subj:'biologie',  text:'esame biologia DNA replicazione'},
+  {lang:'nl', subj:'CS',        text:'examen informatica algoritmen'},
+];
+
+const ALL_LANGS = [
+  {lang:'fr',    text:'aide moi examen mathematiques derivees'},
+  {lang:'en',    text:'help me physics exam forces motion'},
+  {lang:'es',    text:'examen historia segunda guerra mundial'},
+  {lang:'de',    text:'Prüfung Chemie organische Reaktionen'},
+  {lang:'pt',    text:'exame filosofia Platão ética'},
+  {lang:'pt-BR', text:'prova matemática funções derivadas'},
+  {lang:'it',    text:'esame biologia cellula DNA'},
+  {lang:'ru',    text:'экзамен география климат'},
+  {lang:'zh',    text:'经济学考试 供求关系'},
+  {lang:'ja',    text:'法律の試験 契約法'},
+  {lang:'ko',    text:'문학 시험 한국 소설'},
+  {lang:'ar',    text:'امتحان الطب التشريح'},
+  {lang:'nl',    text:'examen informatica algoritmen'},
+  {lang:'pl',    text:'egzamin historia polska'},
+  {lang:'tr',    text:'kimya sınavı organik bileşikler'},
+  {lang:'vi',    text:'thi sinh học tế bào DNA'},
+  {lang:'hi',    text:'भूगोल परीक्षा जलवायु'},
+  {lang:'uk',    text:'іспит філософія Кант'},
+  {lang:'id',    text:'ujian ekonomi permintaan'},
+  {lang:'th',    text:'สอบวิชาแพทย์ กายวิภาค'},
+];
+
+const ENGLISH_ONLY = ['the key idea','common mistake','students often','classic error',
+  'why wrong','higher order','exact recall','essential theory','classic mistakes','what the examiner'];
+
+function api(path, opts = {}) {
+  return fetch(BASE + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey, ...(opts.headers || {}) },
+  }).then(r => r.json());
+}
+
+async function login() {
+  const k = document.getElementById('key-input').value.trim();
+  if (!k) return;
+  try {
+    const d = await fetch('/api/admin/health/full', {
+      headers: { 'x-admin-key': k }
+    }).then(r => r.json());
+    if (d.error) { document.getElementById('login-err').textContent = 'Clé invalide.'; return; }
+    adminKey = k;
+    localStorage.setItem('studyai_admin_key_panel', k);
+    showPanel();
+  } catch { document.getElementById('login-err').textContent = 'Erreur de connexion.'; }
+}
+
+function logout() {
+  adminKey = '';
+  localStorage.removeItem('studyai_admin_key_panel');
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function showPanel() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'block';
+  buildQuickButtons();
+  loadStats();
+  checkGroq();
+}
+
+function buildQuickButtons() {
+  const el = document.getElementById('quick-tests');
+  el.innerHTML = QUICK.map(q => `
+    <button class="test-btn" onclick="quickTest('${q.lang}','${q.text}')">
+      <span class="lang">${q.lang.toUpperCase()}</span> · ${q.subj}<br>
+      <span class="subj">${q.text.slice(0,45)}…</span>
+    </button>`).join('');
+}
+
+async function loadStats() {
+  const el = document.getElementById('stats-content');
+  try {
+    const d = await api('/api/admin/health/full');
+    const uptime = Math.floor((d.uptime || 0) / 60);
+    el.innerHTML = `
+      <div class="stat-row"><span>Uptime</span><span class="stat-val ok">${uptime} min</span></div>
+      <div class="stat-row"><span>Utilisateurs</span><span class="stat-val">${d.users ?? '—'}</span></div>
+      <div class="stat-row"><span>Safe mode</span><span class="stat-val ${d.safeMode ? 'warn' : 'ok'}">${d.safeMode ? 'ACTIF' : 'OFF'}</span></div>
+      <div class="stat-row"><span>Env</span><span class="stat-val">${d.env ?? 'prod'}</span></div>
+      <div class="stat-row"><span>Version</span><span class="stat-val">${d.version ?? '—'}</span></div>
+    `;
+  } catch { el.innerHTML = '<span style="color:#f87171">Erreur chargement stats</span>'; }
+}
+
+async function checkGroq() {
+  const el = document.getElementById('groq-status');
+  el.innerHTML = '<span class="spinner"></span>Test en cours…';
+  try {
+    const d = await api('/api/generate', {
+      method: 'POST',
+      body: JSON.stringify({ text: 'test cours de maths sur les fractions', lang: 'fr' }),
+    });
+    if (d.error) {
+      el.innerHTML = `<div class="stat-row"><span>Statut</span><span class="stat-val err">❌ ${d.error}</span></div>`;
+    } else {
+      el.innerHTML = `
+        <div class="stat-row"><span>Statut</span><span class="stat-val ok">✅ Opérationnel</span></div>
+        <div class="stat-row"><span>Résumé</span><span class="stat-val ok">${d.summary ? d.summary.length + ' chars' : '—'}</span></div>
+        <div class="stat-row"><span>Flashcards</span><span class="stat-val ok">${(d.flashcard || []).length}</span></div>
+        <div class="stat-row"><span>Quiz</span><span class="stat-val ok">${(d.quiz || []).length} questions</span></div>
+      `;
+    }
+  } catch(e) {
+    el.innerHTML = `<div class="stat-row"><span>Erreur</span><span class="stat-val err">${e.message}</span></div>`;
+  }
+}
+
+async function resetUsage() {
+  if (!confirm('Réinitialiser tous les compteurs IP ?')) return;
+  try {
+    const d = await api('/api/admin/reset-usage', { method: 'POST' });
+    alert(d.message || 'Compteurs réinitialisés ✓');
+    loadStats();
+  } catch { alert('Erreur lors de la réinitialisation.'); }
+}
+
+function activateTestMode() {
+  localStorage.setItem('studyai_test_admin_key', adminKey);
+  alert('✅ Mode test activé !\nLe site principal ignore maintenant les limites de génération.\nRechargez la page d\'accueil pour l\'activer.');
+  window.open('/', '_blank');
+}
+
+function deactivateTestMode() {
+  localStorage.removeItem('studyai_test_admin_key');
+  alert('Mode test désactivé.');
+}
+
+async function quickTest(lang, text) {
+  document.getElementById('test-lang').value = lang;
+  document.getElementById('test-text').value = text;
+  await runTest();
+}
+
+async function runTest() {
+  const lang = document.getElementById('test-lang').value;
+  const text = document.getElementById('test-text').value.trim();
+  if (!text) return;
+  const box = document.getElementById('test-result');
+  box.style.display = 'block';
+  box.className = 'result-box';
+  box.textContent = '⏳ Génération en cours…';
+
+  try {
+    const d = await api('/api/generate', {
+      method: 'POST',
+      body: JSON.stringify({ text, lang }),
+    });
+    if (d.error) {
+      box.className = 'result-box fail';
+      box.textContent = '❌ Erreur : ' + d.error;
+      return;
+    }
+    const full = (d.summary || '') + (d.flashcard || []).join(' ') + JSON.stringify(d.quiz || []);
+    const found = ENGLISH_ONLY.filter(w => full.toLowerCase().includes(w));
+    box.className = 'result-box ok';
+    box.textContent = [
+      `✅ Langue : ${lang} | Résumé : ${(d.summary||'').length} chars | ${(d.flashcard||[]).length} flashcards | ${(d.quiz||[]).length} questions`,
+      found.length ? `⚠️ Anglais détecté : ${found.join(', ')}` : '✅ Aucun anglais parasite',
+      '',
+      '── RÉSUMÉ (200 premiers chars) ──',
+      (d.summary || '').slice(0, 200),
+      '',
+      '── FLASHCARD #1 ──',
+      (d.flashcard || [])[0] || '—',
+      '',
+      '── QUIZ Q1 ──',
+      'Q: ' + ((d.quiz || [])[0] || {}).question,
+      'Expl: ' + ((d.quiz || [])[0] || {}).explanation,
+    ].join('\n');
+  } catch(e) {
+    box.className = 'result-box fail';
+    box.textContent = '❌ ' + e.message;
+  }
+}
+
+async function runAllLangs() {
+  const btn = document.getElementById('btn-all-langs');
+  const container = document.getElementById('all-langs-result');
+  btn.disabled = true;
+  btn.textContent = '⏳ Tests en cours…';
+  container.innerHTML = '<div style="color:#94a3b8;font-size:.85rem">Lancement séquentiel (1 req/s pour ne pas saturer)…</div>';
+
+  const rows = [];
+  for (const {lang, text} of ALL_LANGS) {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #2d2d4430;font-size:.85rem';
+    row.innerHTML = `<span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span><span class="spinner"></span><span style="color:#94a3b8">En cours…</span>`;
+    container.appendChild(row);
+    rows.push({lang, row});
+
+    try {
+      const d = await api('/api/generate', {
+        method: 'POST',
+        body: JSON.stringify({ text, lang }),
+      });
+      if (d.error) {
+        row.innerHTML = `<span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span><span class="tag tag-fail">❌ ${d.error.slice(0,25)}</span>`;
+      } else {
+        const full = (d.summary || '') + (d.flashcard || []).join(' ') + JSON.stringify(d.quiz || []);
+        const found = ENGLISH_ONLY.filter(w => full.toLowerCase().includes(w));
+        const preview = (d.summary || '').slice(0, 60).replace(/\n/g, ' ');
+        row.innerHTML = `
+          <span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span>
+          <span class="tag ${found.length ? 'tag-fail' : 'tag-ok'}">${found.length ? '⚠️ ' + found[0] : '✅ OK'}</span>
+          <span style="color:#64748b;font-size:.8rem">${preview}</span>
+        `;
+      }
+    } catch(e) {
+      row.innerHTML = `<span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span><span class="tag tag-fail">ERR ${e.message.slice(0,20)}</span>`;
+    }
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  btn.disabled = false;
+  btn.textContent = '▶ Relancer 20 tests';
+}
+
+// Auto-login si clé sauvegardée
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('studyai_admin_key_panel');
+  if (saved) {
+    adminKey = saved;
+    showPanel();
+  }
+  document.getElementById('key-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+});
+</script>
+</body>
+</html>

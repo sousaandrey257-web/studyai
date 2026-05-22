@@ -907,6 +907,15 @@ app.post('/api/admin/backup', adminRateLimiter, requireSuperAdmin, (req, res) =>
 // ── Safe mode admin endpoints ─────────────────────────────────
 
 // GET /api/admin/safe-mode — safe mode status
+// POST /api/admin/reset-usage — vide le compteur IP de génération (admin)
+app.post('/api/admin/reset-usage', adminRateLimiter, requireSuperAdmin, (req, res) => {
+  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
+  const count = usageStore.size;
+  usageStore.clear();
+  auditAction(req, 'reset_usage');
+  res.json({ message: `${count} compteur(s) IP réinitialisé(s).`, cleared: count });
+});
+
 app.get('/api/admin/safe-mode', adminRateLimiter, requireSuperAdmin, (req, res) => {
   if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_safe_mode');
