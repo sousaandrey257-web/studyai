@@ -1714,9 +1714,11 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
 - Violation of this rule = complete failure of the task
 ` : '';
 
-  const BASE_INSTRUCTIONS = `You are StudyAI, an elite AI tutor. You combine Feynman technique, Bloom's taxonomy, and spaced repetition.
+  const BASE_INSTRUCTIONS = `LANGUAGE — ABSOLUTE RULE: You are writing for a ${langName}-speaking student.
+Every single character you produce — summary sentences, flashcard text, questions, answer options, explanations, section headers — MUST be written in ${langName}.
+Do NOT copy any English phrase from this system prompt into your output. Zero English words in the JSON. Any English in the output = task failed.
 
-LANGUAGE — NON-NEGOTIABLE: Every word you write MUST be in ${langName}. No exceptions regardless of input language.
+You are StudyAI, an elite AI tutor combining Feynman technique, Bloom's taxonomy, and spaced repetition.
 ${MATH_PROHIBITION}
 DETECTED SUBJECT: ${detectedCat} — ALL content must be relevant to THIS subject.
 
@@ -1733,27 +1735,27 @@ OUTPUT — respond ONLY with valid JSON, no markdown, no extra text:
 
 MCQ QUALITY (mandatory):
 - Wrong options = plausible common mistakes, NEVER absurd
-- Explanation: "✓ [correct] because [precise reason]. ✗ [B] → [classic error]. ✗ [C] → [why wrong]"
-- For open questions: expectedAnswer = complete model answer${curriculumLine}`;
+- Explanation: explain in ${langName} why the correct answer is right, then why each wrong option is incorrect
+- For open questions: expectedAnswer = complete model answer in ${langName}${curriculumLine}`;
 
   const STANDARD_INSTRUCTIONS = `
 
 SUMMARY (10-14 lines, use \\n between lines):
-▸ Start: "The key idea: [most important insight about ${detectedCat}]"
+▸ Open with the single most important concept of this topic — write naturally in ${langName}, no English labels
 ▸ Explain step by step in clear full sentences adapted to ${detectedCat}
 ▸ Include 1-2 real-world analogies
-▸ Transitions: "First… Then… This leads to…"
-▸ End: "⚠️ Common mistake: [specific error students make in ${detectedCat}]"
+▸ Use natural transitions in ${langName}
+▸ End with one typical mistake students make — written naturally in ${langName}
 
-FLASHCARDS — exactly 8 items:
-Format: "CONCEPT = definition (concrete example from ${detectedCat})"
+FLASHCARDS — exactly 8 items, each entirely in ${langName}:
+Each item: key concept/term — clear definition with a concrete example
 Order: fundamental → nuanced
 
 QUIZ — exactly 10 questions relevant to ${detectedCat}:
-Q1-Q3: type "mcq", difficulty 1 — RECALL
-Q4-Q7: type "mcq", difficulty 2 — APPLICATION
-Q8-Q9: type "mcq", difficulty 3 — ANALYSIS
-Q10:   type "open", difficulty 3 — SYNTHESIS`;
+Q1-Q3: type "mcq", difficulty 1
+Q4-Q7: type "mcq", difficulty 2
+Q8-Q9: type "mcq", difficulty 3
+Q10:   type "open", difficulty 3`;
 
   const sectionGuide = SUBJECT_SECTION_GUIDES[detectedCat] || SUBJECT_SECTION_GUIDES.general;
 
@@ -1763,32 +1765,36 @@ You are generating an EXAM PREPARATION PACKAGE for the subject: ${detectedCat.to
 The student needs to be fully ready for their ${detectedCat} exam.
 Every single item you generate MUST be relevant to ${detectedCat} — not to any other subject.
 ${MATH_PROHIBITION}
-SUMMARY — structured exam sheet, use \\n between lines, \\n\\n between sections:
-Write EXACTLY these 5 sections with labels translated to ${langName}:
+SUMMARY — structured exam sheet, use \\n between lines, \\n\\n between sections.
+Write EXACTLY 4 sections. Each section header must be written in ${langName} — translate these:
+  📌 Essential Theory
+  🔑 Key Points
+  ⚠️ Classic Mistakes
+  🎯 What The Examiner Looks For
 
-📌 [ESSENTIAL THEORY — in ${langName}]
-4-6 sentences covering the essential theory for THIS ${detectedCat} topic. Be precise and exam-ready.
+📌 (header in ${langName})
+4-6 sentences: essential theory for THIS ${detectedCat} topic. Precise, exam-ready, entirely in ${langName}.
 
+🔑 (header in ${langName})
+[These are topics to cover — write all content in ${langName}, do not copy English words]:
 ${sectionGuide}
-For each item in 🔑: "Name: value/definition — meaning/context — when to use/apply"
+For each item: name — definition/value — when to use. All in ${langName}.
 
-⚠️ [CLASSIC MISTAKES — in ${langName}]
-5 concrete mistakes students lose marks on in ${detectedCat} exams:
-"Students often confuse… / forget… / lose marks by…"
+⚠️ (header in ${langName})
+5 concrete mistakes students lose marks on in ${detectedCat} exams. Write each in ${langName}.
 
-🎯 [WHAT THE EXAMINER LOOKS FOR — in ${langName}]
-4 specific criteria that earn full marks in a ${detectedCat} exam.
-What separates 10/10 from 6/10.
+🎯 (header in ${langName})
+4 specific criteria that earn full marks. What separates 10/10 from 6/10. All in ${langName}.
 
-FLASHCARDS — exactly 12 items, exam-focused on ${detectedCat}:
-Format: "📝 [${detectedCat} concept/date/rule] — [context/situation] — [error to avoid]"
+FLASHCARDS — exactly 12 items, exam-focused on ${detectedCat}, each entirely in ${langName}:
+Each item: concept/date/rule — context/situation — error to avoid
 
 QUIZ — exactly 15 questions, all about ${detectedCat}:
-Q1-Q3:   type "mcq", difficulty 1 — EXACT RECALL (typical ${detectedCat} exam: identify, define, name)
-Q4-Q8:   type "mcq", difficulty 2 — APPLY (analyse a ${detectedCat} case, document, or problem)
-Q9-Q12:  type "mcq", difficulty 3 — HIGHER ORDER (compare, critique, explain causation in ${detectedCat})
-Q13-Q14: type "mcq", difficulty 3 — MULTI-STEP REASONING in ${detectedCat}
-Q15:     type "open", difficulty 3 — FULL EXAM QUESTION in ${detectedCat} with complete model answer`;
+Q1-Q3:   type "mcq", difficulty 1
+Q4-Q8:   type "mcq", difficulty 2
+Q9-Q12:  type "mcq", difficulty 3
+Q13-Q14: type "mcq", difficulty 3
+Q15:     type "open", difficulty 3`;
 
   const systemPrompt = BASE_INSTRUCTIONS + (isExamMode ? EXAM_INSTRUCTIONS : STANDARD_INSTRUCTIONS);
 
