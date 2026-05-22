@@ -446,7 +446,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ============================================================
 //  SYSTÈME FREEMIUM
 // ============================================================
-const FREE_LIMIT  = 3;
+const FREE_LIMIT  = 6;
 const ADMIN_KEY   = process.env.ADMIN_KEY?.trim() || null;
 const usageStore  = new Map(); // ip → { count, date }
 
@@ -1654,7 +1654,7 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
 
   if (!usage.allowed) {
     return res.status(429).json({ error: 'limit_reached',
-      message: 'Limite quotidienne atteinte (3/jour). Passez Premium pour un accès illimité.' });
+      message: 'Limite quotidienne atteinte (6/jour). Passez Premium pour un accès illimité.' });
   }
 
   const { text, country, lang } = req.body;
