@@ -1341,6 +1341,8 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch (_) {}
   }
 
+  const usageCounter = document.getElementById('usage-counter');
+
   function updateUsage(remaining, isPremium) {
     usageBadge.classList.remove('hidden');
     if (isPremium) {
@@ -1354,10 +1356,21 @@ document.addEventListener('DOMContentLoaded', function () {
         btnPremium.setAttribute('aria-disabled', 'true');
         btnPremium.title           = t('premium_already');
       }
+      // Compteur sous le bouton
+      if (usageCounter) {
+        usageCounter.textContent = t('usage_premium');
+        usageCounter.className   = 'usage-counter premium';
+      }
     } else if (remaining !== null && remaining !== undefined) {
       const s = remaining > 1 ? 's' : '';
       usageText.textContent = t('usage_remaining', { n: remaining, s });
       usageText.style.color = remaining === 0 ? 'var(--error)' : '';
+      // Compteur sous le bouton — couleur adaptée
+      if (usageCounter) {
+        usageCounter.classList.remove('hidden');
+        usageCounter.textContent = t('usage_remaining', { n: remaining, s });
+        usageCounter.className = 'usage-counter ' + (remaining === 0 ? 'empty' : remaining <= 2 ? 'low' : 'plenty');
+      }
     }
   }
 

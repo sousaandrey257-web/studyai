@@ -166,6 +166,22 @@ body::before {
   letter-spacing: -0.01em;
 }
 
+/* Compteur visible sous le bouton générer */
+.usage-counter {
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 8px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  display: inline-block;
+  transition: color .3s, background .3s;
+}
+.usage-counter.plenty  { background: #16a34a18; color: #4ade80; border: 1px solid #4ade8033; }
+.usage-counter.low     { background: #f59e0b18; color: #fbbf24; border: 1px solid #fbbf2433; }
+.usage-counter.empty   { background: #dc262618; color: #f87171; border: 1px solid #f8717133; }
+.usage-counter.premium { background: #7c3aed18; color: #a78bfa; border: 1px solid #a78bfa33; }
+
 .lang-select {
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -1482,6 +1498,7 @@ body::before {
 
 @media (max-width: 540px) {
   .usage-badge { display: none !important; }
+  .usage-counter { font-size: 0.78rem; }
   .user-email-label { display: none; }
   .btn-premium-small { padding: 6px 10px; font-size: 0.76rem; }
   .header-inner { padding: 10px 14px; gap: 8px; }
