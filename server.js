@@ -342,9 +342,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Request timeout — 65s to allow multi-provider AI fallback chain (3 × 20s)
+// Request timeout — 100s to allow full provider chain (Cerebras 40s + fallbacks)
 app.use((req, res, next) => {
-  res.setTimeout(65_000, () => {
+  res.setTimeout(100_000, () => {
     if (!res.headersSent) res.status(408).json({ error: 'Request timeout.' });
   });
   next();
@@ -644,19 +644,19 @@ function optionalAuth(req, res, next) {
 // ============================================================
 async function callOpenAI(messages) {
   const providers = [
-    // Cerebras: Qwen-3-235B (MoE 22B active) — json_object mode gives clean JSON without think tags
-    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'qwen-3-235b-a22b-instruct-2507',            name: 'Cerebras',    jsonMode: true  }] : []),
-    { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true  },
-    ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true  }] : []),
-    ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false }] : []),
+    // Cerebras: Qwen-3-235B (MoE 22B active) — fast silicon, generous free tier
+    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'qwen-3-235b-a22b-instruct-2507',            name: 'Cerebras',    jsonMode: true,  maxTokens: 3000, providerTimeout: 40000 }] : []),
+    { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true,  maxTokens: 4096, providerTimeout: 20000 },
+    ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true,  maxTokens: 4096, providerTimeout: 20000 }] : []),
+    ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false, maxTokens: 4096, providerTimeout: 20000 }] : []),
   ];
 
   let lastErr;
-  for (const { client, model, name, jsonMode, extra } of providers) {
+  for (const { client, model, name, jsonMode, maxTokens, providerTimeout } of providers) {
     try {
-      const params = { model, messages, max_tokens: 4096, temperature: 0.6, ...(extra || {}) };
+      const params = { model, messages, max_tokens: maxTokens, temperature: 0.6 };
       if (jsonMode) params.response_format = { type: 'json_object' };
-      const res = await client.chat.completions.create(params, { timeout: 20000 });
+      const res = await client.chat.completions.create(params, { timeout: providerTimeout });
       if (name !== 'Cerebras') console.info(`[AI] fallback provider: ${name}`);
       return res;
     } catch (err) {
