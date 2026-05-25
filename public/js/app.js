@@ -711,7 +711,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 800);
 
     const controller = new AbortController();
-    const fetchTimeout = setTimeout(() => controller.abort(), 90000);
+    const fetchTimeout = setTimeout(() => controller.abort(), 65000);
 
     try {
       const headers = { 'Content-Type': 'application/json' };
