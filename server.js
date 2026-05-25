@@ -660,7 +660,7 @@ async function callOpenAI(messages) {
       return res;
     } catch (err) {
       lastErr = err;
-      const isSkippable = (err instanceof OpenAI.APIError && (err.status === 429 || err.status === 503 || err.status === 400 || err.status === 404))
+      const isSkippable = (err instanceof OpenAI.APIError && (err.status === 429 || err.status === 402 || err.status === 503 || err.status === 400 || err.status === 404))
                        || err.name === 'APIConnectionTimeoutError'
                        || err.code  === 'ETIMEDOUT';
       if (isSkippable) { console.warn(`[AI] ${name} failed (${err.status ?? err.code}), trying next provider`); continue; }
