@@ -634,36 +634,28 @@ function optionalAuth(req, res, next) {
 // ============================================================
 //  OPENAI HELPER
 // ============================================================
-async function callOpenAI(messages, maxRetries = 2) {
+async function callOpenAI(messages) {
   const providers = [
-    { client: openai,           model: MODEL,                                    name: 'Groq'        },
-    ...(geminiClient      ? [{ client: geminiClient,      model: 'gemini-2.0-flash',                    name: 'Gemini'      }] : []),
-    ...(openrouterClient  ? [{ client: openrouterClient,  model: 'meta-llama/llama-3.3-70b-instruct:free', name: 'OpenRouter'  }] : []),
+    { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true  },
+    ...(geminiClient     ? [{ client: geminiClient,     model: 'gemini-2.0-flash',                  name: 'Gemini',      jsonMode: true  }] : []),
+    ...(openrouterClient ? [{ client: openrouterClient, model: 'mistralai/mistral-7b-instruct:free', name: 'OpenRouter',  jsonMode: false }] : []),
   ];
 
   let lastErr;
-  for (const { client, model, name } of providers) {
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        const res = await client.chat.completions.create({
-          model, messages, max_tokens: 4096, temperature: 0.6,
-          response_format: { type: 'json_object' },
-        });
-        if (name !== 'Groq') console.info(`[AI] provider fallback: ${name}`);
-        return res;
-      } catch (err) {
-        lastErr = err;
-        const isRateLimit = err instanceof OpenAI.APIError && (err.status === 429 || err.status === 503);
-        if (isRateLimit && attempt < maxRetries) {
-          await new Promise(r => setTimeout(r, attempt * 1500));
-          continue;
-        }
-        if (isRateLimit) {
-          console.warn(`[AI] ${name} rate-limited, trying next provider`);
-          break; // try next provider
-        }
-        throw err; // non-rate-limit error → propagate immediately
-      }
+  for (const { client, model, name, jsonMode } of providers) {
+    try {
+      const params = { model, messages, max_tokens: 4096, temperature: 0.6 };
+      if (jsonMode) params.response_format = { type: 'json_object' };
+      const res = await client.chat.completions.create(params, { timeout: 20000 });
+      if (name !== 'Groq') console.info(`[AI] fallback provider: ${name}`);
+      return res;
+    } catch (err) {
+      lastErr = err;
+      const isSkippable = (err instanceof OpenAI.APIError && (err.status === 429 || err.status === 503 || err.status === 400 || err.status === 404))
+                       || err.name === 'APIConnectionTimeoutError'
+                       || err.code  === 'ETIMEDOUT';
+      if (isSkippable) { console.warn(`[AI] ${name} failed (${err.status ?? err.code}), trying next provider`); continue; }
+      throw err;
     }
   }
   throw lastErr || new Error('All AI providers unavailable');
