@@ -41,6 +41,25 @@ const openai = USE_GROQ
   ? new OpenAI({ apiKey: process.env.GROQ_API_KEY.trim(), baseURL: 'https://api.groq.com/openai/v1' })
   : new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Fallback providers (OpenAI-compatible)
+const geminiClient = process.env.GEMINI_API_KEY?.trim()
+  ? new OpenAI({
+      apiKey: process.env.GEMINI_API_KEY.trim(),
+      baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+    })
+  : null;
+
+const openrouterClient = process.env.OPENROUTER_API_KEY?.trim()
+  ? new OpenAI({
+      apiKey: process.env.OPENROUTER_API_KEY.trim(),
+      baseURL: 'https://openrouter.ai/api/v1',
+      defaultHeaders: {
+        'HTTP-Referer': 'https://studyai-production-5202.up.railway.app',
+        'X-Title': 'StudyAI',
+      },
+    })
+  : null;
+
 // ============================================================
 //  SERVICES
 // ============================================================
@@ -615,21 +634,39 @@ function optionalAuth(req, res, next) {
 // ============================================================
 //  OPENAI HELPER
 // ============================================================
-async function callOpenAI(messages, maxRetries = 3) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const extraParams = { response_format: { type: 'json_object' } };
-      return await openai.chat.completions.create({
-        model: MODEL, messages, max_tokens: 4096, temperature: 0.6, ...extraParams,
-      });
-    } catch (err) {
-      if (err instanceof OpenAI.APIError && err.status === 429 && attempt < maxRetries) {
-        await new Promise(r => setTimeout(r, attempt * 1500));
-        continue;
+async function callOpenAI(messages, maxRetries = 2) {
+  const providers = [
+    { client: openai,           model: MODEL,                                    name: 'Groq'        },
+    ...(geminiClient      ? [{ client: geminiClient,      model: 'gemini-2.0-flash',                    name: 'Gemini'      }] : []),
+    ...(openrouterClient  ? [{ client: openrouterClient,  model: 'meta-llama/llama-3.3-70b-instruct:free', name: 'OpenRouter'  }] : []),
+  ];
+
+  let lastErr;
+  for (const { client, model, name } of providers) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const res = await client.chat.completions.create({
+          model, messages, max_tokens: 4096, temperature: 0.6,
+          response_format: { type: 'json_object' },
+        });
+        if (name !== 'Groq') console.info(`[AI] provider fallback: ${name}`);
+        return res;
+      } catch (err) {
+        lastErr = err;
+        const isRateLimit = err instanceof OpenAI.APIError && (err.status === 429 || err.status === 503);
+        if (isRateLimit && attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, attempt * 1500));
+          continue;
+        }
+        if (isRateLimit) {
+          console.warn(`[AI] ${name} rate-limited, trying next provider`);
+          break; // try next provider
+        }
+        throw err; // non-rate-limit error → propagate immediately
       }
-      throw err;
     }
   }
+  throw lastErr || new Error('All AI providers unavailable');
 }
 
 function formatOpenAIError(err) {
