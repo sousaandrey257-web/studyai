@@ -644,7 +644,7 @@ function optionalAuth(req, res, next) {
 // ============================================================
 async function callOpenAI(messages) {
   const providers = [
-    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'llama-3.3-70b',                             name: 'Cerebras',    jsonMode: true  }] : []),
+    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'qwen-3-235b-a22b-instruct-2507',            name: 'Cerebras',    jsonMode: true  }] : []),
     { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true  },
     ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true  }] : []),
     ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false }] : []),
