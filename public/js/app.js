@@ -620,6 +620,7 @@ document.addEventListener('DOMContentLoaded', function () {
     { key: 'revise', color: '#3b82f6' },
     { key: 'stuck',  color: '#f59e0b' },
     { key: 'exam',   color: '#ef4444' },
+    { key: 'devoir', color: '#10b981' },
     { key: 'deep',   color: '#8b5cf6' },
   ];
 
