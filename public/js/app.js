@@ -563,6 +563,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function _detectSubject(text) {
     if (text.length > 350) return null;
+    // Complete sentences (6+ words) are full requests — send directly to AI, skip picker
+    if (text.trim().split(/\s+/).length > 5) return null;
     if (!_TRIGGER_RE.test(text)) return null;
     for (var s in _SUBJECTS) {
       if (_SUBJECTS[s].re.test(text)) return s;
