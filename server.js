@@ -1720,9 +1720,11 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
   const detectedCat = subjectInfo.category;    // e.g. 'history', 'math', 'general'
   const allowsMath  = subjectInfo.allowsMath;  // true | false | null (general)
 
-  // ── Exam mode detection ────────────────────────────────────────────────────
+  // ── Intent detection ───────────────────────────────────────────────────────
   const EXAM_RE = /\b(exam|examen|exams|test|tests|évaluation|evaluation|contrôle|controle|bac\b|finals|midterm|prüfung|pruefung|exame|esame|ujian|sınav|sinav|toets|egzamin|іспит|экзамен|परीक्षा|สอบ|امتحان|시험|試験|考試|考试)\b/i;
-  const isExamMode = EXAM_RE.test(text);
+  const HOMEWORK_RE = /\b(devoir|devoirs|dm\b|ds\b|homework|assignment|hausaufgabe|hausaufgaben|tarea|tareas|deberes|compito|compiti|huiswerk|opgave|praca domowa|домашнее задание|домашнє завдання|ДЗ\b|作业|宿題|숙제|واجب|गृहकार्य|bài tập|ödev|domácí úkol|läxa|temă|exercice à rendre|travail à rendre|remettre|à rendre|due date|à compléter)\b/i;
+  const isExamMode     = EXAM_RE.test(text);
+  const isHomeworkMode = !isExamMode && HOMEWORK_RE.test(text);
 
   // ── Subject-specific exam section templates ───────────────────────────────
   const SUBJECT_SECTION_GUIDES = {
@@ -1834,7 +1836,47 @@ Q9-Q12:  type "mcq", difficulty 3
 Q13-Q14: type "mcq", difficulty 3
 Q15:     type "open", difficulty 3`;
 
-  const systemPrompt = BASE_INSTRUCTIONS + (isExamMode ? EXAM_INSTRUCTIONS : STANDARD_INSTRUCTIONS);
+  const HOMEWORK_INSTRUCTIONS = `
+
+You are generating a HOMEWORK HELP PACKAGE for the subject: ${detectedCat.toUpperCase()}.
+The student has a homework assignment and needs to truly understand the concept — not just copy an answer.
+${MATH_PROHIBITION}
+SUMMARY — clear homework guide, use \\n between lines, \\n\\n between sections.
+Write EXACTLY 3 sections with headers translated into ${langName}:
+  📖 Concept Explained
+  ✏️ Step-by-Step Example
+  ⚠️ Common Mistakes
+
+📖 (header in ${langName})
+5-6 sentences: clear explanation of the core concept in plain language. Use a concrete analogy from everyday life.
+No jargon — explain it as you would to a friend.
+
+✏️ (header in ${langName})
+2 fully worked examples related to the homework topic.
+Show EVERY intermediate step. Format: Étape 1 → Étape 2 → Résultat (translated to ${langName}).
+For each step, explain WHY you do it, not just WHAT.
+
+⚠️ (header in ${langName})
+3 concrete mistakes students make on this type of homework. For each:
+❌ The mistake → ✅ What to do instead → 💡 Why it matters
+
+FLASHCARDS — exactly 8 items, directly useful for this homework:
+Each item: rule/formula/key concept — how to apply it — concrete mini-example
+
+QUIZ — exactly 5 practice problems to verify understanding before submitting:
+Q1-Q2: type "mcq", difficulty 1 — basic comprehension
+Q3-Q4: type "mcq", difficulty 2 — application
+Q5:    type "open", difficulty 2 — ask them to solve a problem similar to their homework, with a complete model answer`;
+
+  let intentMode = 'standard';
+  if (isExamMode)     intentMode = 'exam';
+  if (isHomeworkMode) intentMode = 'homework';
+
+  const systemPrompt = BASE_INSTRUCTIONS + (
+    intentMode === 'exam'     ? EXAM_INSTRUCTIONS     :
+    intentMode === 'homework' ? HOMEWORK_INSTRUCTIONS :
+                                STANDARD_INSTRUCTIONS
+  );
 
 
   try {
