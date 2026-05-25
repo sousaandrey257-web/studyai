@@ -383,10 +383,10 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
-// Rate-limiting strict sur /api/generate : 20 req / 15 min (anti-abus freemium)
+// Rate-limiting sur /api/generate : 100 req / 15 min (anti-abus, la FREE_LIMIT journalière fait le vrai contrôle)
 const generateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 100,
   message: { error: 'rate_limited', message: 'Trop de requêtes. Réessayez dans quelques minutes.' },
   skip: (req) => isAdmin(req),
 });
