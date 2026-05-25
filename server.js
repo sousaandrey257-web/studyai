@@ -637,8 +637,8 @@ function optionalAuth(req, res, next) {
 async function callOpenAI(messages) {
   const providers = [
     { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true  },
-    ...(geminiClient     ? [{ client: geminiClient,     model: 'gemini-2.0-flash',                  name: 'Gemini',      jsonMode: true  }] : []),
-    ...(openrouterClient ? [{ client: openrouterClient, model: 'mistralai/mistral-7b-instruct:free', name: 'OpenRouter',  jsonMode: false }] : []),
+    ...(geminiClient     ? [{ client: geminiClient,     model: 'gemini-1.5-flash',                          name: 'Gemini',      jsonMode: true  }] : []),
+    ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false }] : []),
   ];
 
   let lastErr;
