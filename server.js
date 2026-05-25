@@ -644,8 +644,8 @@ function optionalAuth(req, res, next) {
 // ============================================================
 async function callOpenAI(messages) {
   const providers = [
-    // Cerebras: Qwen-3-235B (MoE 22B active) — disable thinking for clean JSON output
-    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'qwen-3-235b-a22b-instruct-2507',            name: 'Cerebras',    jsonMode: true,  extra: { enable_thinking: false } }] : []),
+    // Cerebras: Qwen-3-235B (MoE 22B active) — json_object mode gives clean JSON without think tags
+    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'qwen-3-235b-a22b-instruct-2507',            name: 'Cerebras',    jsonMode: true  }] : []),
     { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true  },
     ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true  }] : []),
     ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false }] : []),
