@@ -342,9 +342,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Request timeout — 70s (4 providers × 15s + margin, within Railway's 60s proxy limit)
+// Request timeout — 40s (4 providers × 8s + margin, within Railway's 60s proxy limit)
 app.use((req, res, next) => {
-  res.setTimeout(70_000, () => {
+  res.setTimeout(40_000, () => {
     if (!res.headersSent) res.status(408).json({ error: 'Request timeout.' });
   });
   next();
@@ -644,11 +644,11 @@ function optionalAuth(req, res, next) {
 // ============================================================
 async function callOpenAI(messages) {
   const providers = [
-    // Cerebras: llama3.1-8b — sub-second on Cerebras silicon
-    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'llama3.1-8b',                               name: 'Cerebras',    jsonMode: true,  maxTokens: 4096, providerTimeout: 15000 }] : []),
-    { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true,  maxTokens: 4096, providerTimeout: 15000 },
-    ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true,  maxTokens: 4096, providerTimeout: 15000 }] : []),
-    ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false, maxTokens: 4096, providerTimeout: 15000 }] : []),
+    // Cerebras: llama3.1-8b — sub-second on Cerebras silicon (primary)
+    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'llama3.1-8b',                               name: 'Cerebras',    jsonMode: true,  maxTokens: 4096, providerTimeout:  8000 }] : []),
+    { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true,  maxTokens: 4096, providerTimeout:  8000 },
+    ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true,  maxTokens: 4096, providerTimeout:  8000 }] : []),
+    ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false, maxTokens: 4096, providerTimeout:  8000 }] : []),
   ];
 
   let lastErr;
