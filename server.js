@@ -334,9 +334,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Request timeout — abort slow requests at 30s (slowloris protection)
+// Request timeout — 65s to allow multi-provider AI fallback chain (3 × 20s)
 app.use((req, res, next) => {
-  res.setTimeout(30_000, () => {
+  res.setTimeout(65_000, () => {
     if (!res.headersSent) res.status(408).json({ error: 'Request timeout.' });
   });
   next();
