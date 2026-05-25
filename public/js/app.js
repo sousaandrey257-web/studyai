@@ -729,8 +729,9 @@ document.addEventListener('DOMContentLoaded', function () {
         state._generating = false;
         btnGenerate.disabled = false;
         if (data.error === 'limit_reached') { showSection('input'); window.showPremiumModal(); return; }
+        if (data.error === 'rate_limited')  { showSection('input'); showToast(t('toast_rate_limited'), 'error'); return; }
         showSection('input');
-        showToast('❌ ' + (data.error || t('toast_server_error')), 'error');
+        showToast('❌ ' + (data.message || data.error || t('toast_server_error')), 'error');
         return;
       }
 

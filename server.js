@@ -379,7 +379,7 @@ app.use('/api/', apiLimiter);
 const generateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
-  message: { error: 'limit_reached', message: 'Trop de requêtes. Réessayez dans quelques minutes.' },
+  message: { error: 'rate_limited', message: 'Trop de requêtes. Réessayez dans quelques minutes.' },
   skip: (req) => isAdmin(req),
 });
 app.use('/api/generate', generateLimiter);
@@ -388,7 +388,7 @@ app.use('/api/generate', generateLimiter);
 const consolidationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
-  message: { error: 'limit_reached', message: 'Trop de requêtes. Réessayez dans quelques minutes.' },
+  message: { error: 'rate_limited', message: 'Trop de requêtes. Réessayez dans quelques minutes.' },
   skip: (req) => isAdmin(req),
 });
 
@@ -1721,8 +1721,8 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
   const allowsMath  = subjectInfo.allowsMath;  // true | false | null (general)
 
   // ── Intent detection ───────────────────────────────────────────────────────
-  const EXAM_RE = /\b(exam|examen|exams|test|tests|évaluation|evaluation|contrôle|controle|bac\b|finals|midterm|prüfung|pruefung|exame|esame|ujian|sınav|sinav|toets|egzamin|іспит|экзамен|परीक्षा|สอบ|امتحان|시험|試験|考試|考试)\b/i;
-  const HOMEWORK_RE = /\b(devoir|devoirs|dm\b|ds\b|homework|assignment|hausaufgabe|hausaufgaben|tarea|tareas|deberes|compito|compiti|huiswerk|opgave|praca domowa|домашнее задание|домашнє завдання|ДЗ\b|作业|宿題|숙제|واجب|गृहकार्य|bài tập|ödev|domácí úkol|läxa|temă|exercice à rendre|travail à rendre|remettre|à rendre|due date|à compléter)\b/i;
+  const EXAM_RE = /\b(exam|examen|exams|test\b|tests\b|évaluation|evaluation|contrôle|controle|bac\b|finals|midterm|prüfung|pruefung|exame|esame|ujian|sınav|sinav|toets|egzamin|іспит|экзамен|परीक्षा|สอบ|امتحان|시험|試験|考試|考试|imtihan|sınav|olympiad|concours|compétition|certif|certification|révision|revision|réviser|reviser|révise|repasser)\b/i;
+  const HOMEWORK_RE = /\b(devoir|devoirs|dm\b|ds\b|homework|assignment|hausaufgabe|hausaufgaben|tarea|tareas|deberes|compito|compiti|huiswerk|opgave|praca domowa|домашнее задание|домашнє завдання|ДЗ\b|作业|宿題|숙제|واجب|गृहकार्य|bài tập|ödev|domácí úkol|läxa|temă|exercice à rendre|travail à rendre|remettre|à rendre|due date|à compléter|à rendre|rend demain|remettre demain|pour demain|pour lundi|pour mardi|pour mercredi|pour jeudi|pour vendredi|दे देना|जमा करना|제출|提交|提出|تسليم|teslim|inleveren|oddać)\b/i;
   const isExamMode     = EXAM_RE.test(text);
   const isHomeworkMode = !isExamMode && HOMEWORK_RE.test(text);
 
