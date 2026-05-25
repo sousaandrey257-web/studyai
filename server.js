@@ -644,8 +644,8 @@ function optionalAuth(req, res, next) {
 // ============================================================
 async function callOpenAI(messages) {
   const providers = [
-    // Cerebras: Qwen-3-235B (MoE 22B active) — fast silicon, generous free tier
-    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'qwen-3-235b-a22b-instruct-2507',            name: 'Cerebras',    jsonMode: true,  maxTokens: 3000, providerTimeout: 40000 }] : []),
+    // Cerebras: llama3.1-8b — sub-second responses on Cerebras custom silicon
+    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'llama3.1-8b',                               name: 'Cerebras',    jsonMode: true,  maxTokens: 4096, providerTimeout: 30000 }] : []),
     { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true,  maxTokens: 4096, providerTimeout: 20000 },
     ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true,  maxTokens: 4096, providerTimeout: 20000 }] : []),
     ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false, maxTokens: 4096, providerTimeout: 20000 }] : []),
