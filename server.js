@@ -60,6 +60,14 @@ const openrouterClient = process.env.OPENROUTER_API_KEY?.trim()
     })
   : null;
 
+// Cerebras — 1M tokens/day free, 30K TPM, ultra-fast (custom silicon)
+const cerebrasClient = process.env.CEREBRAS_API_KEY?.trim()
+  ? new OpenAI({
+      apiKey: process.env.CEREBRAS_API_KEY.trim(),
+      baseURL: 'https://api.cerebras.ai/v1',
+    })
+  : null;
+
 // ============================================================
 //  SERVICES
 // ============================================================
@@ -636,6 +644,7 @@ function optionalAuth(req, res, next) {
 // ============================================================
 async function callOpenAI(messages) {
   const providers = [
+    ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'llama-3.3-70b',                             name: 'Cerebras',    jsonMode: true  }] : []),
     { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true  },
     ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true  }] : []),
     ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false }] : []),
@@ -647,7 +656,7 @@ async function callOpenAI(messages) {
       const params = { model, messages, max_tokens: 4096, temperature: 0.6 };
       if (jsonMode) params.response_format = { type: 'json_object' };
       const res = await client.chat.completions.create(params, { timeout: 20000 });
-      if (name !== 'Groq') console.info(`[AI] fallback provider: ${name}`);
+      if (name !== 'Cerebras') console.info(`[AI] fallback provider: ${name}`);
       return res;
     } catch (err) {
       lastErr = err;
