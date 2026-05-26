@@ -5,10 +5,13 @@
 'use strict';
 
 const LEO_STATE = {
-  messages:  [],
-  loading:   false,
-  userLevel: null,
-  subject:   null,
+  messages:    [],
+  loading:     false,
+  userLevel:   null,
+  subject:     null,
+  recording:   false,
+  mediaRecorder: null,
+  audioChunks: [],
 };
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -234,12 +237,206 @@ function setupInitialSuggestions() {
   });
 }
 
+// ── Upload helper ─────────────────────────────────────────────
+
+function _authHeaders() {
+  const token = localStorage.getItem('studyai_token');
+  return token ? { 'x-auth-token': token } : {};
+}
+
+async function _uploadToLeo(endpoint, formData, userMessage) {
+  if (LEO_STATE.loading) return;
+
+  // Show what the user sent
+  addMessage('user', userMessage);
+  showTyping();
+  LEO_STATE.loading = true;
+
+  try {
+    const res = await fetch(endpoint, {
+      method:  'POST',
+      headers: _authHeaders(),
+      body:    formData,
+    });
+
+    hideTyping();
+
+    if (res.status === 429) {
+      addMessage('bot', 'Tu as atteint la limite d\'uploads pour cette heure. Réessaie plus tard&nbsp;!');
+      return;
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      addMessage('bot', `Désolé, je n'ai pas pu traiter ce fichier : ${err.error || 'erreur inconnue'}`);
+      return;
+    }
+
+    const data = await res.json();
+    const extractedText = data.text || '';
+
+    if (!extractedText.trim()) {
+      addMessage('bot', 'Je n\'ai pas pu lire le contenu. Essaie avec un autre fichier&nbsp;?');
+      return;
+    }
+
+    // Push extracted content as user context then ask Leo to analyse
+    const contextMsg = { role: 'user', content: extractedText.slice(0, 3000) };
+    LEO_STATE.messages.push(contextMsg);
+
+    // Now ask Leo to react to the content
+    const lang = getCurrentLang();
+    const chatRes = await fetch('/api/tutor/chat', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', ..._authHeaders() },
+      body: JSON.stringify({
+        messages:  LEO_STATE.messages,
+        lang,
+        userLevel: getUserLevel(),
+      }),
+    });
+
+    if (!chatRes.ok) {
+      addMessage('bot', 'Contenu reçu, mais je n\'ai pas pu l\'analyser. Réessaie&nbsp;?');
+      return;
+    }
+
+    const chatData = await chatRes.json();
+    const reply    = chatData.reply || 'Pas de réponse.';
+    addMessage('bot', reply);
+    LEO_STATE.messages.push({ role: 'assistant', content: reply });
+    loadUserStats();
+
+  } catch (e) {
+    hideTyping();
+    addMessage('bot', 'Erreur de connexion. Vérifie ton réseau.');
+    console.error('[Léo upload]', e);
+  } finally {
+    LEO_STATE.loading = false;
+    const sendBtn = document.getElementById('leo-send');
+    if (sendBtn) sendBtn.disabled = false;
+  }
+}
+
+// ── 🎤 Voice recording ────────────────────────────────────────
+
+function _setVoiceBtn(recording) {
+  const btn = document.getElementById('leo-voice-btn');
+  if (!btn) return;
+  btn.textContent = recording ? '⏹️' : '🎤';
+  btn.title       = recording ? 'Arrêter l\'enregistrement' : 'Enregistrer (cliquer pour démarrer/arrêter)';
+  btn.classList.toggle('leo-recording', recording);
+}
+
+async function toggleRecording() {
+  if (LEO_STATE.recording) {
+    // Stop — onstop will handle the upload
+    if (LEO_STATE.mediaRecorder && LEO_STATE.mediaRecorder.state !== 'inactive') {
+      LEO_STATE.mediaRecorder.stop();
+    }
+    LEO_STATE.recording = false;
+    _setVoiceBtn(false);
+    return;
+  }
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    addMessage('bot', 'Ton navigateur ne supporte pas l\'enregistrement audio. Essaie Chrome ou Firefox&nbsp;!');
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    LEO_STATE.audioChunks  = [];
+    LEO_STATE.mediaRecorder = new MediaRecorder(stream);
+
+    LEO_STATE.mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) LEO_STATE.audioChunks.push(e.data);
+    };
+
+    LEO_STATE.mediaRecorder.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(LEO_STATE.audioChunks, { type: 'audio/webm' });
+      if (blob.size < 1000) {
+        addMessage('bot', 'Enregistrement trop court. Parle un peu plus longtemps&nbsp;!');
+        return;
+      }
+      const fd = new FormData();
+      fd.append('audio', blob, 'recording.webm');
+      fd.append('lang', getCurrentLang());
+      _uploadToLeo('/api/tutor/voice', fd, '🎤 Message vocal envoyé…');
+    };
+
+    LEO_STATE.mediaRecorder.start();
+    LEO_STATE.recording = true;
+    _setVoiceBtn(true);
+
+  } catch (err) {
+    const msg = err.name === 'NotAllowedError'
+      ? 'Accès au micro refusé. Autorise le micro dans les paramètres du navigateur.'
+      : 'Impossible d\'accéder au micro : ' + err.message;
+    addMessage('bot', msg);
+  }
+}
+
+// ── 📷 Image upload ───────────────────────────────────────────
+
+function handlePhotoUpload() {
+  const input = document.getElementById('leo-photo-input');
+  if (!input) return;
+  input.value = '';
+  input.onchange = () => {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      addMessage('bot', 'Image trop volumineuse (max 5 MB). Compresse-la et réessaie&nbsp;!');
+      return;
+    }
+    const fd = new FormData();
+    fd.append('image', file);
+    fd.append('lang', getCurrentLang());
+    _uploadToLeo('/api/tutor/vision', fd, `📷 Image envoyée : ${file.name}`);
+  };
+  input.click();
+}
+
+// ── 📎 File (PDF / TXT) upload ────────────────────────────────
+
+function handleFileUpload() {
+  const input = document.getElementById('leo-file-input');
+  if (!input) return;
+  input.value = '';
+  input.onchange = () => {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      addMessage('bot', 'Fichier trop volumineux (max 10 MB).');
+      return;
+    }
+    const fd = new FormData();
+    fd.append('file', file);
+    _uploadToLeo('/api/tutor/file', fd, `📎 Fichier envoyé : ${file.name}`);
+  };
+  input.click();
+}
+
+// ── Setup media buttons ───────────────────────────────────────
+
+function setupMediaButtons() {
+  const voiceBtn = document.getElementById('leo-voice-btn');
+  const photoBtn = document.getElementById('leo-photo-btn');
+  const fileBtn  = document.getElementById('leo-file-btn');
+
+  if (voiceBtn) voiceBtn.addEventListener('click', toggleRecording);
+  if (photoBtn) photoBtn.addEventListener('click', handlePhotoUpload);
+  if (fileBtn)  fileBtn.addEventListener('click',  handleFileUpload);
+}
+
 // ── Init ──────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   loadUserStats();
   setupComposer();
   setupInitialSuggestions();
+  setupMediaButtons();
 
   // Focus input on desktop
   const input = document.getElementById('leo-input');

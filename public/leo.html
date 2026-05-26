@@ -90,10 +90,14 @@
 
     <!-- ── BARRE DE SAISIE ── -->
     <footer class="leo-composer">
+      <!-- Hidden file inputs -->
+      <input type="file" id="leo-photo-input" accept="image/jpeg,image/png,image/webp" style="display:none" aria-hidden="true" />
+      <input type="file" id="leo-file-input"  accept=".pdf,.txt,.md" style="display:none" aria-hidden="true" />
+
       <div class="leo-composer-actions">
-        <button class="leo-action-btn" id="leo-voice-btn" title="Vocal (bientôt)" disabled aria-label="Entrée vocale (bientôt disponible)">🎤</button>
-        <button class="leo-action-btn" id="leo-photo-btn" title="Photo (bientôt)" disabled aria-label="Photo (bientôt disponible)">📷</button>
-        <button class="leo-action-btn" id="leo-file-btn"  title="Fichier (bientôt)" disabled aria-label="Fichier (bientôt disponible)">📎</button>
+        <button class="leo-action-btn" id="leo-voice-btn" title="Enregistrer (cliquer pour démarrer/arrêter)" aria-label="Enregistrement vocal">🎤</button>
+        <button class="leo-action-btn" id="leo-photo-btn" title="Analyser une image ou photo" aria-label="Envoyer une image">📷</button>
+        <button class="leo-action-btn" id="leo-file-btn"  title="Envoyer un PDF ou fichier texte" aria-label="Envoyer un fichier">📎</button>
       </div>
       <label for="leo-input" class="sr-only">Ta question pour Léo</label>
       <textarea

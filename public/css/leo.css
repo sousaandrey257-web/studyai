@@ -385,6 +385,14 @@ body {
   30%           { opacity: 1;    transform: translateY(-5px); }
 }
 
+/* ── Recording state ─────────────────────────────────────── */
+.leo-action-btn.leo-recording {
+  background:   rgba(239, 68, 68, 0.2);
+  border-color: #EF4444;
+  color:        #EF4444;
+  animation:    leo-pulse 1s infinite;
+}
+
 /* ── Error state ─────────────────────────────────────────── */
 .leo-message-error .leo-message-content {
   border-color: rgba(239, 68, 68, 0.4);
