@@ -1,0 +1,404 @@
+/* ============================================================
+   StudyAI — Léo · Tuteur IA
+   Page autonome /leo
+   ============================================================ */
+
+:root {
+  --leo-primary:       #8B5CF6;
+  --leo-accent:        #EC4899;
+  --leo-bg:            #0F0F1A;
+  --leo-bg-card:       rgba(139, 92, 246, 0.08);
+  --leo-bg-card-hover: rgba(139, 92, 246, 0.15);
+  --leo-text:          #ffffff;
+  --leo-text-muted:    rgba(255, 255, 255, 0.6);
+  --leo-border:        rgba(139, 92, 246, 0.2);
+  --leo-success:       #10B981;
+  --leo-radius:        14px;
+  --leo-transition:    0.2s ease;
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background:  var(--leo-bg);
+  color:       var(--leo-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height:  100dvh;
+  overflow-x:  hidden;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+.leo-container {
+  max-width:   900px;
+  margin:      0 auto;
+  min-height:  100dvh;
+  display:     flex;
+  flex-direction: column;
+  padding:     0 16px;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.leo-header {
+  display:    flex;
+  align-items: center;
+  gap:        12px;
+  padding:    14px 0;
+  border-bottom: 1px solid var(--leo-border);
+  position:   sticky;
+  top:        0;
+  background: var(--leo-bg);
+  z-index:    10;
+}
+
+.leo-back a {
+  color:           var(--leo-text-muted);
+  text-decoration: none;
+  font-size:       14px;
+  transition:      color var(--leo-transition);
+}
+.leo-back a:hover { color: var(--leo-text); }
+
+.leo-identity {
+  display:     flex;
+  align-items: center;
+  gap:         12px;
+  flex:        1;
+}
+
+.leo-avatar {
+  width:      48px;
+  height:     48px;
+  background: linear-gradient(135deg, var(--leo-primary), var(--leo-accent));
+  border-radius: 50%;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  font-size:  24px;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  flex-shrink: 0;
+}
+
+.leo-name {
+  font-size:   18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.leo-status {
+  font-size:   12px;
+  color:       var(--leo-text-muted);
+  display:     flex;
+  align-items: center;
+  gap:         6px;
+  margin-top:  2px;
+}
+
+.leo-status-dot {
+  width:        8px;
+  height:       8px;
+  background:   var(--leo-success);
+  border-radius: 50%;
+  animation:    leo-pulse 2s infinite;
+}
+
+@keyframes leo-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── Gamification stats ──────────────────────────────────── */
+.leo-stats {
+  display: flex;
+  gap:     6px;
+}
+
+.leo-stat {
+  display:     flex;
+  align-items: center;
+  gap:         4px;
+  padding:     6px 10px;
+  background:  var(--leo-bg-card);
+  border:      1px solid var(--leo-border);
+  border-radius: 10px;
+  font-size:   13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.leo-stat-icon  { font-size: 14px; }
+.leo-stat-label { color: var(--leo-text-muted); font-size: 11px; }
+
+/* ── Subject bar ─────────────────────────────────────────── */
+.leo-subject-bar {
+  display:      flex;
+  align-items:  center;
+  gap:          12px;
+  padding:      10px 16px;
+  background:   var(--leo-bg-card);
+  border-radius: var(--leo-radius);
+  margin:       14px 0;
+  border:       1px solid var(--leo-border);
+}
+
+.leo-subject-tag {
+  padding:       4px 12px;
+  background:    var(--leo-primary);
+  border-radius: 20px;
+  font-size:     12px;
+  font-weight:   600;
+}
+
+.leo-progress {
+  color:     var(--leo-text-muted);
+  font-size: 13px;
+}
+
+/* ── Chat zone ───────────────────────────────────────────── */
+.leo-chat {
+  flex:           1;
+  padding:        20px 0 8px;
+  display:        flex;
+  flex-direction: column;
+  gap:            16px;
+  overflow-y:     auto;
+  scroll-behavior: smooth;
+}
+
+/* ── Messages ────────────────────────────────────────────── */
+.leo-message {
+  display:   flex;
+  gap:       10px;
+  animation: leo-fadein 0.3s ease;
+}
+
+@keyframes leo-fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.leo-message-bot  { align-self: flex-start; max-width: 82%; }
+.leo-message-user { align-self: flex-end;   max-width: 82%; flex-direction: row-reverse; }
+
+.leo-message-avatar {
+  width:         36px;
+  height:        36px;
+  background:    linear-gradient(135deg, var(--leo-primary), var(--leo-accent));
+  border-radius: 50%;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  font-size:     18px;
+  flex-shrink:   0;
+  align-self:    flex-start;
+  margin-top:    4px;
+}
+
+.leo-message-user .leo-message-avatar {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.leo-message-content {
+  background:    var(--leo-bg-card);
+  border:        1px solid var(--leo-border);
+  border-radius: var(--leo-radius);
+  padding:       14px 16px;
+}
+
+.leo-message-user .leo-message-content {
+  background: linear-gradient(135deg, var(--leo-primary), var(--leo-accent));
+  border:     none;
+}
+
+.leo-message-name {
+  font-size:     11px;
+  font-weight:   600;
+  color:         var(--leo-text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
+.leo-message-user .leo-message-name { display: none; }
+
+.leo-message-text {
+  font-size:   15px;
+  line-height: 1.6;
+}
+
+.leo-message-text p           { margin: 0 0 6px; }
+.leo-message-text p:last-child { margin-bottom: 0; }
+
+.leo-message-text strong { font-weight: 700; }
+.leo-message-text em     { font-style: italic; }
+
+.leo-message-text code {
+  background:    rgba(139, 92, 246, 0.15);
+  border-radius: 4px;
+  padding:       1px 5px;
+  font-size:     13px;
+  font-family:   monospace;
+}
+
+/* ── Suggestions ─────────────────────────────────────────── */
+.leo-suggestions {
+  display:    flex;
+  flex-wrap:  wrap;
+  gap:        8px;
+  margin-top: 12px;
+}
+
+.leo-suggestion {
+  padding:       7px 13px;
+  background:    var(--leo-bg-card-hover);
+  border:        1px solid var(--leo-border);
+  border-radius: 20px;
+  color:         var(--leo-text);
+  font-size:     13px;
+  cursor:        pointer;
+  transition:    all var(--leo-transition);
+  line-height:   1.3;
+}
+
+.leo-suggestion:hover,
+.leo-suggestion:focus-visible {
+  background:    var(--leo-primary);
+  border-color:  var(--leo-primary);
+  transform:     translateY(-1px);
+  outline:       none;
+}
+
+/* ── Composer ────────────────────────────────────────────── */
+.leo-composer {
+  display:     flex;
+  align-items: flex-end;
+  gap:         8px;
+  padding:     14px 0;
+  border-top:  1px solid var(--leo-border);
+  background:  var(--leo-bg);
+  position:    sticky;
+  bottom:      0;
+}
+
+.leo-composer-actions {
+  display: flex;
+  gap:     4px;
+}
+
+.leo-action-btn {
+  width:         40px;
+  height:        40px;
+  background:    var(--leo-bg-card);
+  border:        1px solid var(--leo-border);
+  border-radius: 10px;
+  color:         var(--leo-text);
+  font-size:     18px;
+  cursor:        pointer;
+  transition:    all var(--leo-transition);
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+}
+
+.leo-action-btn:hover:not(:disabled) {
+  background:   var(--leo-bg-card-hover);
+  border-color: var(--leo-primary);
+}
+
+.leo-action-btn:disabled {
+  opacity: 0.35;
+  cursor:  not-allowed;
+}
+
+.leo-input {
+  flex:          1;
+  background:    var(--leo-bg-card);
+  border:        1px solid var(--leo-border);
+  border-radius: 12px;
+  padding:       11px 14px;
+  color:         var(--leo-text);
+  font-size:     15px;
+  font-family:   inherit;
+  resize:        none;
+  max-height:    120px;
+  line-height:   1.5;
+  transition:    border-color var(--leo-transition);
+}
+
+.leo-input::placeholder       { color: var(--leo-text-muted); }
+.leo-input:focus              { outline: none; border-color: var(--leo-primary); }
+
+.leo-send-btn {
+  padding:       11px 18px;
+  background:    linear-gradient(135deg, var(--leo-primary), var(--leo-accent));
+  border:        none;
+  border-radius: 12px;
+  color:         #fff;
+  font-size:     14px;
+  font-weight:   600;
+  cursor:        pointer;
+  transition:    transform var(--leo-transition), opacity var(--leo-transition);
+  white-space:   nowrap;
+}
+
+.leo-send-btn:hover:not(:disabled) { transform: translateY(-1px); }
+
+.leo-send-btn:disabled {
+  opacity:   0.5;
+  cursor:    not-allowed;
+  transform: none;
+}
+
+/* ── Tip bar ─────────────────────────────────────────────── */
+.leo-tip {
+  text-align: center;
+  padding:    6px 0 14px;
+  font-size:  11px;
+  color:      var(--leo-text-muted);
+}
+
+/* ── Typing indicator ────────────────────────────────────── */
+.leo-typing {
+  display: flex;
+  gap:     5px;
+  padding: 4px 0;
+}
+
+.leo-typing-dot {
+  width:         8px;
+  height:        8px;
+  background:    var(--leo-primary);
+  border-radius: 50%;
+  animation:     leo-typing 1.4s infinite;
+}
+
+.leo-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.leo-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes leo-typing {
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+  30%           { opacity: 1;    transform: translateY(-5px); }
+}
+
+/* ── Error state ─────────────────────────────────────────── */
+.leo-message-error .leo-message-content {
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .leo-back      { display: none; }
+  .leo-stats     { gap: 4px; }
+  .leo-stat      { padding: 5px 8px; font-size: 12px; }
+  .leo-stat-label { display: none; }
+
+  .leo-message-bot,
+  .leo-message-user { max-width: 92%; }
+
+  .leo-composer-actions { display: none; }
+}

@@ -432,6 +432,7 @@ app.get('/app',    (_req, res) => res.sendFile(path.join(__dirname, 'public/app.
 app.get('/upload', (_req, res) => res.sendFile(path.join(__dirname, 'public/upload.html')));
 app.get('/battle', (_req, res) => res.sendFile(path.join(__dirname, 'public/battle.html')));
 app.get('/brain',  (_req, res) => res.sendFile(path.join(__dirname, 'public/brain.html')));
+app.get('/leo',    (_req, res) => res.sendFile(path.join(__dirname, 'public/leo.html')));
 // Invite / referral landing page
 app.get('/invite/:code', (_req, res) => res.sendFile(path.join(__dirname, 'public/invite.html')));
 // Modal routes — auth/premium are inline modals on the homepage

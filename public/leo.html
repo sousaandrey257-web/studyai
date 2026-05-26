@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F0F1A" />
+  <title>Léo · Mon Tuteur · StudyAI</title>
+  <meta name="description" content="Léo, ton tuteur IA personnel. Devoirs, examens, révisions — toutes les matières, tous les niveaux." />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/refresh.css" />
+  <link rel="stylesheet" href="/css/leo.css" />
+</head>
+<body>
+
+  <div class="leo-container">
+
+    <!-- ── HEADER ── -->
+    <header class="leo-header">
+      <div class="leo-back">
+        <a href="/">← Retour</a>
+      </div>
+      <div class="leo-identity">
+        <div class="leo-avatar" aria-hidden="true">🤖</div>
+        <div class="leo-info">
+          <h1 class="leo-name">Léo</h1>
+          <p class="leo-status">
+            <span class="leo-status-dot"></span>
+            <span data-i18n="leo_online">En ligne</span>
+          </p>
+        </div>
+      </div>
+      <div class="leo-stats" aria-label="Statistiques">
+        <div class="leo-stat" title="XP total">
+          <span class="leo-stat-icon" aria-hidden="true">⚡</span>
+          <span class="leo-stat-value" id="leo-xp">0</span>
+          <span class="leo-stat-label" data-i18n="leo_xp">XP</span>
+        </div>
+        <div class="leo-stat" title="Niveau">
+          <span class="leo-stat-icon" aria-hidden="true">🏆</span>
+          <span class="leo-stat-value" id="leo-level">1</span>
+        </div>
+        <div class="leo-stat" title="Jours de suite">
+          <span class="leo-stat-icon" aria-hidden="true">🔥</span>
+          <span class="leo-stat-value" id="leo-streak">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── TAG MATIÈRE ACTIVE ── -->
+    <div class="leo-subject-bar" id="leo-subject-bar" hidden>
+      <span class="leo-subject-tag" id="leo-subject">📚 Histoire</span>
+      <span class="leo-progress">
+        <span data-i18n="leo_progress">Progression</span>:
+        <span id="leo-progress-value">0%</span>
+      </span>
+    </div>
+
+    <!-- ── ZONE MESSAGES ── -->
+    <main class="leo-chat" id="leo-chat" role="log" aria-live="polite" aria-label="Conversation avec Léo">
+
+      <!-- Message d'accueil -->
+      <div class="leo-message leo-message-bot">
+        <div class="leo-message-avatar" aria-hidden="true">🤖</div>
+        <div class="leo-message-content">
+          <div class="leo-message-name">Léo</div>
+          <div class="leo-message-text">
+            <p data-i18n="leo_welcome_1">Salut&nbsp;! 👋 Je suis Léo, ton tuteur personnel.</p>
+            <p data-i18n="leo_welcome_2">Je peux t'aider avec tes devoirs, examens, révisions ou répondre à n'importe quelle question. Toutes les matières, tous les niveaux.</p>
+            <p data-i18n="leo_welcome_3">Comment je peux t'aider aujourd'hui&nbsp;?</p>
+          </div>
+          <div class="leo-suggestions" role="list">
+            <button class="leo-suggestion" role="listitem" data-prompt="Aide-moi avec mon devoir">
+              📝 <span data-i18n="leo_sug_devoir">Devoir</span>
+            </button>
+            <button class="leo-suggestion" role="listitem" data-prompt="Aide-moi à préparer un examen">
+              🎯 <span data-i18n="leo_sug_examen">Examen</span>
+            </button>
+            <button class="leo-suggestion" role="listitem" data-prompt="J'ai une question rapide">
+              ❓ <span data-i18n="leo_sug_question">Question</span>
+            </button>
+            <button class="leo-suggestion" role="listitem" data-prompt="Je veux réviser une matière">
+              📚 <span data-i18n="leo_sug_revise">Révision</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ── BARRE DE SAISIE ── -->
+    <footer class="leo-composer">
+      <div class="leo-composer-actions">
+        <button class="leo-action-btn" id="leo-voice-btn" title="Vocal (bientôt)" disabled aria-label="Entrée vocale (bientôt disponible)">🎤</button>
+        <button class="leo-action-btn" id="leo-photo-btn" title="Photo (bientôt)" disabled aria-label="Photo (bientôt disponible)">📷</button>
+        <button class="leo-action-btn" id="leo-file-btn"  title="Fichier (bientôt)" disabled aria-label="Fichier (bientôt disponible)">📎</button>
+      </div>
+      <label for="leo-input" class="sr-only">Ta question pour Léo</label>
+      <textarea
+        id="leo-input"
+        class="leo-input"
+        rows="1"
+        placeholder="Pose ta question à Léo…"
+        data-i18n-placeholder="leo_placeholder"
+        aria-label="Ta question pour Léo"
+      ></textarea>
+      <button id="leo-send" class="leo-send-btn" aria-label="Envoyer">
+        <span data-i18n="leo_send">Envoyer</span> 📤
+      </button>
+    </footer>
+
+    <div class="leo-tip" aria-hidden="true">
+      💡 <span data-i18n="leo_tip">Appuie sur Entrée pour envoyer · Shift+Entrée pour sauter une ligne</span>
+    </div>
+
+  </div>
+
+  <!-- perf.js: error boundary — FIRST -->
+  <script src="/js/perf.js?v=1"></script>
+  <script src="/js/i18n.js?v=30"></script>
+  <script src="/js/leo.js?v=1"></script>
+</body>
+</html>
