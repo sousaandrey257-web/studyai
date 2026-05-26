@@ -717,6 +717,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const headers = { 'Content-Type': 'application/json' };
       if (state.premiumToken) headers['x-premium-token'] = state.premiumToken;
       if (window.auth?.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
+      // Anti-abuse fingerprint for anonymous users
+      if (!window.auth?.isLoggedIn()) {
+        const fp = await window._getDeviceFingerprint?.();
+        if (fp) headers['x-device-fingerprint'] = fp;
+      }
 
       const lang = window.i18n ? window.i18n.currentLang : 'fr';
       const res  = await fetch('/api/generate', { method: 'POST', headers, body: JSON.stringify({ text, country: state.country || null, lang }), signal: controller.signal });
@@ -728,8 +733,9 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!res.ok) {
         state._generating = false;
         btnGenerate.disabled = false;
-        if (data.error === 'limit_reached') { showSection('input'); window.showPremiumModal(); return; }
-        if (data.error === 'rate_limited')  { showSection('input'); showToast(t('toast_rate_limited'), 'error'); return; }
+        if (data.error === 'limit_reached')   { showSection('input'); window.showPremiumModal(); return; }
+        if (data.error === 'rate_limited')    { showSection('input'); showToast(t('toast_rate_limited'), 'error'); return; }
+        if (data.error === 'quota_exceeded')  { showSection('input'); window._quotaUI?.showModal(data); return; }
         showSection('input');
         showToast('❌ ' + (data.message || data.error || t('toast_server_error')), 'error');
         return;
@@ -1579,3 +1585,125 @@ document.addEventListener('DOMContentLoaded', function () {
   // ────────────────────────────────────────────────────────────
 
 }); // fin DOMContentLoaded
+
+// ============================================================
+//  ANTI-ABUSE QUOTA UI (anonymous users only)
+// ============================================================
+(function () {
+  'use strict';
+
+  const MAX_GEN  = 5;
+
+  // Build a stable fingerprint from the existing window._fpSignals (fingerprint.js)
+  // Augmented with screen/timezone signals for uniqueness
+  async function getDeviceFingerprint() {
+    const signals = window._fpSignals || {};
+    const parts   = [
+      signals['x-canvas-hash'] || '',
+      signals['x-webgl-hash']  || '',
+      signals['x-audio-hash']  || '',
+      String(screen.width),
+      String(screen.height),
+      String(screen.colorDepth),
+      Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+      navigator.language || '',
+      navigator.hardwareConcurrency || '',
+    ];
+    const raw  = parts.join('|');
+    const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 64);
+  }
+
+  // Expose globally for app.js fetch header
+  window._getDeviceFingerprint = getDeviceFingerprint;
+
+  // ── Banner ──────────────────────────────────────────────────
+  const banner     = document.getElementById('quota-banner');
+  const bannerText = document.getElementById('quota-banner-text');
+  const bannerCta  = document.getElementById('quota-banner-cta');
+
+  function showBanner(remaining) {
+    if (!banner || !bannerText) return;
+    if (window.auth?.isLoggedIn()) { banner.hidden = true; return; }
+    bannerText.textContent = remaining === 0
+      ? '⏳ Limite atteinte — 0 / ' + MAX_GEN + ' générations gratuites'
+      : `⚡ ${remaining} / ${MAX_GEN} générations gratuites restantes`;
+    banner.hidden = false;
+  }
+
+  if (bannerCta) {
+    bannerCta.addEventListener('click', function (e) {
+      e.preventDefault();
+      const loginBtn = document.getElementById('btn-login') || document.querySelector('[data-action="login"]');
+      if (loginBtn) loginBtn.click();
+    });
+  }
+
+  // ── Modal ──────────────────────────────────────────────────
+  const overlay       = document.getElementById('quota-modal-overlay');
+  const modalBody     = document.getElementById('quota-modal-body');
+  const modalReset    = document.getElementById('quota-modal-reset');
+  const btnSignup     = document.getElementById('quota-modal-signup');
+  const btnPremium    = document.getElementById('quota-modal-premium');
+  const btnClose      = document.getElementById('quota-modal-close');
+
+  function showModal(data) {
+    if (!overlay) return;
+    if (data?.resetAt) {
+      const delta = Math.max(0, data.resetAt - Date.now());
+      const h     = Math.floor(delta / 3600000);
+      const m     = Math.floor((delta % 3600000) / 60000);
+      modalReset.textContent = `Réinitialisation dans ${h}h ${m}min`;
+    } else {
+      modalReset.textContent = '';
+    }
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideModal() {
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  if (btnClose)   btnClose.addEventListener('click', hideModal);
+  if (overlay)    overlay.addEventListener('click', function (e) { if (e.target === overlay) hideModal(); });
+
+  if (btnSignup) {
+    btnSignup.addEventListener('click', function () {
+      hideModal();
+      const loginBtn = document.getElementById('btn-login') || document.querySelector('[data-action="login"]');
+      if (loginBtn) loginBtn.click();
+    });
+  }
+
+  if (btnPremium) {
+    btnPremium.addEventListener('click', function () {
+      hideModal();
+      if (window.showPremiumModal) window.showPremiumModal();
+    });
+  }
+
+  // Expose for use in generate error handler
+  window._quotaUI = { showModal, showBanner };
+
+  // ── Init: fetch quota on load (anonymous only) ─────────────
+  async function refreshQuota() {
+    if (window.auth?.isLoggedIn()) { if (banner) banner.hidden = true; return; }
+    try {
+      const fp  = await getDeviceFingerprint();
+      const res = await fetch('/api/quota', { headers: { 'X-Device-Fingerprint': fp } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.anonymous) showBanner(data.remaining ?? MAX_GEN);
+    } catch {}
+  }
+
+  // Wait for fingerprint.js to collect signals before refreshing
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(refreshQuota, 500); });
+  } else {
+    setTimeout(refreshQuota, 500);
+  }
+})();

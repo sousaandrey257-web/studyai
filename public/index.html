@@ -66,6 +66,7 @@
   <link rel="stylesheet" href="css/gamification.css?v=2" />
   <link rel="stylesheet" href="css/premium.css?v=3" />
   <link rel="stylesheet" href="css/refresh.css?v=5" />
+  <link rel="stylesheet" href="css/quota-modal.css?v=1" />
 </head>
 <body>
 
@@ -118,6 +119,27 @@
       <button id="btn-premium-header" class="btn-premium-small" data-i18n="premium_btn">✨ Premium</button>
     </div>
   </header>
+
+  <!-- ===== QUOTA BANNER (anonymous only) ===== -->
+  <div id="quota-banner" hidden>
+    <span id="quota-banner-text"></span>
+    <a href="#" id="quota-banner-cta" class="quota-banner-cta">Créer un compte gratuit →</a>
+  </div>
+
+  <!-- ===== QUOTA MODAL (limit reached) ===== -->
+  <div id="quota-modal-overlay" class="quota-modal-overlay" hidden>
+    <div class="quota-modal" role="dialog" aria-modal="true" aria-labelledby="quota-modal-title">
+      <div class="quota-modal-icon">⏳</div>
+      <h2 class="quota-modal-title" id="quota-modal-title">Limite atteinte</h2>
+      <p class="quota-modal-body" id="quota-modal-body">Tu as utilisé tes 5 générations gratuites. Crée un compte gratuit pour continuer (20/jour) ou passe Premium pour un accès illimité.</p>
+      <p class="quota-modal-reset" id="quota-modal-reset"></p>
+      <div class="quota-modal-actions">
+        <button class="quota-modal-btn quota-modal-btn--primary" id="quota-modal-signup">Créer un compte gratuit</button>
+        <button class="quota-modal-btn quota-modal-btn--secondary" id="quota-modal-premium">Voir Premium</button>
+        <button class="quota-modal-btn quota-modal-btn--ghost" id="quota-modal-close">Fermer</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== HERO / INPUT ===== -->
   <main class="main">
