@@ -1,152 +1,155 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0A0A0F" />
-  <title>Léo · Mon Tuteur · StudyAI</title>
-  <meta name="description" content="Léo, ton tuteur IA personnel. Devoirs, examens, révisions — toutes les matières, tous les niveaux." />
+  <meta name="theme-color" content="#0F1024" />
+  <title>Ari · Atelier Cosmique · StudyAI</title>
+  <meta name="description" content="Ari, ton compagnon d'études cosmique. Devoirs, examens, révisions — toutes les matières, tous les niveaux." />
   <meta name="robots" content="noindex,nofollow" />
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/css/leo.css?v=3" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/leo.css?v=4" />
 </head>
 <body>
 
-<!-- Hidden file inputs — outside any clickable area to avoid propagation issues -->
-<input type="file" id="leo-photo-input" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" tabindex="-1" />
-<input type="file" id="leo-file-input"  accept=".pdf,.txt,.md" style="display:none" tabindex="-1" />
+<!-- ── Cosmos background ───────────────────────────────────── -->
+<div class="cosmos-stars" id="cosmos-stars" aria-hidden="true"></div>
 
-<div class="leo-app" id="leo-app">
+<!-- ── Theme toggle ───────────────────────────────────────── -->
+<button class="theme-toggle" id="theme-toggle" aria-label="Changer le thème (jour/nuit)">
+  <span class="theme-icon">🌙</span>
+</button>
 
-  <!-- ══ HEADER ══════════════════════════════════════════════ -->
-  <header class="leo-header">
-    <div class="leo-header-left">
-      <button class="leo-sidebar-toggle" id="leo-sidebar-toggle" aria-label="Historique">
+<!-- ── Hidden file inputs at body root (browser security) ─── -->
+<input type="file" id="ari-photo-input" accept="image/jpeg,image/png,image/webp,image/gif" hidden tabindex="-1" />
+<input type="file" id="ari-file-input"  accept=".pdf,.txt,.md" hidden tabindex="-1" />
+
+<!-- ══ APP SHELL ════════════════════════════════════════════ -->
+<div class="ari-app" id="ari-app">
+
+  <!-- ── HEADER ───────────────────────────────────────────── -->
+  <header class="ari-header">
+    <div class="ari-header-left">
+      <button class="ari-sidebar-toggle" id="ari-sidebar-toggle" aria-label="Ouvrir/fermer l'historique">
         <span></span><span></span><span></span>
       </button>
-      <a href="/" class="leo-back-link">← Accueil</a>
+      <a href="/" class="ari-back-link">← Accueil</a>
     </div>
 
-    <div class="leo-identity">
-      <div class="leo-avatar" aria-hidden="true">
-        <span class="leo-avatar-emoji">🤖</span>
-        <span class="leo-online-dot"></span>
+    <div class="ari-identity">
+      <div class="ari-avatar" aria-hidden="true">
+        <div class="ari-glow"></div>
+        <div class="ari-core">◈</div>
+        <span class="ari-online-dot"></span>
       </div>
       <div>
-        <div class="leo-name">Léo</div>
-        <div class="leo-status-text">Tuteur IA · En ligne</div>
+        <div class="ari-name">Ari</div>
+        <div class="ari-status">Compagnon d'études · En ligne</div>
       </div>
     </div>
 
-    <div class="leo-header-right">
-      <div class="leo-stat-pill" title="Expérience">
-        <span aria-hidden="true">⚡</span>
-        <span id="leo-xp">0</span> XP
-      </div>
-      <div class="leo-stat-pill" title="Niveau">
-        <span aria-hidden="true">🏆</span>
-        Niv. <span id="leo-level">1</span>
-      </div>
-      <div class="leo-stat-pill" title="Streak">
-        <span aria-hidden="true">🔥</span>
-        <span id="leo-streak">0</span>
-      </div>
+    <div class="ari-header-right">
+      <div class="ari-stat-pill" title="Expérience">⚡ <span id="ari-xp">0</span> XP</div>
+      <div class="ari-stat-pill" title="Niveau">🏆 Niv. <span id="ari-level">1</span></div>
+      <div class="ari-stat-pill" title="Streak">🔥 <span id="ari-streak">0</span></div>
     </div>
   </header>
 
-  <!-- ══ BODY : sidebar + main ════════════════════════════════ -->
-  <div class="leo-body">
+  <!-- ── BODY : sidebar + main ────────────────────────────── -->
+  <div class="ari-body">
 
-    <!-- ── SIDEBAR HISTORIQUE ────────────────────────────── -->
-    <aside class="leo-sidebar" id="leo-sidebar" aria-label="Historique des conversations">
-      <div class="leo-sidebar-inner">
-
-        <button class="leo-new-conv-btn" id="leo-new-conv">
+    <!-- ── SIDEBAR HISTORIQUE ─────────────────────────────── -->
+    <aside class="ari-sidebar" id="ari-sidebar" aria-label="Historique des conversations">
+      <div class="ari-sidebar-inner">
+        <button class="ari-new-conv-btn" id="ari-new-conv">
           <span aria-hidden="true">✦</span>
           Nouvelle conversation
         </button>
 
-        <div class="leo-search-wrap">
-          <input type="search" id="leo-search" class="leo-search-input"
-                 placeholder="Rechercher…" aria-label="Rechercher dans l'historique" />
+        <div class="ari-search-wrap">
+          <input type="search" id="ari-search" class="ari-search-input"
+                 placeholder="🔍 Rechercher…" aria-label="Rechercher dans l'historique" />
         </div>
 
-        <div class="leo-history-list" id="leo-history-list" role="list"
+        <div class="ari-history-list" id="ari-history-list" role="list"
              aria-label="Conversations précédentes">
           <!-- Rendered by JS -->
         </div>
-
       </div>
     </aside>
 
-    <!-- Overlay for mobile sidebar -->
-    <div class="leo-sidebar-overlay" id="leo-sidebar-overlay"></div>
+    <!-- Mobile sidebar overlay -->
+    <div class="ari-sidebar-overlay" id="ari-sidebar-overlay"></div>
 
-    <!-- ── MAIN : chat + composer ────────────────────────── -->
-    <div class="leo-main">
+    <!-- ── MAIN ───────────────────────────────────────────── -->
+    <div class="ari-main">
 
-      <!-- Subject bar (hidden until detected) -->
-      <div class="leo-subject-bar" id="leo-subject-bar" hidden>
-        <span class="leo-subject-tag" id="leo-subject-tag">📚 Matière</span>
-        <span class="leo-subject-close" id="leo-subject-close" role="button" tabindex="0" aria-label="Fermer">✕</span>
+      <!-- Subject badge (shown when detected) -->
+      <div class="ari-subject-bar" id="ari-subject-bar" hidden>
+        <span class="ari-subject-tag" id="ari-subject-tag">📚 Matière</span>
+        <span class="ari-subject-close" id="ari-subject-close" role="button"
+              tabindex="0" aria-label="Fermer">✕</span>
       </div>
 
-      <!-- Chat messages -->
-      <main class="leo-chat" id="leo-chat" role="log" aria-live="polite" aria-label="Conversation avec Léo">
-        <!-- Welcome message injected by JS -->
+      <!-- Chat zone -->
+      <main class="ari-chat" id="ari-chat" role="log"
+            aria-live="polite" aria-label="Conversation avec Ari">
+        <!-- Populated by JS -->
       </main>
 
       <!-- Composer -->
-      <footer class="leo-composer">
+      <footer class="ari-composer">
+        <!-- Toolbar : outils d'artisan -->
+        <div class="ari-toolbar">
+          <button class="ari-tool" id="ari-voice-btn"
+                  aria-label="Enregistrement vocal" title="Message vocal">
+            <span aria-hidden="true">🎤</span>
+            <span class="ari-tool-lbl">Vocal</span>
+          </button>
+          <button class="ari-tool" id="ari-photo-btn"
+                  aria-label="Envoyer une image" title="Analyser une image">
+            <span aria-hidden="true">📷</span>
+            <span class="ari-tool-lbl">Image</span>
+          </button>
+          <button class="ari-tool" id="ari-file-btn"
+                  aria-label="Envoyer un fichier" title="PDF ou fichier texte">
+            <span aria-hidden="true">📎</span>
+            <span class="ari-tool-lbl">Fichier</span>
+          </button>
 
-        <!-- Toolbar -->
-        <div class="leo-toolbar">
-          <button class="leo-tool-btn" id="leo-voice-btn"
-                  title="Enregistrement vocal" aria-label="Enregistrement vocal">
-            <span class="leo-tool-icon" aria-hidden="true">🎤</span>
-            <span class="leo-tool-label">Vocal</span>
-          </button>
-          <button class="leo-tool-btn" id="leo-photo-btn"
-                  title="Envoyer une image" aria-label="Envoyer une image">
-            <span class="leo-tool-icon" aria-hidden="true">📷</span>
-            <span class="leo-tool-label">Image</span>
-          </button>
-          <button class="leo-tool-btn" id="leo-file-btn"
-                  title="Envoyer un PDF ou fichier" aria-label="Envoyer un fichier">
-            <span class="leo-tool-icon" aria-hidden="true">📎</span>
-            <span class="leo-tool-label">Fichier</span>
-          </button>
-          <div class="leo-toolbar-sep"></div>
-          <div class="leo-recording-indicator" id="leo-recording-indicator" hidden>
-            <span class="leo-rec-dot"></span>
-            <span id="leo-rec-timer">0:00</span>
+          <!-- Recording indicator -->
+          <div class="ari-rec-indicator" id="ari-rec-indicator" hidden>
+            <span class="ari-rec-dot" aria-hidden="true"></span>
+            <span id="ari-rec-timer">0:00</span>
           </div>
         </div>
 
         <!-- Input row -->
-        <div class="leo-input-row">
-          <label for="leo-input" class="sr-only">Ta question pour Léo</label>
-          <textarea id="leo-input" class="leo-input" rows="1"
-                    placeholder="Pose ta question à Léo… (Entrée pour envoyer)"
-                    aria-label="Message pour Léo"></textarea>
-          <button id="leo-send" class="leo-send-btn" aria-label="Envoyer">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <div class="ari-input-row">
+          <label for="ari-input" class="sr-only">Ta question pour Ari</label>
+          <textarea id="ari-input" class="ari-input" rows="1"
+                    placeholder="Pose ta question à Ari… (Entrée pour envoyer)"
+                    aria-label="Message pour Ari"></textarea>
+          <button id="ari-send" class="ari-send-btn" aria-label="Envoyer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
             </svg>
           </button>
         </div>
 
-        <div class="leo-composer-hint">
-          Shift+Entrée pour sauter une ligne · Drag &amp; drop un fichier ici
-        </div>
+        <p class="ari-hint">Shift+Entrée pour sauter une ligne · Drag &amp; drop un fichier ici</p>
       </footer>
 
-    </div><!-- .leo-main -->
-  </div><!-- .leo-body -->
-</div><!-- .leo-app -->
+    </div><!-- .ari-main -->
+  </div><!-- .ari-body -->
+</div><!-- .ari-app -->
 
 <script src="/js/perf.js?v=1"></script>
-<script src="/js/leo.js?v=3"></script>
+<script src="/js/leo.js?v=4"></script>
 </body>
 </html>

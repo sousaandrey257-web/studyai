@@ -1,20 +1,20 @@
 /* ============================================================
-   Léo — Tuteur IA conversationnel  v3
+   Ari — Atelier Cosmique  v4
    /leo page
    ============================================================ */
 'use strict';
 
 // ── State ─────────────────────────────────────────────────────
 const S = {
-  messages:    [],        // current conversation [{role, content}]
+  messages:    [],
   loading:     false,
   recording:   false,
   mediaRecorder: null,
   audioChunks: [],
   recTimerID:  null,
   recSeconds:  0,
-  convId:      null,      // current conversation ID
-  conversations: [],      // history [{id, title, messages, updatedAt}]
+  convId:      null,
+  conversations: [],
   searchQuery: '',
 };
 
@@ -31,49 +31,83 @@ function authHeaders(json = false) {
   return h;
 }
 
+// ── Theme ─────────────────────────────────────────────────────
+function initTheme() {
+  const saved = localStorage.getItem('studyai_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  _updateThemeIcon(saved);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next    = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('studyai_theme', next);
+  _updateThemeIcon(next);
+}
+
+function _updateThemeIcon(theme) {
+  const el = document.querySelector('#theme-toggle .theme-icon');
+  if (el) el.textContent = theme === 'dark' ? '🌙' : '☀️';
+}
+
+// ── Cosmos stars ──────────────────────────────────────────────
+function generateStars() {
+  const container = document.getElementById('cosmos-stars');
+  if (!container) return;
+
+  const COLORS = ['var(--ac-star-1)', 'var(--ac-star-2)', 'var(--ac-star-3)'];
+  const COUNT  = 30;
+
+  for (let i = 0; i < COUNT; i++) {
+    const star = document.createElement('div');
+    star.className = 'cosmos-star';
+    star.style.cssText = [
+      `left: ${Math.random() * 100}%`,
+      `top: ${Math.random() * 100}%`,
+      `width: ${1 + Math.random() * 2.5}px`,
+      `height: ${1 + Math.random() * 2.5}px`,
+      `background: ${COLORS[Math.floor(Math.random() * COLORS.length)]}`,
+      `animation-delay: ${(Math.random() * 4).toFixed(2)}s`,
+      `animation-duration: ${(2.5 + Math.random() * 3).toFixed(2)}s`,
+    ].join(';');
+    container.appendChild(star);
+  }
+}
+
 // ── Minimal safe markdown renderer ───────────────────────────
 function renderMd(raw) {
   if (!raw) return '';
 
-  // 1. Escape HTML
   let s = raw
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 
-  // 2. Code blocks ```…```
   s = s.replace(/```[\w]*\n?([\s\S]*?)```/g,
     (_, c) => `<pre><code>${c.trim()}</code></pre>`);
 
-  // 3. Inline code
   s = s.replace(/`([^`\n]+)`/g, '<code>$1</code>');
 
-  // 4. Bold / italic
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   s = s.replace(/\*(.+?)\*/g,     '<em>$1</em>');
 
-  // 5. HR
   s = s.replace(/^---+$/gm, '<hr>');
-
-  // 6. Headings
   s = s.replace(/^#{1,3}\s+(.+)$/gm, '<h3>$1</h3>');
 
-  // 7. Unordered lists
   s = s.replace(/((?:^[ \t]*[-*]\s.+\n?)+)/gm, match => {
     const items = match.trim().split('\n')
       .map(l => `<li>${l.replace(/^[ \t]*[-*]\s/, '')}</li>`).join('');
     return `<ul>${items}</ul>`;
   });
 
-  // 8. Ordered lists
   s = s.replace(/((?:^[ \t]*\d+\.\s.+\n?)+)/gm, match => {
     const items = match.trim().split('\n')
       .map(l => `<li>${l.replace(/^[ \t]*\d+\.\s/, '')}</li>`).join('');
     return `<ol>${items}</ol>`;
   });
 
-  // 9. Paragraphs (double newline)
   s = s.split(/\n{2,}/).map(p => {
     p = p.trim();
     if (!p) return '';
@@ -88,7 +122,7 @@ function renderMd(raw) {
 const $ = id => document.getElementById(id);
 
 function scrollChatBottom() {
-  const c = $('leo-chat');
+  const c = $('ari-chat');
   if (c) c.scrollTop = c.scrollHeight;
 }
 
@@ -100,42 +134,42 @@ async function loadStats() {
     const r = await fetch('/api/gamification', { headers: authHeaders() });
     if (!r.ok) return;
     const d = await r.json();
-    if ($('leo-xp'))     $('leo-xp').textContent     = d.xp     ?? 0;
-    if ($('leo-level'))  $('leo-level').textContent  = d.level  ?? 1;
-    if ($('leo-streak')) $('leo-streak').textContent = d.streak ?? 0;
+    if ($('ari-xp'))     $('ari-xp').textContent     = d.xp     ?? 0;
+    if ($('ari-level'))  $('ari-level').textContent  = d.level  ?? 1;
+    if ($('ari-streak')) $('ari-streak').textContent = d.streak ?? 0;
   } catch { /* non-critical */ }
 }
 
 // ── Message rendering ─────────────────────────────────────────
 function addMsg(role, content, suggestions = []) {
-  const chat = $('leo-chat');
+  const chat = $('ari-chat');
   if (!chat) return;
 
   const isBot = role === 'bot' || role === 'assistant';
   const wrap  = document.createElement('div');
-  wrap.className = `leo-msg leo-msg-${isBot ? 'bot' : 'user'}`;
+  wrap.className = `ari-msg ari-msg-${isBot ? 'bot' : 'user'}`;
 
   let sugHTML = '';
   if (isBot && suggestions.length) {
     const btns = suggestions.map(s =>
-      `<button class="leo-sug-btn" data-prompt="${s.prompt.replace(/"/g, '&quot;')}">
+      `<button class="ari-sug-btn" data-prompt="${s.prompt.replace(/"/g, '&quot;')}">
          ${s.label}
        </button>`
     ).join('');
-    sugHTML = `<div class="leo-suggestions">${btns}</div>`;
+    sugHTML = `<div class="ari-suggestions">${btns}</div>`;
   }
 
   wrap.innerHTML = `
-    <div class="leo-msg-avatar" aria-hidden="true">${isBot ? '🤖' : '👤'}</div>
-    <div class="leo-msg-body">
-      ${isBot ? '<div class="leo-msg-sender">Léo</div>' : ''}
-      <div class="leo-msg-bubble">${isBot ? renderMd(content) : renderMd(content)}</div>
+    <div class="ari-msg-avatar" aria-hidden="true">${isBot ? '◈' : '✦'}</div>
+    <div class="ari-msg-body">
+      ${isBot ? '<div class="ari-msg-sender">Ari</div>' : ''}
+      <div class="ari-msg-bubble">${renderMd(content)}</div>
       ${sugHTML}
     </div>`;
 
-  wrap.querySelectorAll('.leo-sug-btn').forEach(btn => {
+  wrap.querySelectorAll('.ari-sug-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const inp = $('leo-input');
+      const inp = $('ari-input');
       if (inp) { inp.value = btn.dataset.prompt; inp.focus(); }
       sendMessage();
     });
@@ -146,22 +180,22 @@ function addMsg(role, content, suggestions = []) {
 }
 
 function showTyping() {
-  if ($('leo-typing')) return;
-  const chat = $('leo-chat');
+  if ($('ari-typing')) return;
+  const chat = $('ari-chat');
   if (!chat) return;
   const el = document.createElement('div');
-  el.id = 'leo-typing';
-  el.className = 'leo-msg leo-msg-bot';
-  el.setAttribute('aria-label', 'Léo est en train d\'écrire…');
+  el.id = 'ari-typing';
+  el.className = 'ari-msg ari-msg-bot';
+  el.setAttribute('aria-label', 'Ari est en train d\'écrire…');
   el.innerHTML = `
-    <div class="leo-msg-avatar" aria-hidden="true">🤖</div>
-    <div class="leo-msg-body">
-      <div class="leo-msg-sender">Léo</div>
-      <div class="leo-msg-bubble">
-        <div class="leo-typing">
-          <span class="leo-typing-dot"></span>
-          <span class="leo-typing-dot"></span>
-          <span class="leo-typing-dot"></span>
+    <div class="ari-msg-avatar" aria-hidden="true">◈</div>
+    <div class="ari-msg-body">
+      <div class="ari-msg-sender">Ari</div>
+      <div class="ari-msg-bubble">
+        <div class="ari-typing">
+          <span class="ari-typing-dot"></span>
+          <span class="ari-typing-dot"></span>
+          <span class="ari-typing-dot"></span>
         </div>
       </div>
     </div>`;
@@ -170,7 +204,7 @@ function showTyping() {
 }
 
 function hideTyping() {
-  const el = $('leo-typing');
+  const el = $('ari-typing');
   if (el) el.remove();
 }
 
@@ -183,11 +217,11 @@ const WELCOME_SUGGESTIONS = [
 ];
 
 function showWelcome() {
-  const chat = $('leo-chat');
+  const chat = $('ari-chat');
   if (!chat) return;
   chat.innerHTML = '';
   addMsg('bot',
-    '**Salut&nbsp;! 👋** Je suis Léo, ton tuteur IA personnel.\n\n' +
+    '**Salut&nbsp;! 👋** Je suis Ari, ton compagnon d\'études cosmique.\n\n' +
     'Je peux t\'aider avec tes **devoirs**, **examens**, **révisions** ou répondre à n\'importe quelle question.\n\n' +
     'Toutes les matières, tous les niveaux — comment je peux t\'aider aujourd\'hui&nbsp;?',
     WELCOME_SUGGESTIONS
@@ -196,8 +230,8 @@ function showWelcome() {
 
 // ── Send text message ─────────────────────────────────────────
 async function sendMessage() {
-  const inp  = $('leo-input');
-  const send = $('leo-send');
+  const inp  = $('ari-input');
+  const send = $('ari-send');
   if (!inp || !send) return;
 
   const text = inp.value.trim();
@@ -210,7 +244,6 @@ async function sendMessage() {
   inp.value = '';
   inp.style.height = 'auto';
 
-  // Update history title on first user message
   if (S.messages.filter(m => m.role === 'user').length === 1) {
     _ensureConv(text);
   }
@@ -259,11 +292,11 @@ async function sendMessage() {
 
 function _setLoading(v) {
   S.loading = v;
-  const s = $('leo-send');
+  const s = $('ari-send');
   if (s) s.disabled = v;
 }
 
-// ── Upload to Leo (vision / voice / file) ────────────────────
+// ── Upload to Ari (vision / voice / file) ────────────────────
 async function _uploadAndChat(endpoint, formData, userMsg) {
   if (S.loading) return;
   _setLoading(true);
@@ -291,8 +324,8 @@ async function _uploadAndChat(endpoint, formData, userMsg) {
       return;
     }
 
-    const data          = await r.json();
-    const extracted     = (data.text || '').trim();
+    const data      = await r.json();
+    const extracted = (data.text || '').trim();
 
     if (!extracted) {
       hideTyping();
@@ -300,7 +333,6 @@ async function _uploadAndChat(endpoint, formData, userMsg) {
       return;
     }
 
-    // Push extracted text as user context
     const ctxMsg = { role: 'user', content: extracted.slice(0, 3000) };
     S.messages.push(ctxMsg);
 
@@ -308,7 +340,6 @@ async function _uploadAndChat(endpoint, formData, userMsg) {
       _ensureConv(userMsg);
     }
 
-    // Now ask Leo to analyse the content
     const cr = await fetch('/api/tutor/chat', {
       method:  'POST',
       headers: authHeaders(true),
@@ -353,7 +384,7 @@ function _stopRecTimer() {
   S.recTimerID = null;
 }
 function _updateRecTimer() {
-  const el = $('leo-rec-timer');
+  const el = $('ari-rec-timer');
   if (!el) return;
   const m = Math.floor(S.recSeconds / 60).toString();
   const s = (S.recSeconds % 60).toString().padStart(2, '0');
@@ -361,11 +392,10 @@ function _updateRecTimer() {
 }
 
 async function toggleRecording() {
-  const btn = $('leo-voice-btn');
-  const ind = $('leo-recording-indicator');
+  const btn = $('ari-voice-btn');
+  const ind = $('ari-rec-indicator');
 
   if (S.recording) {
-    // Stop
     if (S.mediaRecorder && S.mediaRecorder.state !== 'inactive') {
       S.mediaRecorder.stop();
     }
@@ -385,7 +415,6 @@ async function toggleRecording() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     S.audioChunks = [];
 
-    // Pick best supported codec
     const mimeType = ['audio/webm;codecs=opus','audio/webm','audio/ogg','audio/mp4']
       .find(t => MediaRecorder.isTypeSupported(t)) || '';
 
@@ -402,14 +431,14 @@ async function toggleRecording() {
         addMsg('bot', 'Enregistrement trop court. Parle un peu plus longtemps&nbsp;!');
         return;
       }
-      const fd = new FormData();
+      const fd  = new FormData();
       const ext = mimeType.includes('ogg') ? 'ogg' : mimeType.includes('mp4') ? 'mp4' : 'webm';
       fd.append('audio', blob, `recording.${ext}`);
       fd.append('lang', getLang());
       _uploadAndChat('/api/tutor/voice', fd, '🎤 Message vocal envoyé…');
     };
 
-    S.mediaRecorder.start(250); // collect every 250ms
+    S.mediaRecorder.start(250);
     S.recording = true;
     if (btn) btn.classList.add('recording');
     if (ind) ind.hidden = false;
@@ -425,7 +454,7 @@ async function toggleRecording() {
 
 // ── 📷 Photo upload ───────────────────────────────────────────
 function handlePhoto() {
-  const inp = $('leo-photo-input');
+  const inp = $('ari-photo-input');
   if (!inp) return;
   inp.value = '';
 
@@ -449,7 +478,7 @@ function handlePhoto() {
 
 // ── 📎 File upload ────────────────────────────────────────────
 function handleFile() {
-  const inp = $('leo-file-input');
+  const inp = $('ari-file-input');
   if (!inp) return;
   inp.value = '';
 
@@ -472,7 +501,7 @@ function handleFile() {
 
 // ── Drag & drop on textarea ───────────────────────────────────
 function setupDragDrop() {
-  const inp = $('leo-input');
+  const inp = $('ari-input');
   if (!inp) return;
 
   inp.addEventListener('dragover', e => {
@@ -500,8 +529,8 @@ function setupDragDrop() {
 
 // ── Composer auto-resize + keyboard ──────────────────────────
 function setupComposer() {
-  const inp  = $('leo-input');
-  const send = $('leo-send');
+  const inp  = $('ari-input');
+  const send = $('ari-send');
   if (!inp || !send) return;
 
   inp.addEventListener('input', () => {
@@ -520,7 +549,7 @@ function setupComposer() {
 }
 
 // ── HISTORY — localStorage (anonymous) ───────────────────────
-const HIST_KEY = 'studyai_leo_history';
+const HIST_KEY = 'studyai_ari_history';
 
 function _histLoad() {
   try { return JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); }
@@ -553,10 +582,10 @@ async function _serverSaveConv(conv) {
       method:  'POST',
       headers: authHeaders(true),
       body: JSON.stringify({
-        id:       conv.id,
-        title:    conv.title,
-        messages: conv.messages.slice(-40),
-        subject:  conv.subject || null,
+        id:        conv.id,
+        title:     conv.title,
+        messages:  conv.messages.slice(-40),
+        subject:   conv.subject || null,
         userLevel: getLevel(),
       }),
     });
@@ -605,14 +634,12 @@ function _saveCurrentConv() {
 }
 
 function startNewConversation() {
-  S.convId    = _newConvId();
-  S.messages  = [];
-  S.loading   = false;
+  S.convId   = _newConvId();
+  S.messages = [];
+  S.loading  = false;
   hideTyping();
   showWelcome();
-  // Mark active
-  document.querySelectorAll('.leo-history-item').forEach(el => el.classList.remove('active'));
-  // Close sidebar on mobile
+  document.querySelectorAll('.ari-history-item').forEach(el => el.classList.remove('active'));
   if (window.innerWidth <= 768) closeSidebar();
 }
 
@@ -623,7 +650,7 @@ function loadConversation(id) {
   S.convId   = id;
   S.messages = (conv.messages || []).map(m => ({ role: m.role, content: m.content }));
 
-  const chat = $('leo-chat');
+  const chat = $('ari-chat');
   if (!chat) return;
   chat.innerHTML = '';
   S.messages.forEach(m => addMsg(m.role, m.content));
@@ -665,7 +692,7 @@ function _timeAgo(ts) {
 }
 
 function renderSidebar() {
-  const list = $('leo-history-list');
+  const list = $('ari-history-list');
   if (!list) return;
 
   const q = S.searchQuery.toLowerCase().trim();
@@ -673,13 +700,12 @@ function renderSidebar() {
   if (q) convs = convs.filter(c => c.title.toLowerCase().includes(q));
 
   if (!convs.length) {
-    list.innerHTML = `<div class="leo-history-empty">${
+    list.innerHTML = `<div class="ari-history-empty">${
       q ? 'Aucun résultat.' : 'Tes conversations apparaîtront ici.'
     }</div>`;
     return;
   }
 
-  // Group by relative date
   const groups = {};
   convs.forEach(c => {
     const g = _relativeDate(c.updatedAt || c.createdAt || Date.now());
@@ -692,18 +718,18 @@ function renderSidebar() {
 
   ORDER.forEach(g => {
     if (!groups[g]?.length) return;
-    html += `<div class="leo-history-group-label">${g}</div>`;
+    html += `<div class="ari-history-group-lbl">${g}</div>`;
     groups[g].forEach(c => {
       const active = c.id === S.convId ? ' active' : '';
       const ago    = _timeAgo(c.updatedAt || c.createdAt || Date.now());
       html += `
-        <div class="leo-history-item${active}" role="listitem"
+        <div class="ari-history-item${active}" role="listitem"
              data-id="${c.id}" tabindex="0" aria-label="${c.title}">
-          <div class="leo-history-info">
-            <div class="leo-history-title">${_esc(c.title)}</div>
-            <div class="leo-history-date">${ago}</div>
+          <div class="ari-history-info">
+            <div class="ari-history-title">${_esc(c.title)}</div>
+            <div class="ari-history-date">${ago}</div>
           </div>
-          <button class="leo-history-del" data-del="${c.id}"
+          <button class="ari-history-del" data-del="${c.id}"
                   aria-label="Supprimer cette conversation" title="Supprimer">✕</button>
         </div>`;
     });
@@ -711,17 +737,16 @@ function renderSidebar() {
 
   list.innerHTML = html;
 
-  // Wire clicks
-  list.querySelectorAll('.leo-history-item').forEach(el => {
+  list.querySelectorAll('.ari-history-item').forEach(el => {
     el.addEventListener('click', e => {
-      if (e.target.closest('.leo-history-del')) return;
+      if (e.target.closest('.ari-history-del')) return;
       loadConversation(el.dataset.id);
     });
     el.addEventListener('keydown', e => {
       if (e.key === 'Enter') loadConversation(el.dataset.id);
     });
   });
-  list.querySelectorAll('.leo-history-del').forEach(btn => {
+  list.querySelectorAll('.ari-history-del').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       deleteConversation(btn.dataset.del);
@@ -738,19 +763,26 @@ function _esc(s) {
 // ── Sidebar toggle ────────────────────────────────────────────
 function openSidebar() {
   document.body.classList.add('sidebar-open');
-  $('leo-app')?.classList.add('sidebar-open');
+  $('ari-app')?.classList.add('sidebar-open');
 }
 function closeSidebar() {
   document.body.classList.remove('sidebar-open');
-  $('leo-app')?.classList.remove('sidebar-open');
+  $('ari-app')?.classList.remove('sidebar-open');
 }
 function toggleSidebar() {
-  if ($('leo-app')?.classList.contains('sidebar-open')) closeSidebar();
+  if ($('ari-app')?.classList.contains('sidebar-open')) closeSidebar();
   else openSidebar();
 }
 
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Theme
+  initTheme();
+  $('theme-toggle')?.addEventListener('click', toggleTheme);
+
+  // Cosmos stars
+  generateStars();
+
   // Load history
   S.conversations = _histLoad();
   renderSidebar();
@@ -765,27 +797,27 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDragDrop();
 
   // Sidebar controls
-  $('leo-sidebar-toggle')?.addEventListener('click', toggleSidebar);
-  $('leo-sidebar-overlay')?.addEventListener('click', closeSidebar);
-  $('leo-new-conv')?.addEventListener('click', startNewConversation);
+  $('ari-sidebar-toggle')?.addEventListener('click', toggleSidebar);
+  $('ari-sidebar-overlay')?.addEventListener('click', closeSidebar);
+  $('ari-new-conv')?.addEventListener('click', startNewConversation);
 
   // Search
-  $('leo-search')?.addEventListener('input', e => {
+  $('ari-search')?.addEventListener('input', e => {
     S.searchQuery = e.target.value;
     renderSidebar();
   });
 
   // Subject bar close
-  $('leo-subject-close')?.addEventListener('click', () => {
-    const bar = $('leo-subject-bar');
+  $('ari-subject-close')?.addEventListener('click', () => {
+    const bar = $('ari-subject-bar');
     if (bar) bar.hidden = true;
   });
 
-  // Media buttons — direct addEventListener, no disabled, no inline handlers
-  $('leo-voice-btn')?.addEventListener('click', toggleRecording);
-  $('leo-photo-btn')?.addEventListener('click', handlePhoto);
-  $('leo-file-btn')?.addEventListener('click',  handleFile);
+  // Media buttons
+  $('ari-voice-btn')?.addEventListener('click', toggleRecording);
+  $('ari-photo-btn')?.addEventListener('click', handlePhoto);
+  $('ari-file-btn')?.addEventListener('click',  handleFile);
 
   // Focus input on desktop
-  if (window.innerWidth > 768) $('leo-input')?.focus();
+  if (window.innerWidth > 768) $('ari-input')?.focus();
 });
