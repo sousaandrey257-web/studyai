@@ -65,7 +65,13 @@
   <link rel="stylesheet" href="css/style.css?v=8" />
   <link rel="stylesheet" href="css/gamification.css?v=2" />
   <link rel="stylesheet" href="css/premium.css?v=3" />
-  <link rel="stylesheet" href="css/refresh.css?v=5" />
+  <link rel="stylesheet" href="css/refresh.css?v=6" />
+  <!-- KaTeX — rendu LaTeX pour Ari -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <!-- highlight.js — coloration syntaxique pour Ari -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 <body>
 
@@ -118,6 +124,73 @@
       <button id="btn-premium-header" class="btn-premium-small" data-i18n="premium_btn">✨ Premium</button>
     </div>
   </header>
+
+  <!-- Hidden file inputs pour Ari (body root = pas de blocage navigateur) -->
+  <input type="file" id="home-ari-photo-input" accept="image/jpeg,image/png,image/webp,image/gif" hidden tabindex="-1" />
+  <input type="file" id="home-ari-file-input"  accept=".pdf,.txt,.md" hidden tabindex="-1" />
+
+  <!-- ===== ARI — TUTEUR IA ===== -->
+  <section class="home-ari-section" id="home-ari" aria-label="Ari · Tuteur IA">
+    <div class="home-ari-container">
+
+      <!-- En-tête -->
+      <div class="home-ari-header">
+        <div class="home-ari-avatar" aria-hidden="true">
+          <div class="home-ari-glow"></div>
+          <div class="home-ari-core">◈</div>
+        </div>
+        <div class="home-ari-identity">
+          <h2 class="home-ari-name" data-i18n="home_ari_name">Ari · Ton tuteur IA</h2>
+          <p class="home-ari-tagline" data-i18n="home_ari_tagline">Devoir, examen, révision, question… Je m'adapte à toi.</p>
+        </div>
+      </div>
+
+      <!-- Zone de chat -->
+      <div class="home-ari-chat" id="home-ari-chat" role="log" aria-live="polite">
+        <div class="home-ari-message home-ari-message-bot">
+          <div class="home-ari-message-content">
+            <p data-i18n="home_ari_welcome">👋 Salut ! Comment je peux t'aider aujourd'hui ?</p>
+            <div class="home-ari-suggestions">
+              <button class="home-ari-suggestion" data-prompt="Aide-moi avec mon devoir">
+                📝 <span data-i18n="home_ari_sug_devoir">Devoir</span>
+              </button>
+              <button class="home-ari-suggestion" data-prompt="Aide-moi à préparer un examen">
+                🎯 <span data-i18n="home_ari_sug_examen">Examen</span>
+              </button>
+              <button class="home-ari-suggestion" data-prompt="J'ai une question rapide">
+                ❓ <span data-i18n="home_ari_sug_question">Question</span>
+              </button>
+              <button class="home-ari-suggestion" data-prompt="Je veux réviser une matière">
+                📚 <span data-i18n="home_ari_sug_revise">Réviser</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Composer -->
+      <div class="home-ari-composer">
+        <div class="home-ari-tools">
+          <button class="home-ari-tool" id="home-ari-voice-btn" aria-label="Message vocal" title="Vocal">🎤</button>
+          <button class="home-ari-tool" id="home-ari-photo-btn" aria-label="Envoyer une image" title="Image">📷</button>
+          <button class="home-ari-tool" id="home-ari-file-btn"  aria-label="Envoyer un fichier" title="Fichier">📎</button>
+        </div>
+        <label for="home-ari-input" class="sr-only">Ta question pour Ari</label>
+        <textarea id="home-ari-input" class="home-ari-input" rows="1"
+                  placeholder="Pose ta question à Ari…"
+                  data-i18n-placeholder="home_ari_placeholder"
+                  aria-label="Message pour Ari"></textarea>
+        <button id="home-ari-send" class="home-ari-send" aria-label="Envoyer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </section>
 
   <!-- ===== HERO / INPUT ===== -->
   <main class="main">
@@ -837,7 +910,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <h4 class="footer-col-title" data-i18n="footer_product">Produit</h4>
         <nav class="footer-col-links">
           <a href="#" id="footer-link-pricing" data-i18n="footer_pricing">Tarifs</a>
-          <a href="/leo" data-i18n="footer_leo">Léo · Tuteur IA</a>
+          <a href="#home-ari" data-i18n="footer_leo">Ari · Tuteur IA</a>
           <a href="/upload" data-i18n="footer_upload">Analyser un fichier</a>
           <a href="/battle" data-i18n="footer_battle">Battle Mode</a>
           <a href="/brain" data-i18n="footer_brain">Second Brain</a>
@@ -909,9 +982,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <span class="bottom-nav-icon">📄</span>
         <span>Auto Study</span>
       </a>
-      <a href="/leo" class="bottom-nav-item" data-page="/leo">
+      <a href="#home-ari" class="bottom-nav-item">
         <span class="bottom-nav-icon">💬</span>
-        <span data-i18n="nav_leo">Léo</span>
+        <span data-i18n="nav_leo">Ari</span>
       </a>
       <button id="bottom-nav-dashboard" class="bottom-nav-item" data-page="/dashboard">
         <span class="bottom-nav-icon">📊</span>

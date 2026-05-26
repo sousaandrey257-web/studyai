@@ -1579,3 +1579,290 @@ document.addEventListener('DOMContentLoaded', function () {
   // ────────────────────────────────────────────────────────────
 
 }); // fin DOMContentLoaded
+
+/* ════════════════════════════════════════════════════════════
+   ARI — TUTEUR IA — HOMEPAGE
+   IIFE isolé : zéro collision avec le code existant
+   ════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  const ARI = { messages: [], loading: false, recording: false };
+
+  const $h  = id => document.getElementById(id);
+  const getLang  = () => localStorage.getItem('studyai_lang') || document.documentElement.lang || 'fr';
+  const getToken = () => localStorage.getItem('studyai_token') || null;
+
+  function authHdr(json) {
+    const h = json ? { 'Content-Type': 'application/json' } : {};
+    const t = getToken(); if (t) h['x-auth-token'] = t;
+    return h;
+  }
+
+  /* ── renderMd avec LaTeX placeholders ── */
+  function renderMd(raw) {
+    if (!raw) return '';
+    const math = [];
+    let s = raw;
+    // Extraire LaTeX avant l'échappement HTML
+    s = s.replace(/\$\$([\s\S]+?)\$\$/g,  (_, m) => { const id=`\x02M${math.length}\x03`; math.push({m,d:true});  return id; });
+    s = s.replace(/\$([^$\n]{1,300}?)\$/g, (_, m) => { const id=`\x02M${math.length}\x03`; math.push({m,d:false}); return id; });
+    // Échapper HTML
+    s = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    // Code blocks
+    s = s.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, c) => `<pre><code>${c.trim()}</code></pre>`);
+    s = s.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    // Markdown
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    s = s.replace(/^---+$/gm, '<hr>');
+    s = s.replace(/^#{1,3}\s+(.+)$/gm, '<h3>$1</h3>');
+    s = s.replace(/((?:^[ \t]*[-*]\s.+\n?)+)/gm, m => `<ul>${m.trim().split('\n').map(l=>`<li>${l.replace(/^[ \t]*[-*]\s/,'')}</li>`).join('')}</ul>`);
+    s = s.replace(/((?:^[ \t]*\d+\.\s.+\n?)+)/gm, m => `<ol>${m.trim().split('\n').map(l=>`<li>${l.replace(/^[ \t]*\d+\.\s/,'')}</li>`).join('')}</ol>`);
+    s = s.split(/\n{2,}/).map(p => { p=p.trim(); if(!p) return ''; if(/^<(h3|ul|ol|pre|hr)/.test(p)) return p; return `<p>${p.replace(/\n/g,'<br>')}</p>`; }).join('');
+    // Restaurer LaTeX
+    s = s.replace(/\x02M(\d+)\x03/g, (_, i) => {
+      const { m, d } = math[+i];
+      if (!window.katex) return d ? `$$${m}$$` : `$${m}$`;
+      try { return window.katex.renderToString(m, { displayMode: d, throwOnError: false }); }
+      catch { return d ? `$$${m}$$` : `$${m}$`; }
+    });
+    return s;
+  }
+
+  function applyHljs(el) {
+    if (!window.hljs) return;
+    el.querySelectorAll('pre code').forEach(b => { try { window.hljs.highlightElement(b); } catch {} });
+  }
+
+  /* ── Typing indicator ── */
+  function showTyping() {
+    if ($h('home-ari-typing')) return;
+    const chat = $h('home-ari-chat'); if (!chat) return;
+    const el = document.createElement('div');
+    el.id = 'home-ari-typing';
+    el.className = 'home-ari-message home-ari-message-bot';
+    el.innerHTML = '<div class="home-ari-message-content home-ari-typing-wrap"><span class="home-ari-dot"></span><span class="home-ari-dot"></span><span class="home-ari-dot"></span></div>';
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+  }
+  function hideTyping() { const el = $h('home-ari-typing'); if (el) el.remove(); }
+
+  /* ── Messages ── */
+  function addUserMsg(text) {
+    const chat = $h('home-ari-chat'); if (!chat) return;
+    const div = document.createElement('div');
+    div.className = 'home-ari-message home-ari-message-user';
+    div.innerHTML = `<div class="home-ari-message-content">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function addBotMsg(text) {
+    const chat = $h('home-ari-chat'); if (!chat) return;
+    const div = document.createElement('div');
+    div.className = 'home-ari-message home-ari-message-bot';
+    div.innerHTML = `<div class="home-ari-message-content">${renderMd(text)}</div>`;
+    applyHljs(div);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  /* ── Streaming SSE ── */
+  async function streamResponse(body) {
+    const chat = $h('home-ari-chat'); if (!chat) return '';
+    hideTyping();
+    const wrap = document.createElement('div');
+    wrap.className = 'home-ari-message home-ari-message-bot';
+    wrap.innerHTML = '<div class="home-ari-message-content"><span class="home-ari-cursor"></span></div>';
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+
+    const bubble  = wrap.querySelector('.home-ari-message-content');
+    const reader  = body.getReader();
+    const decoder = new TextDecoder();
+    let fullText  = '', sseBuffer = '', lastRender = 0;
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        sseBuffer += decoder.decode(value, { stream: true });
+        const lines = sseBuffer.split('\n');
+        sseBuffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') break;
+          try {
+            const p = JSON.parse(raw);
+            if (p.delta) {
+              fullText += p.delta;
+              const now = Date.now();
+              if (now - lastRender > 40) {
+                bubble.innerHTML = renderMd(fullText) + '<span class="home-ari-cursor"></span>';
+                applyHljs(bubble);
+                chat.scrollTop = chat.scrollHeight;
+                lastRender = now;
+              }
+            }
+          } catch {}
+        }
+      }
+    } finally {
+      bubble.innerHTML = renderMd(fullText);
+      applyHljs(bubble);
+      chat.scrollTop = chat.scrollHeight;
+    }
+    return fullText;
+  }
+
+  function setLoading(v) {
+    ARI.loading = v;
+    const s = $h('home-ari-send'); if (s) s.disabled = v;
+  }
+
+  /* ── Envoyer un message texte ── */
+  async function sendMessage(text) {
+    if (!text || ARI.loading) return;
+    setLoading(true);
+    addUserMsg(text);
+    ARI.messages.push({ role: 'user', content: text });
+    showTyping();
+    try {
+      const r = await fetch('/api/tutor/chat/stream', {
+        method: 'POST',
+        headers: authHdr(true),
+        body: JSON.stringify({ messages: ARI.messages, lang: getLang() }),
+      });
+      if (r.status === 429) { hideTyping(); addBotMsg('Limite de messages atteinte. Réessaie dans une heure !'); return; }
+      if (!r.ok)            { hideTyping(); addBotMsg('Une erreur s\'est produite. Réessaie ?'); return; }
+      const reply = await streamResponse(r.body);
+      if (reply) ARI.messages.push({ role: 'assistant', content: reply });
+    } catch {
+      hideTyping(); addBotMsg('Erreur de connexion. Vérifie ton réseau.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /* ── Upload (vision / voice / file) ── */
+  async function uploadAndChat(endpoint, formData, userMsg) {
+    if (ARI.loading) return;
+    setLoading(true); addUserMsg(userMsg); showTyping();
+    try {
+      const r = await fetch(endpoint, { method: 'POST', headers: authHdr(false), body: formData });
+      if (!r.ok) {
+        const e = await r.json().catch(() => ({}));
+        hideTyping(); addBotMsg(`Je n'ai pas pu traiter ce fichier : ${e.error || 'erreur inconnue'}.`); return;
+      }
+      const data = await r.json();
+      const extracted = (data.text || '').trim();
+      if (!extracted) { hideTyping(); addBotMsg('Je n\'ai pas pu lire le contenu. Essaie avec un autre fichier ?'); return; }
+
+      ARI.messages.push({ role: 'user', content: extracted.slice(0, 3000) });
+
+      const cr = await fetch('/api/tutor/chat/stream', {
+        method: 'POST', headers: authHdr(true),
+        body: JSON.stringify({ messages: ARI.messages, lang: getLang() }),
+      });
+      hideTyping();
+      if (!cr.ok) { addBotMsg('Contenu reçu mais je n\'ai pas pu l\'analyser. Réessaie ?'); return; }
+      const reply = await streamResponse(cr.body);
+      if (reply) ARI.messages.push({ role: 'assistant', content: reply });
+    } catch {
+      hideTyping(); addBotMsg('Erreur de connexion. Vérifie ton réseau.');
+    } finally { setLoading(false); }
+  }
+
+  /* ── Init ── */
+  function initAri() {
+    const inp  = $h('home-ari-input');
+    const send = $h('home-ari-send');
+    if (!inp || !send) return;
+
+    send.addEventListener('click', () => {
+      const text = inp.value.trim(); if (!text) return;
+      inp.value = ''; inp.style.height = 'auto'; sendMessage(text);
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send.click(); }
+    });
+    inp.addEventListener('input', () => {
+      inp.style.height = 'auto';
+      inp.style.height = Math.min(inp.scrollHeight, 100) + 'px';
+    });
+
+    // Suggestions
+    document.querySelectorAll('.home-ari-suggestion').forEach(btn =>
+      btn.addEventListener('click', () => sendMessage(btn.dataset.prompt))
+    );
+
+    // Photo
+    const photoBtn = $h('home-ari-photo-btn');
+    const photoInp = $h('home-ari-photo-input');
+    if (photoBtn && photoInp) {
+      photoBtn.addEventListener('click', () => { photoInp.value = ''; photoInp.click(); });
+      photoInp.addEventListener('change', () => {
+        const file = photoInp.files?.[0]; if (!file) return;
+        if (file.size > 5*1024*1024) { addBotMsg('Image trop volumineuse (max 5 Mo).'); return; }
+        const fd = new FormData(); fd.append('image', file); fd.append('lang', getLang());
+        uploadAndChat('/api/tutor/vision', fd, `📷 Image envoyée : ${file.name}`);
+      });
+    }
+
+    // File
+    const fileBtn = $h('home-ari-file-btn');
+    const fileInp = $h('home-ari-file-input');
+    if (fileBtn && fileInp) {
+      fileBtn.addEventListener('click', () => { fileInp.value = ''; fileInp.click(); });
+      fileInp.addEventListener('change', () => {
+        const file = fileInp.files?.[0]; if (!file) return;
+        if (file.size > 10*1024*1024) { addBotMsg('Fichier trop volumineux (max 10 Mo).'); return; }
+        const fd = new FormData(); fd.append('file', file);
+        uploadAndChat('/api/tutor/file', fd, `📎 Fichier envoyé : ${file.name}`);
+      });
+    }
+
+    // Voice
+    const voiceBtn = $h('home-ari-voice-btn');
+    if (voiceBtn) {
+      let mr = null, chunks = [];
+      voiceBtn.addEventListener('click', async () => {
+        if (ARI.recording) {
+          if (mr?.state !== 'inactive') mr.stop();
+          ARI.recording = false; voiceBtn.classList.remove('recording'); return;
+        }
+        if (!navigator.mediaDevices?.getUserMedia) {
+          addBotMsg('Ton navigateur ne supporte pas l\'enregistrement audio.'); return;
+        }
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          chunks = [];
+          const mimeType = ['audio/webm;codecs=opus','audio/webm','audio/ogg','audio/mp4']
+            .find(t => MediaRecorder.isTypeSupported(t)) || '';
+          mr = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+          mr.ondataavailable = e => { if (e.data?.size > 0) chunks.push(e.data); };
+          mr.onstop = () => {
+            stream.getTracks().forEach(t => t.stop());
+            const blob = new Blob(chunks, { type: mimeType || 'audio/webm' });
+            if (blob.size < 500) { addBotMsg('Enregistrement trop court. Parle un peu plus longtemps !'); return; }
+            const fd = new FormData();
+            const ext = mimeType.includes('ogg') ? 'ogg' : mimeType.includes('mp4') ? 'mp4' : 'webm';
+            fd.append('audio', blob, `recording.${ext}`); fd.append('lang', getLang());
+            uploadAndChat('/api/tutor/voice', fd, '🎤 Message vocal envoyé…');
+          };
+          mr.start(250); ARI.recording = true; voiceBtn.classList.add('recording');
+        } catch (err) {
+          addBotMsg(err.name === 'NotAllowedError'
+            ? 'Accès au micro refusé. Autorise-le dans les paramètres du navigateur.'
+            : `Impossible d'accéder au micro : ${err.message}`);
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAri);
+  else initAri();
+
+})(); // fin IIFE Ari homepage
