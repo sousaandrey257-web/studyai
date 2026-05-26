@@ -849,3 +849,103 @@ body {
   .ari-msg { max-width: 100%; }
   .ari-msg-user { max-width: 88%; }
 }
+
+/* ── Streaming cursor ────────────────────────────────────── */
+.ari-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--ac-star-2);
+  border-radius: 1px;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: ari-blink .9s step-end infinite;
+}
+@keyframes ari-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Copy button ─────────────────────────────────────────── */
+.ari-msg-bot .ari-msg-bubble {
+  position: relative;
+}
+.ari-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: var(--ac-bg-3);
+  border: 1px solid var(--ac-border-2);
+  border-radius: 6px;
+  color: var(--ac-text-3);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .18s, color .18s, background .18s;
+  white-space: nowrap;
+}
+.ari-msg-bot:hover .ari-copy-btn { opacity: 1; }
+.ari-copy-btn:hover { color: var(--ac-text); background: var(--ac-card-hov); }
+.ari-copy-btn.copied { color: var(--ac-green); border-color: var(--ac-green); }
+
+/* ── Message timestamp ───────────────────────────────────── */
+.ari-msg-time {
+  font-size: 10px;
+  color: var(--ac-text-3);
+  margin-top: 3px;
+  padding-left: 2px;
+  align-self: flex-start;
+}
+.ari-msg-user .ari-msg-time { align-self: flex-end; padding-right: 2px; padding-left: 0; }
+
+/* ── Scroll-to-bottom button ─────────────────────────────── */
+.ari-scroll-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ac-bg-2);
+  border: 1px solid var(--ac-border-2);
+  color: var(--ac-text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--ac-shadow);
+  transition: all .2s;
+  z-index: 10;
+}
+.ari-scroll-btn:hover { background: var(--ac-bg-3); color: var(--ac-text); transform: translateY(2px); }
+
+/* ── Subject bar improved ────────────────────────────────── */
+.ari-subject-bar { transition: opacity .2s; }
+
+/* ── LaTeX overrides ─────────────────────────────────────── */
+.ari-msg-bubble .katex { font-size: 1.05em; }
+.ari-msg-bubble .katex-display { margin: 10px 0; overflow-x: auto; }
+.ari-msg-user .ari-msg-bubble .katex { color: inherit; }
+
+/* ── highlight.js theme override for light mode ─────────── */
+[data-theme="light"] .hljs {
+  background: rgba(0,0,0,0.04);
+  color: #24292e;
+}
+[data-theme="light"] .ari-msg-bubble pre {
+  background: rgba(0,0,0,0.04);
+  border-color: var(--ac-border-2);
+}
+
+/* ── Mobile improvements ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .ari-copy-btn { opacity: 1; top: 4px; right: 4px; padding: 2px 6px; }
+  .ari-scroll-btn { bottom: 8px; right: 10px; }
+  .ari-msg-bubble { padding: 12px 14px; font-size: 15px; }
+  .ari-input { font-size: 16px; } /* prevent iOS zoom */
+}

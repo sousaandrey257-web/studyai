@@ -4,7 +4,7 @@ const express  = require('express');
 const jwt      = require('jsonwebtoken');
 const multer   = require('multer');
 const { default: rateLimit, ipKeyGenerator } = require('express-rate-limit');
-const { chat }       = require('../services/tutor.service');
+const { chat, streamChat } = require('../services/tutor.service');
 const VoiceService   = require('../services/tutor-voice.service');
 const VisionService  = require('../services/tutor-vision.service');
 const FileService    = require('../services/tutor-file.service');
@@ -99,6 +99,49 @@ router.post('/chat', chatLimiter, optionalAuth, async (req, res) => {
       reply: 'Le tuteur est temporairement indisponible. Réessaie dans un instant.',
     });
   }
+});
+
+// ── POST /api/tutor/chat/stream — SSE streaming ──────────────
+router.post('/chat/stream', chatLimiter, optionalAuth, async (req, res) => {
+  const { messages, lang, userLevel } = req.body || {};
+
+  if (!Array.isArray(messages) || messages.length === 0)
+    return res.status(400).json({ error: 'messages array required.' });
+  if (messages.length > 40)
+    return res.status(400).json({ error: 'Conversation trop longue (max 40 messages).' });
+
+  const safeMessages = messages
+    .filter(m => m && typeof m.role === 'string' && typeof m.content === 'string')
+    .map(m => ({
+      role:    ['user', 'assistant', 'system'].includes(m.role) ? m.role : 'user',
+      content: m.content.slice(0, 4000),
+    }));
+
+  if (safeMessages.length === 0)
+    return res.status(400).json({ error: 'Aucun message valide.' });
+
+  const safeLang  = (typeof lang === 'string' && /^[a-z]{2}(-BR)?$/.test(lang)) ? lang : 'fr';
+  const safeLevel = (typeof userLevel === 'string' && userLevel.trim().length > 0)
+    ? userLevel.trim().slice(0, 100) : null;
+
+  res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders();
+
+  try {
+    const stream = await streamChat(safeMessages, safeLang, safeLevel);
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content || '';
+      if (delta) res.write(`data: ${JSON.stringify({ delta })}\n\n`);
+    }
+  } catch (err) {
+    console.error('[tutor/stream]', err.message);
+    res.write(`data: ${JSON.stringify({ error: 'stream_error' })}\n\n`);
+  }
+
+  res.write('data: [DONE]\n\n');
+  res.end();
 });
 
 // ── Rate limiters for media endpoints (10/hour per IP) ───────

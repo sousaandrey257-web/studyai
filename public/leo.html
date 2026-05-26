@@ -10,7 +10,9 @@
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/leo.css?v=4" />
+  <link rel="stylesheet" href="/css/leo.css?v=5" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
 </head>
 <body>
 
@@ -99,6 +101,14 @@
         <!-- Populated by JS -->
       </main>
 
+      <!-- Scroll-to-bottom -->
+      <button class="ari-scroll-btn" id="ari-scroll-btn" aria-label="Défiler en bas" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+
       <!-- Composer -->
       <footer class="ari-composer">
         <!-- Toolbar : outils d'artisan -->
@@ -149,7 +159,9 @@
   </div><!-- .ari-body -->
 </div><!-- .ari-app -->
 
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="/js/perf.js?v=1"></script>
-<script src="/js/leo.js?v=4"></script>
+<script src="/js/leo.js?v=5"></script>
 </body>
 </html>
