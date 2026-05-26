@@ -181,4 +181,82 @@ router.post('/file', mediaLimiter, optionalAuth, (req, res, next) => {
   }
 });
 
+// ── History storage (server-side, auth required) ─────────────
+const fs   = require('fs');
+const path = require('path');
+
+const HISTORY_FILE = path.join(__dirname, '../data/tutor-history.json');
+const MAX_CONVS    = 50; // per user
+
+function _loadHistory() {
+  try {
+    if (!fs.existsSync(HISTORY_FILE)) return {};
+    return JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf8'));
+  } catch { return {}; }
+}
+
+function _saveHistory(data) {
+  try {
+    const dir = path.dirname(HISTORY_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (err) { console.error('[tutor/history] save failed:', err.message); }
+}
+
+// GET /api/tutor/history — list user's conversations
+router.get('/history', optionalAuth, (req, res) => {
+  if (!req.user?.userId) return res.json({ conversations: [] });
+  const all  = _loadHistory();
+  const convs = (all[req.user.userId] || []).slice(0, MAX_CONVS);
+  res.json({ conversations: convs });
+});
+
+// POST /api/tutor/history — create or update a conversation
+router.post('/history', optionalAuth, (req, res) => {
+  if (!req.user?.userId) return res.status(401).json({ error: 'Auth required for server history.' });
+
+  const { id, title, messages, subject, userLevel } = req.body || {};
+  if (!id || !Array.isArray(messages)) return res.status(400).json({ error: 'id and messages required.' });
+
+  const safeTitle    = String(title || 'Conversation').slice(0, 80);
+  const safeMessages = messages.slice(-60).map(m => ({
+    role:      ['user','assistant'].includes(m.role) ? m.role : 'user',
+    content:   String(m.content || '').slice(0, 2000),
+    timestamp: m.timestamp || Date.now(),
+  }));
+
+  const all   = _loadHistory();
+  const uid   = req.user.userId;
+  if (!all[uid]) all[uid] = [];
+
+  const idx = all[uid].findIndex(c => c.id === id);
+  const conv = {
+    id, title: safeTitle, messages: safeMessages,
+    subject:   subject  ? String(subject).slice(0, 50)  : null,
+    userLevel: userLevel ? String(userLevel).slice(0, 80) : null,
+    updatedAt: Date.now(),
+    createdAt: idx >= 0 ? (all[uid][idx].createdAt || Date.now()) : Date.now(),
+  };
+
+  if (idx >= 0) all[uid][idx] = conv;
+  else          all[uid].unshift(conv);
+
+  // Trim to limit
+  all[uid] = all[uid].slice(0, MAX_CONVS);
+  _saveHistory(all);
+  res.json({ ok: true, id });
+});
+
+// DELETE /api/tutor/history/:id
+router.delete('/history/:id', optionalAuth, (req, res) => {
+  if (!req.user?.userId) return res.status(401).json({ error: 'Auth required.' });
+  const all = _loadHistory();
+  const uid = req.user.userId;
+  if (all[uid]) {
+    all[uid] = all[uid].filter(c => c.id !== req.params.id);
+    _saveHistory(all);
+  }
+  res.json({ ok: true });
+});
+
 module.exports = router;
