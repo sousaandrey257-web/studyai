@@ -221,9 +221,9 @@ function showWelcome() {
   if (!chat) return;
   chat.innerHTML = '';
   addMsg('bot',
-    '**Salut&nbsp;! 👋** Je suis Ari, ton compagnon d\'études cosmique.\n\n' +
+    '**Salut ! 👋** Je suis Ari, ton compagnon d\'études cosmique.\n\n' +
     'Je peux t\'aider avec tes **devoirs**, **examens**, **révisions** ou répondre à n\'importe quelle question.\n\n' +
-    'Toutes les matières, tous les niveaux — comment je peux t\'aider aujourd\'hui&nbsp;?',
+    'Toutes les matières, tous les niveaux — comment je peux t\'aider aujourd\'hui ?',
     WELCOME_SUGGESTIONS
   );
 }
@@ -264,12 +264,12 @@ async function sendMessage() {
     hideTyping();
 
     if (r.status === 429) {
-      addMsg('bot', 'Tu as atteint la limite de messages pour cette heure. Réessaie dans un moment&nbsp;!');
+      addMsg('bot', 'Tu as atteint la limite de messages pour cette heure. Réessaie dans un moment !');
       return;
     }
 
     if (!r.ok) {
-      addMsg('bot', 'Une erreur s\'est produite. Tu peux réessayer&nbsp;?');
+      addMsg('bot', 'Une erreur s\'est produite. Tu peux réessayer ?');
       return;
     }
 
@@ -313,7 +313,7 @@ async function _uploadAndChat(endpoint, formData, userMsg) {
 
     if (r.status === 429) {
       hideTyping();
-      addMsg('bot', 'Limite d\'upload atteinte. Réessaie dans une heure&nbsp;!');
+      addMsg('bot', 'Limite d\'upload atteinte. Réessaie dans une heure !');
       return;
     }
 
@@ -329,7 +329,7 @@ async function _uploadAndChat(endpoint, formData, userMsg) {
 
     if (!extracted) {
       hideTyping();
-      addMsg('bot', 'Je n\'ai pas pu lire le contenu de ce fichier. Essaie avec un autre&nbsp;?');
+      addMsg('bot', 'Je n\'ai pas pu lire le contenu de ce fichier. Essaie avec un autre ?');
       return;
     }
 
@@ -353,7 +353,7 @@ async function _uploadAndChat(endpoint, formData, userMsg) {
     hideTyping();
 
     if (!cr.ok) {
-      addMsg('bot', 'Contenu reçu, mais je n\'ai pas pu l\'analyser. Réessaie&nbsp;?');
+      addMsg('bot', 'Contenu reçu, mais je n\'ai pas pu l\'analyser. Réessaie ?');
       return;
     }
 
@@ -428,7 +428,7 @@ async function toggleRecording() {
       stream.getTracks().forEach(t => t.stop());
       const blob = new Blob(S.audioChunks, { type: mimeType || 'audio/webm' });
       if (blob.size < 500) {
-        addMsg('bot', 'Enregistrement trop court. Parle un peu plus longtemps&nbsp;!');
+        addMsg('bot', 'Enregistrement trop court. Parle un peu plus longtemps !');
         return;
       }
       const fd  = new FormData();
@@ -463,7 +463,7 @@ function handlePhoto() {
     const file = inp.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      addMsg('bot', 'Image trop volumineuse (max 5 Mo). Compresse-la et réessaie&nbsp;!');
+      addMsg('bot', 'Image trop volumineuse (max 5 Mo). Compresse-la et réessaie !');
       return;
     }
     const fd = new FormData();
