@@ -305,7 +305,9 @@ app.use(helmet({
     },
   },
   crossOriginEmbedderPolicy:    false,
-  hsts:                         { maxAge: 31536000, includeSubDomains: true, preload: true },
+  hsts:                         process.env.NODE_ENV === 'production'
+                                  ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+                                  : false,
   referrerPolicy:               { policy: 'strict-origin-when-cross-origin' },
   permittedCrossDomainPolicies: { permittedPolicies: 'none' },
   crossOriginOpenerPolicy:      { policy: 'same-origin-allow-popups' },
@@ -476,7 +478,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ============================================================
 //  SYSTÈME FREEMIUM
 // ============================================================
-const FREE_LIMIT  = 20;
+const FREE_LIMIT  = 12;
 const ADMIN_KEY   = process.env.ADMIN_KEY?.trim() || null;
 const usageStore  = new Map(); // ip → { count, date }
 
@@ -1715,7 +1717,7 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
 
   if (!usage.allowed) {
     return res.status(429).json({ error: 'limit_reached',
-      message: 'Limite quotidienne atteinte (20/jour). Passez Premium pour un accès illimité.' });
+      message: 'Limite quotidienne atteinte (12/jour). Passez Premium pour un accès illimité.' });
   }
 
   const { text, country, lang } = req.body;

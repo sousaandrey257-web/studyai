@@ -52,43 +52,43 @@
     <div class="upload-hero-inner">
       <div class="hero-badge">
         <span class="hero-badge-dot"></span>
-        Auto Study Engine — Alimenté par IA
+        <span data-i18n="up_hero_badge">Auto Study Engine — Alimenté par IA</span>
       </div>
       <h1 class="upload-hero-title">
-        Dépose ton cours.<br />
-        <span class="upload-hero-gradient">Maîtrise-le en 60 secondes.</span>
+        <span data-i18n="up_hero_title">Dépose ton cours.</span><br />
+        <span class="upload-hero-gradient" data-i18n="up_hero_gradient">Maîtrise-le en 60 secondes.</span>
       </h1>
-      <p class="upload-hero-sub">
+      <p class="upload-hero-sub" data-i18n="up_hero_sub">
         PDF, texte, notes — notre IA génère automatiquement fiche de synthèse, quiz adaptatif, flashcards, pièges et roadmap.
       </p>
 
       <!-- Mode selector -->
       <div class="mode-selector">
-        <button class="mode-btn active" data-mode="standard">📚 Standard</button>
-        <button class="mode-btn" data-mode="simple">🌱 Débutant</button>
-        <button class="mode-btn" data-mode="expert">🔬 Expert</button>
-        <button class="mode-btn" data-mode="exam">🎯 Examen</button>
+        <button class="mode-btn active" data-mode="standard" data-i18n="up_mode_standard">📚 Standard</button>
+        <button class="mode-btn" data-mode="simple" data-i18n="up_mode_simple">🌱 Débutant</button>
+        <button class="mode-btn" data-mode="expert" data-i18n="up_mode_expert">🔬 Expert</button>
+        <button class="mode-btn" data-mode="exam" data-i18n="up_mode_exam">🎯 Examen</button>
       </div>
 
       <!-- Input mode tabs -->
       <div class="input-mode-bar" id="upload-mode-bar">
-        <button class="input-mode-btn active" data-umode="file">📄 Fichier</button>
-        <button class="input-mode-btn" data-umode="youtube">🎬 YouTube</button>
-        <button class="input-mode-btn" data-umode="photo">📸 Photo</button>
+        <button class="input-mode-btn active" data-umode="file" data-i18n="up_tab_file">📄 Fichier</button>
+        <button class="input-mode-btn" data-umode="youtube" data-i18n="up_tab_youtube">🎬 YouTube</button>
+        <button class="input-mode-btn" data-umode="photo" data-i18n="up_tab_photo">📸 Photo</button>
       </div>
 
       <!-- Upload zone -->
-      <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Zone de dépôt de fichier">
+      <div class="upload-zone" id="upload-zone" tabindex="0" role="button" data-i18n-aria="up_zone_aria" aria-label="Zone de dépôt de fichier">
         <div class="upload-zone-inner" id="upload-zone-inner">
           <div class="upload-icon-wrap">
             <div class="upload-icon">📄</div>
             <div class="upload-icon-ring"></div>
           </div>
-          <p class="upload-zone-title">Dépose ton fichier ici</p>
-          <p class="upload-zone-sub">PDF, TXT, MD — jusqu'à 20 Mo</p>
-          <button class="upload-browse-btn" id="btn-browse">Parcourir les fichiers</button>
-          <div class="upload-divider"><span>ou</span></div>
-          <button class="upload-paste-btn" id="btn-paste-toggle">✏️ Coller du texte</button>
+          <p class="upload-zone-title" data-i18n="up_zone_title">Dépose ton fichier ici</p>
+          <p class="upload-zone-sub" data-i18n="up_zone_sub">PDF, TXT, MD — jusqu'à 20 Mo</p>
+          <button class="upload-browse-btn" id="btn-browse" data-i18n="up_browse_btn">Parcourir les fichiers</button>
+          <div class="upload-divider"><span data-i18n="up_divider_or">ou</span></div>
+          <button class="upload-paste-btn" id="btn-paste-toggle" data-i18n="up_paste_btn">✏️ Coller du texte</button>
         </div>
         <input type="file" id="file-input" accept=".pdf,.txt,.md,.html,.doc,.docx" style="display:none" />
       </div>
@@ -97,10 +97,10 @@
       <div id="yt-upload-wrap" class="yt-url-wrap hidden">
         <input type="url" id="yt-upload-url" class="yt-url-input"
                placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" />
-        <p class="yt-hint">📌 La vidéo doit être publique et avoir des sous-titres automatiques ou manuels.</p>
+        <p class="yt-hint" data-i18n="up_yt_hint">📌 La vidéo doit être publique et avoir des sous-titres automatiques ou manuels.</p>
         <button class="btn-primary btn-analyze-main" id="btn-analyze-yt" style="margin-top:10px;width:100%">
-          <span class="btn-label">🎬 Analyser la vidéo</span>
-          <span class="btn-sub">Transcript → Pack d'étude complet</span>
+          <span class="btn-label" data-i18n="up_yt_analyze_label">🎬 Analyser la vidéo</span>
+          <span class="btn-sub" data-i18n="up_yt_analyze_sub">Transcript → Pack d'étude complet</span>
         </button>
       </div>
 
@@ -108,17 +108,17 @@
       <div id="photo-upload-wrap" class="yt-url-wrap hidden">
         <label class="upload-photo-label" id="photo-drop-label" for="photo-file-input">
           <div class="upload-icon">📸</div>
-          <p class="upload-zone-title">Photo de tes notes manuscrites</p>
-          <p class="upload-zone-sub">JPG, PNG, HEIC — jusqu'à 10 Mo</p>
-          <button class="upload-browse-btn" type="button" id="btn-browse-photo">Choisir une photo</button>
+          <p class="upload-zone-title" data-i18n="up_photo_title">Photo de tes notes manuscrites</p>
+          <p class="upload-zone-sub" data-i18n="up_photo_sub">JPG, PNG, HEIC — jusqu'à 10 Mo</p>
+          <button class="upload-browse-btn" type="button" id="btn-browse-photo" data-i18n="up_photo_browse">Choisir une photo</button>
         </label>
         <input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none" />
         <div id="photo-preview-wrap" class="hidden" style="margin-top:12px;text-align:center">
           <img id="photo-preview-img" src="" alt="preview" style="max-width:100%;max-height:220px;border-radius:8px;border:1px solid var(--border)" />
           <p id="photo-preview-name" style="font-size:0.8rem;color:var(--text-muted);margin-top:6px"></p>
           <button class="btn-primary btn-analyze-main" id="btn-analyze-photo" style="margin-top:10px;width:100%">
-            <span class="btn-label">📸 Analyser la photo</span>
-            <span class="btn-sub">OCR IA → texte → pack d'étude</span>
+            <span class="btn-label" data-i18n="up_photo_analyze_label">📸 Analyser la photo</span>
+            <span class="btn-sub" data-i18n="up_photo_analyze_sub">OCR IA → texte → pack d'étude</span>
           </button>
         </div>
       </div>
@@ -126,13 +126,13 @@
       <!-- Paste text area (hidden by default) -->
       <div id="paste-area" class="paste-area hidden">
         <div class="paste-area-header">
-          <span class="paste-area-label">📋 Colle ton cours ici</span>
+          <span class="paste-area-label" data-i18n="up_paste_label">📋 Colle ton cours ici</span>
           <button class="paste-area-close" id="btn-paste-close">✕</button>
         </div>
-        <textarea id="text-input" class="paste-textarea" placeholder="Colle ton texte de cours, tes notes, ou n'importe quel contenu à réviser…" rows="10"></textarea>
+        <textarea id="text-input" class="paste-textarea" data-i18n-ph="up_paste_ph" placeholder="Colle ton texte de cours, tes notes, ou n'importe quel contenu à réviser…" rows="10"></textarea>
         <div class="paste-area-footer">
-          <span id="char-count" class="char-count">0 caractères</span>
-          <button class="btn-primary btn-analyze" id="btn-analyze-text">
+          <span id="char-count" class="char-count">0</span>
+          <button class="btn-primary btn-analyze" id="btn-analyze-text" data-i18n="up_analyze_text_btn">
             Analyser →
           </button>
         </div>
@@ -150,15 +150,15 @@
 
       <!-- Analyze button -->
       <button class="btn-primary btn-analyze-main hidden" id="btn-analyze-file">
-        <span class="btn-label">⚡ Générer mon pack d'étude</span>
-        <span class="btn-sub">Résumé + Quiz + Flashcards + Roadmap</span>
+        <span class="btn-label" data-i18n="up_analyze_file_label">⚡ Générer mon pack d'étude</span>
+        <span class="btn-sub" data-i18n="up_analyze_file_sub">Résumé + Quiz + Flashcards + Roadmap</span>
       </button>
 
       <!-- Trust indicators -->
       <div class="upload-trust">
-        <span>🔒 Fichiers traités localement</span>
-        <span>⚡ Résultats en 30-60s</span>
-        <span>🎯 8 contenus générés</span>
+        <span data-i18n="up_trust_local">🔒 Fichiers traités localement</span>
+        <span data-i18n="up_trust_speed">⚡ Résultats en 30-60s</span>
+        <span data-i18n="up_trust_count">🎯 8 contenus générés</span>
       </div>
     </div>
   </section>
@@ -168,7 +168,7 @@
     <div class="progress-inner">
       <div class="progress-header">
         <div class="progress-brain">🧠</div>
-        <h2 class="progress-title">Génération en cours…</h2>
+        <h2 class="progress-title" data-i18n="up_progress_title">Génération en cours…</h2>
         <p class="progress-sub" id="progress-label">Analyse du document…</p>
       </div>
 
@@ -182,27 +182,27 @@
       <div class="progress-steps">
         <div class="progress-step" id="step-parse">
           <div class="step-icon">📖</div>
-          <div class="step-label">Lecture</div>
+          <div class="step-label" data-i18n="up_step_parse">Lecture</div>
         </div>
         <div class="progress-step" id="step-summary">
           <div class="step-icon">📝</div>
-          <div class="step-label">Synthèse</div>
+          <div class="step-label" data-i18n="up_step_summary">Synthèse</div>
         </div>
         <div class="progress-step" id="step-quiz">
           <div class="step-icon">🎯</div>
-          <div class="step-label">Quiz</div>
+          <div class="step-label" data-i18n="up_step_quiz">Quiz</div>
         </div>
         <div class="progress-step" id="step-flash">
           <div class="step-icon">🗂️</div>
-          <div class="step-label">Flashcards</div>
+          <div class="step-label" data-i18n="up_step_flash">Flashcards</div>
         </div>
         <div class="progress-step" id="step-concepts">
           <div class="step-icon">💡</div>
-          <div class="step-label">Concepts</div>
+          <div class="step-label" data-i18n="up_step_concepts">Concepts</div>
         </div>
         <div class="progress-step" id="step-done">
           <div class="step-icon">✅</div>
-          <div class="step-label">Prêt</div>
+          <div class="step-label" data-i18n="up_step_done">Prêt</div>
         </div>
       </div>
 
@@ -225,24 +225,24 @@
           </div>
         </div>
         <div class="results-actions">
-          <button class="btn-secondary-small" id="btn-new-study">+ Nouveau cours</button>
-          <button class="btn-secondary-small" id="btn-regen">↻ Regénérer</button>
-          <button class="btn-secondary-small" id="btn-print">🖨️ Imprimer</button>
-          <button class="btn-primary btn-start-exam" id="btn-exam">🎯 Simuler un examen</button>
+          <button class="btn-secondary-small" id="btn-new-study" data-i18n="up_btn_new">+ Nouveau cours</button>
+          <button class="btn-secondary-small" id="btn-regen" data-i18n="up_btn_regen">↻ Regénérer</button>
+          <button class="btn-secondary-small" id="btn-print" data-i18n="up_btn_print">🖨️ Imprimer</button>
+          <button class="btn-primary btn-start-exam" id="btn-exam" data-i18n="up_btn_exam">🎯 Simuler un examen</button>
         </div>
       </div>
 
       <!-- Difficulty gauge -->
       <div class="difficulty-card">
         <div class="difficulty-info">
-          <span class="difficulty-label">Score de difficulté</span>
+          <span class="difficulty-label" data-i18n="up_diff_label">Score de difficulté</span>
           <span class="difficulty-value" id="diff-value">—</span>
         </div>
         <div class="difficulty-track">
           <div class="difficulty-fill" id="diff-fill" style="width:0%"></div>
         </div>
         <div class="difficulty-labels">
-          <span>Facile</span><span>Moyen</span><span>Difficile</span>
+          <span data-i18n="up_diff_easy">Facile</span><span data-i18n="up_diff_medium">Moyen</span><span data-i18n="up_diff_hard">Difficile</span>
         </div>
       </div>
 
@@ -251,13 +251,13 @@
 
       <!-- Tabs -->
       <div class="results-tabs">
-        <button class="res-tab active" data-tab="summary">📝 Synthèse</button>
-        <button class="res-tab" data-tab="quiz">🎯 Quiz</button>
-        <button class="res-tab" data-tab="flashcards">🗂️ Flashcards</button>
-        <button class="res-tab" data-tab="memo">⚡ Mémo</button>
-        <button class="res-tab" data-tab="concepts">💡 Concepts</button>
-        <button class="res-tab" data-tab="roadmap">🗺️ Roadmap</button>
-        <button class="res-tab" data-tab="mindmap">🗺️ Mind Map</button>
+        <button class="res-tab active" data-tab="summary" data-i18n="up_tab_summary">📝 Synthèse</button>
+        <button class="res-tab" data-tab="quiz" data-i18n="up_tab_quiz_tab">🎯 Quiz</button>
+        <button class="res-tab" data-tab="flashcards" data-i18n="up_tab_flashcards">🗂️ Flashcards</button>
+        <button class="res-tab" data-tab="memo" data-i18n="up_tab_memo">⚡ Mémo</button>
+        <button class="res-tab" data-tab="concepts" data-i18n="up_tab_concepts">💡 Concepts</button>
+        <button class="res-tab" data-tab="roadmap" data-i18n="up_tab_roadmap">🗺️ Roadmap</button>
+        <button class="res-tab" data-tab="mindmap" data-i18n="up_tab_mindmap">🗺️ Mind Map</button>
       </div>
 
       <!-- Tab content -->
@@ -266,11 +266,11 @@
         <div id="sum-sections"></div>
         <div class="summary-row">
           <div class="summary-col" id="sum-formulas-col">
-            <h3 class="summary-col-title">⚡ Formules & dates clés</h3>
+            <h3 class="summary-col-title" data-i18n="up_sum_formulas">⚡ Formules & dates clés</h3>
             <div id="sum-formulas"></div>
           </div>
           <div class="summary-col" id="sum-vocab-col">
-            <h3 class="summary-col-title">📖 Vocabulaire essentiel</h3>
+            <h3 class="summary-col-title" data-i18n="up_sum_vocab">📖 Vocabulaire essentiel</h3>
             <div id="sum-vocab"></div>
           </div>
         </div>
@@ -280,7 +280,7 @@
       <div class="res-tab-content hidden" id="tab-quiz">
         <div class="quiz-header">
           <p class="quiz-info" id="quiz-info"></p>
-          <button class="btn-secondary-small" id="btn-battle">⚔️ Créer un Duel</button>
+          <button class="btn-secondary-small" id="btn-battle" data-i18n="up_btn_battle">⚔️ Créer un Duel</button>
         </div>
         <div id="quiz-questions"></div>
         <div class="quiz-score hidden" id="quiz-score"></div>
@@ -288,7 +288,7 @@
 
       <div class="res-tab-content hidden" id="tab-flashcards">
         <div class="flashcard-controls">
-          <button class="btn-secondary-small" id="btn-fc-shuffle">↺ Mélanger</button>
+          <button class="btn-secondary-small" id="btn-fc-shuffle" data-i18n="up_fc_shuffle">↺ Mélanger</button>
           <span class="fc-progress" id="fc-progress">0 / 0</span>
         </div>
         <div class="flashcard-stack" id="flashcard-stack"></div>
@@ -297,8 +297,8 @@
           <div class="fc-dots" id="fc-dots"></div>
           <button class="fc-nav-btn" id="btn-fc-next">›</button>
         </div>
-        <p class="fc-keyboard-hint">
-          <kbd>←</kbd> Préc · <kbd>→</kbd> Suiv · <kbd>Espace</kbd> Retourner · Glisse sur mobile
+        <p class="fc-keyboard-hint" data-i18n="up_fc_hint">
+          ← Préc · → Suiv · Espace Retourner · Glisse sur mobile
         </p>
       </div>
 
@@ -320,7 +320,7 @@
       <div class="res-tab-content hidden" id="tab-mindmap">
         <div class="mindmap-canvas-wrap">
           <canvas id="mindmap-canvas" class="mindmap-canvas"></canvas>
-          <p class="mindmap-hint">Survole les nœuds pour les mettre en évidence</p>
+          <p class="mindmap-hint" data-i18n="up_mindmap_hint">Survole les nœuds pour les mettre en évidence</p>
         </div>
       </div>
 
@@ -336,7 +336,7 @@
       </a>
       <a href="/upload" class="bottom-nav-item active">
         <span class="bottom-nav-icon">📄</span>
-        <span>Auto Study</span>
+        <span data-i18n="nav_auto_study">Auto Study</span>
       </a>
       <a href="/dashboard" class="bottom-nav-item">
         <span class="bottom-nav-icon">📊</span>
@@ -346,10 +346,10 @@
   </nav>
 
   <script src="js/perf.js?v=1"></script>
-  <script src="js/i18n.js?v=30"></script>
+  <script src="js/i18n.js?v=34"></script>
   <script src="js/mindmap-canvas.js?v=1"></script>
   <script src="js/confetti.js?v=1"></script>
-  <script src="js/upload.js?v=3"></script>
+  <script src="js/upload.js?v=4"></script>
   <script src="js/ui.js?v=1"></script>
   <script src="js/audio-study.js?v=1" defer></script>
   <script src="js/pwa-install.js?v=1" defer></script>

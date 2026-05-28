@@ -16,6 +16,15 @@
   };
   var AUTH_TOKEN = _ss.get('studyai_auth_token', null) || _ss.get('token', null) || '';
 
+  // ── i18n helper ──────────────────────────────────────────────
+  function _t(key, fallback) {
+    if (window.i18n && window.i18n.t) {
+      var v = window.i18n.t(key);
+      return (v && v !== key) ? v : (fallback || key);
+    }
+    return fallback || key;
+  }
+
   // ── DOM references ───────────────────────────────────────────
   var $ = function (id) { return document.getElementById(id); };
 
@@ -54,21 +63,21 @@
   if (ytAnalyzeBtn) {
     ytAnalyzeBtn.addEventListener('click', async function () {
       var url = ($('yt-upload-url')?.value || '').trim();
-      if (!url) { flash('Colle une URL YouTube valide.'); return; }
+      if (!url) { flash(_t('up_err_yt_url', 'Colle une URL YouTube valide.')); return; }
       ytAnalyzeBtn.disabled = true;
-      ytAnalyzeBtn.querySelector('.btn-label').textContent = '⏳ Récupération du transcript…';
+      ytAnalyzeBtn.querySelector('.btn-label').textContent = _t('up_yt_fetching', '⏳ Récupération du transcript…');
       try {
         var headers = {};
         if (AUTH_TOKEN) headers['Authorization'] = 'Bearer ' + AUTH_TOKEN;
         var r = await fetch('/api/youtube-transcript?url=' + encodeURIComponent(url), { headers: headers });
         var d = await r.json();
-        if (!r.ok) throw new Error(d.error || 'Erreur transcript');
-        if (!d.transcript) throw new Error('Transcript vide.');
+        if (!r.ok) throw new Error(d.error || _t('up_err_unknown', 'Erreur inconnue'));
+        if (!d.transcript) throw new Error(_t('up_err_unknown', 'Transcript vide.'));
         startAnalysis({ text: d.transcript, filename: 'youtube-' + (d.videoId || 'video') + '.txt', mimeType: 'text/plain' });
       } catch (err) {
-        flash('Erreur YouTube : ' + err.message);
+        flash('❌ ' + err.message);
         ytAnalyzeBtn.disabled = false;
-        ytAnalyzeBtn.querySelector('.btn-label').textContent = '🎬 Analyser la vidéo';
+        ytAnalyzeBtn.querySelector('.btn-label').textContent = _t('up_yt_analyze_label', '🎬 Analyser la vidéo');
       }
     });
   }
@@ -83,7 +92,7 @@
     photoInput.addEventListener('change', function () {
       var file = this.files[0];
       if (!file) return;
-      if (file.size > 10 * 1024 * 1024) { flash('Image trop grande (max 10 Mo).'); return; }
+      if (file.size > 10 * 1024 * 1024) { flash(_t('up_err_img_size', 'Image trop grande (max 10 Mo).')); return; }
       var reader = new FileReader();
       reader.onload = function (e) {
         $('photo-preview-img').src = e.target.result;
@@ -96,9 +105,9 @@
     if (photoAnalyzeBtn) {
       photoAnalyzeBtn.addEventListener('click', async function () {
         var file = photoInput.files[0];
-        if (!file) { flash('Sélectionne d\'abord une photo.'); return; }
+        if (!file) { flash(_t('up_err_no_photo', 'Sélectionne d\'abord une photo.')); return; }
         photoAnalyzeBtn.disabled = true;
-        photoAnalyzeBtn.querySelector('.btn-label').textContent = '⏳ Analyse OCR en cours…';
+        photoAnalyzeBtn.querySelector('.btn-label').textContent = _t('up_ocr_loading', '⏳ Analyse OCR en cours…');
         try {
           var formData = new FormData();
           formData.append('image', file);
@@ -106,13 +115,13 @@
           if (AUTH_TOKEN) headers['Authorization'] = 'Bearer ' + AUTH_TOKEN;
           var r = await fetch('/api/vision', { method: 'POST', headers: headers, body: formData });
           var d = await r.json();
-          if (!r.ok) throw new Error(d.error || 'Erreur vision');
-          if (!d.text) throw new Error('Aucun texte détecté dans la photo.');
+          if (!r.ok) throw new Error(d.error || _t('up_err_unknown', 'Erreur inconnue'));
+          if (!d.text) throw new Error(_t('up_err_unknown', 'Aucun texte détecté.'));
           startAnalysis({ text: d.text, filename: file.name, mimeType: 'text/plain' });
         } catch (err) {
-          flash('Erreur photo : ' + err.message);
+          flash('❌ ' + err.message);
           photoAnalyzeBtn.disabled = false;
-          photoAnalyzeBtn.querySelector('.btn-label').textContent = '📸 Analyser la photo';
+          photoAnalyzeBtn.querySelector('.btn-label').textContent = _t('up_photo_analyze_label', '📸 Analyser la photo');
         }
       });
     }
@@ -155,7 +164,9 @@
 
   var _updateCharCount = function () {
     var len = $('text-input').value.length;
-    $('char-count').textContent = len.toLocaleString('fr') + ' caractères';
+    var lang = (window.i18n && window.i18n.currentLang) || 'fr';
+    var tpl = _t('up_chars_count', '{n} caractères');
+    $('char-count').textContent = tpl.replace('{n}', len.toLocaleString(lang));
   };
   $('text-input').addEventListener('input',
     window.debounce ? window.debounce(_updateCharCount, 80) : _updateCharCount
@@ -164,14 +175,14 @@
   $('btn-analyze-text').addEventListener('click', function () {
     var text = $('text-input').value.trim();
     if (!text || text.length < 50) {
-      flash('Texte trop court — colle au moins quelques paragraphes.'); return;
+      flash(_t('up_err_text_short', 'Texte trop court — colle au moins quelques paragraphes.')); return;
     }
     startAnalysis({ text: text });
   });
 
   // ── File handling ────────────────────────────────────────────
   function handleFile(file) {
-    if (file.size > 20 * 1024 * 1024) { flash('Fichier trop volumineux (max 20 Mo).'); return; }
+    if (file.size > 20 * 1024 * 1024) { flash(_t('up_err_file_size', 'Fichier trop volumineux (max 20 Mo).')); return; }
     state.file = file;
     var ext = file.name.split('.').pop().toLowerCase();
     var iconMap = { pdf: '📕', txt: '📄', md: '📝', docx: '📘', html: '🌐' };
@@ -226,7 +237,7 @@
   async function startAnalysis(payload) {
     try {
       showSection('section-progress');
-      setProgress(5, 'Envoi du contenu…');
+      setProgress(5, _t('up_progress_send', 'Envoi du contenu…'));
 
       var body = Object.assign({ mode: state.mode }, payload);
       var headers = { 'Content-Type': 'application/json' };
@@ -240,7 +251,7 @@
 
       if (!res.ok) {
         var err = await res.json();
-        throw new Error(err.error || 'Erreur serveur');
+        throw new Error(err.error || _t('up_err_unknown', 'Erreur serveur'));
       }
 
       var data = await res.json();
@@ -265,7 +276,7 @@
     try {
       var res  = await fetch('/api/ai/job/' + state.jobId);
       var data = await res.json();
-      setProgress(data.progress || 0, data.progressLabel || 'Traitement…');
+      setProgress(data.progress || 0, data.progressLabel || _t('up_err_unknown', 'Traitement…'));
       updateProgressSteps(data.progress || 0);
 
       if (data.status === 'done') {
@@ -281,7 +292,7 @@
       } else if (data.status === 'failed') {
         clearInterval(state.pollTimer);
         showSection('section-upload');
-        flash('Génération échouée : ' + (data.error || 'Erreur inconnue'));
+        flash('❌ ' + (data.error || _t('up_err_unknown', 'Erreur inconnue')));
       }
     } catch {}
   }
@@ -294,7 +305,7 @@
     rotateTip(pct);
   }
 
-  var TIPS = [
+  var TIPS_FR = [
     '💡 Notre IA analyse la structure hiérarchique de ton cours.',
     '🧠 Les flashcards sont optimisées pour la répétition espacée (algorithme SM-2).',
     '🎯 Les questions de quiz sont progressives : facile → difficile.',
@@ -304,11 +315,14 @@
     '🔥 Les pièges détectés viennent des erreurs les plus fréquentes des étudiants.',
     '💡 Ton profil d\'apprentissage s\'améliore à chaque session.',
   ];
+  function _getTips() { return TIPS_FR; }
+  var TIPS = TIPS_FR;
   var lastTipPct = -1;
   function rotateTip(pct) {
     if (pct - lastTipPct < 15) return;
     lastTipPct = pct;
-    var tip = TIPS[Math.floor(pct / (100 / TIPS.length)) % TIPS.length];
+    var tips = _getTips();
+    var tip = tips[Math.floor(pct / (100 / tips.length)) % tips.length];
     var el = $('progress-tip');
     el.style.opacity = '0';
     setTimeout(function () { el.textContent = tip; el.style.opacity = '1'; }, 200);
@@ -337,7 +351,7 @@
     if (!r) return;
 
     // Header
-    $('res-title').textContent   = r.title || 'Pack d\'étude';
+    $('res-title').textContent   = r.title || _t('up_results_title', 'Pack d\'étude');
     $('res-subject').textContent = r.subject || '';
     $('res-level').textContent   = r.level || '';
     $('res-time').textContent    = r.studyTimeMin ? '⏱️ ' + r.studyTimeMin + ' min' : '';
@@ -350,9 +364,9 @@
     // Brain links
     if (r._brainLinks && r._brainLinks.length) {
       var bl = $('brain-links');
-      bl.innerHTML = '<p class="brain-links-title">🧠 Connexions avec tes cours précédents</p>' +
+      bl.innerHTML = '<p class="brain-links-title">' + esc(_t('up_brain_links_title','🧠 Connexions avec tes cours précédents')) + '</p>' +
         r._brainLinks.map(function (l) {
-          return '<p class="brain-link-item">Tu as déjà étudié <strong>' + esc(l.concept) + '</strong> dans <em>' + esc(l.seenIn || 'un cours précédent') + '</em> (' + esc(l.subject || '') + ')</p>';
+          return '<p class="brain-link-item">Tu as déjà étudié <strong>' + esc(l.concept) + '</strong> dans <em>' + esc(l.seenIn || _t('up_brain_prev_course','un cours précédent')) + '</em> (' + esc(l.subject || '') + ')</p>';
         }).join('');
       bl.classList.remove('hidden');
     }
@@ -445,7 +459,7 @@
     $('quiz-info').textContent = total + ' questions · Mode ' + (state.result?.mode || 'standard');
     var html = q.questions.map(function (qu, i) {
       var diffClass = 'diff-' + (qu.difficulty || 'medium');
-      var diffLabel = { easy: 'Facile', medium: 'Moyen', hard: 'Difficile' }[qu.difficulty] || qu.difficulty;
+      var diffLabel = { easy: _t('up_diff_easy','Facile'), medium: _t('up_diff_medium','Moyen'), hard: _t('up_diff_hard','Difficile') }[qu.difficulty] || qu.difficulty;
       var optionsHtml = '';
       if (qu.type === 'mcq' && qu.options) {
         optionsHtml = '<div class="quiz-options">' +
@@ -455,8 +469,8 @@
           }).join('') + '</div>';
       } else if (qu.type === 'truefalse') {
         optionsHtml = '<div class="quiz-options">' +
-          '<button class="quiz-opt" data-qi="' + i + '" data-ans="true">✓ Vrai</button>' +
-          '<button class="quiz-opt" data-qi="' + i + '" data-ans="false">✗ Faux</button>' +
+          '<button class="quiz-opt" data-qi="' + i + '" data-ans="true">' + esc(_t('up_quiz_true','✓ Vrai')) + '</button>' +
+          '<button class="quiz-opt" data-qi="' + i + '" data-ans="false">' + esc(_t('up_quiz_false','✗ Faux')) + '</button>' +
           '</div>';
       } else if (qu.type === 'open') {
         optionsHtml = '<p class="quiz-expl" style="font-style:italic;color:var(--text-subtle)">📝 Question ouverte : ' + esc(qu.answer_guide || '') + '</p>';
@@ -500,7 +514,7 @@
           }).length;
           var pct = Math.round(score / total * 100);
           var emoji = pct >= 90 ? '🏆' : pct >= 75 ? '⭐' : pct >= 60 ? '👍' : '📚';
-          var msg   = pct >= 90 ? 'Excellent !' : pct >= 75 ? 'Très bien !' : pct >= 60 ? 'Pas mal !' : 'Continue !';
+          var msg   = pct >= 90 ? _t('up_score_excellent','Excellent !') : pct >= 75 ? _t('up_score_good','Très bien !') : pct >= 60 ? _t('up_score_ok','Pas mal !') : _t('up_score_keep','Continue !');
           var scoreEl = $('quiz-score');
           scoreEl.innerHTML =
             '<div class="quiz-score-emoji">' + emoji + '</div>' +
@@ -537,16 +551,16 @@
   function renderFCCard() {
     var c = state.fcCards[state.fcIndex];
     var stack = $('flashcard-stack');
-    if (!c) { stack.innerHTML = '<p style="color:var(--text-subtle);text-align:center;padding:40px">Aucune flashcard disponible.</p>'; return; }
+    if (!c) { stack.innerHTML = '<p style="color:var(--text-subtle);text-align:center;padding:40px">' + esc(_t('up_fc_empty','Aucune flashcard disponible.')) + '</p>'; return; }
     stack.innerHTML =
       '<div class="flashcard" id="current-fc">' +
-      '<div class="fc-face-label">Question</div>' +
+      '<div class="fc-face-label">' + esc(_t('up_fc_question','Question')) + '</div>' +
       '<div class="fc-front">' +
       '<p class="fc-question">' + esc(c.front || '') + '</p>' +
-      '<p class="fc-flip-hint">Cliquer pour retourner</p>' +
+      '<p class="fc-flip-hint">' + esc(_t('up_fc_flip','Cliquer pour retourner')) + '</p>' +
       '</div>' +
       '<div class="fc-back">' +
-      '<div class="fc-face-label">Réponse</div>' +
+      '<div class="fc-face-label">' + esc(_t('up_fc_answer_label','Réponse')) + '</div>' +
       '<p class="fc-answer">' + esc(c.back || '') + '</p>' +
       (c.hint ? '<p class="fc-hint">💡 ' + esc(c.hint) + '</p>' : '') +
       '<div class="fc-tags">' + (c.tags || []).map(function (t) { return '<span class="fc-tag">' + esc(t) + '</span>'; }).join('') + '</div>' +
@@ -566,7 +580,7 @@
 
   // Memo
   function renderMemo(memo) {
-    if (!memo) { $('memo-content').innerHTML = '<p style="color:var(--text-subtle)">Mémo non disponible.</p>'; return; }
+    if (!memo) { $('memo-content').innerHTML = '<p style="color:var(--text-subtle)">' + esc(_t('up_memo_empty','Mémo non disponible.')) + '</p>'; return; }
     var html = '<div class="memo-header">' +
       '<h2 class="memo-title">' + esc(memo.title || 'Mémo Express') + '</h2>' +
       '<p class="memo-tagline">' + esc(memo.tagline || '') + '</p>' +
@@ -578,7 +592,7 @@
           '</div>';
       }).join('') +
       (memo.exam_checklist && memo.exam_checklist.length ?
-        '<div class="memo-section"><h3 class="memo-section-title">✅ Checklist veille d\'examen</h3>' +
+        '<div class="memo-section"><h3 class="memo-section-title">' + esc(_t('up_memo_checklist','✅ Checklist veille d\'examen')) + '</h3>' +
         '<ul class="memo-checklist">' + memo.exam_checklist.map(function (it) { return '<li>' + esc(it) + '</li>'; }).join('') + '</ul></div>'
         : '');
     $('memo-content').innerHTML = html;
@@ -588,7 +602,7 @@
   function renderConcepts(concepts, traps, examQs) {
     $('concepts-list').innerHTML = (concepts || []).map(function (c) {
       var impClass = 'imp-' + (c.importance || 'medium');
-      var impLabel = { high: '🔴 Crucial', medium: '🟡 Important', low: '🟢 Secondaire' }[c.importance] || c.importance;
+      var impLabel = { high: _t('up_imp_high','🔴 Crucial'), medium: _t('up_imp_medium','🟡 Important'), low: _t('up_imp_low','🟢 Secondaire') }[c.importance] || c.importance;
       return '<div class="concept-card">' +
         '<div class="concept-header">' +
         '<span class="concept-name">' + esc(c.name || '') + '</span>' +
@@ -601,7 +615,7 @@
     }).join('');
 
     if (traps && traps.length) {
-      $('traps-list').innerHTML = '<h3 class="traps-header">⚠️ Pièges & erreurs fréquentes</h3>' +
+      $('traps-list').innerHTML = '<h3 class="traps-header">' + esc(_t('up_traps_header','⚠️ Pièges & erreurs fréquentes')) + '</h3>' +
         traps.map(function (t) {
           return '<div class="trap-card">' +
             '<p class="trap-text">❌ ' + esc(t.trap || '') + '</p>' +
@@ -614,7 +628,7 @@
 
     if (examQs && examQs.length) {
       $('exam-questions-list').innerHTML =
-        '<h3 class="traps-header">🎯 Questions probables d\'examen</h3>' +
+        '<h3 class="traps-header">' + esc(_t('up_exam_q_header','🎯 Questions probables d\'examen')) + '</h3>' +
         examQs.map(function (q) {
           return '<div class="exam-q-card">' +
             '<span class="exam-q-type">' + esc(q.type || '') + '</span>' +
@@ -628,10 +642,10 @@
   function renderRoadmap(roadmap, mastery) {
     if (roadmap && roadmap.sessions && roadmap.sessions.length) {
       $('roadmap-content').innerHTML =
-        '<h3 class="roadmap-header">🗺️ Plan de révision sur ' + (roadmap.total_days || 7) + ' jours</h3>' +
+        '<h3 class="roadmap-header">' + esc(_t('up_roadmap_header','🗺️ Plan de révision sur {n} jours').replace('{n}', roadmap.total_days || 7)) + '</h3>' +
         roadmap.sessions.map(function (s) {
           return '<div class="roadmap-day">' +
-            '<div class="roadmap-day-num"><span class="roadmap-day-label">Jour</span><span class="roadmap-day-n">' + s.day + '</span></div>' +
+            '<div class="roadmap-day-num"><span class="roadmap-day-label">' + esc(_t('up_roadmap_day','Jour')) + '</span><span class="roadmap-day-n">' + s.day + '</span></div>' +
             '<div>' +
             '<p class="roadmap-day-title">' + esc(s.title || '') + '</p>' +
             '<p class="roadmap-day-meta">⏱️ ' + (s.duration_min || 30) + ' min · ' + esc(s.focus || '') + '</p>' +
@@ -644,12 +658,12 @@
     if (mastery) {
       $('mastery-card').innerHTML =
         '<div class="mastery-card">' +
-        '<p class="mastery-title">📊 Niveau de maîtrise estimé</p>' +
+        '<p class="mastery-title">' + esc(_t('up_mastery_title','📊 Niveau de maîtrise estimé')) + '</p>' +
         '<div class="mastery-score-row">' +
         '<span class="mastery-score-val">' + (mastery.estimated_level || '?') + '%</span>' +
-        '<div><p class="mastery-score-label">Premier contact</p></div>' +
+        '<div><p class="mastery-score-label">' + esc(_t('up_mastery_level','Premier contact')) + '</p></div>' +
         '</div>' +
-        '<p class="mastery-time">⏳ Temps pour maîtriser : ' + (mastery.time_to_master_hours || '?') + 'h</p>' +
+        '<p class="mastery-time">⏳ ' + (mastery.time_to_master_hours || '?') + 'h</p>' +
         '<p class="mastery-rec">' + esc(mastery.recommendation || '') + '</p>' +
         '</div>';
     }
@@ -670,11 +684,11 @@
       state.jobId = data.jobId;
       showSection('section-progress');
       startPolling();
-    } catch (err) { flash('Erreur : ' + err.message); }
+    } catch (err) { flash('❌ ' + err.message); }
   }
 
   async function startExam() {
-    if (!AUTH_TOKEN) { flash('Connecte-toi pour accéder au simulateur d\'examen.'); return; }
+    if (!AUTH_TOKEN) { flash(_t('up_err_auth_exam', 'Connecte-toi pour accéder au simulateur d\'examen.')); return; }
     try {
       var res = await fetch('/api/ai/exam', {
         method: 'POST',
@@ -689,7 +703,7 @@
   }
 
   async function createBattle() {
-    if (!AUTH_TOKEN) { flash('Connecte-toi pour créer un duel.'); return; }
+    if (!AUTH_TOKEN) { flash(_t('up_err_auth_battle', 'Connecte-toi pour créer un duel.')); return; }
     try {
       var res = await fetch('/api/ai/battle', {
         method: 'POST',
@@ -700,7 +714,7 @@
       var data = await res.json();
       var url = location.origin + data.inviteUrl;
       if (navigator.clipboard) navigator.clipboard.writeText(url);
-      flash('Lien de duel copié ! 🎉 Partage : ' + url);
+      flash(_t('up_battle_copied', 'Lien de duel copié ! 🎉 Partage : {url}').replace('{url}', url));
     } catch (err) { flash('Erreur : ' + err.message); }
   }
 
@@ -805,7 +819,7 @@
     if (!el || el.querySelector('.copy-btn')) return;
     var btn = document.createElement('button');
     btn.className = 'copy-btn';
-    btn.title = 'Copier';
+    btn.title = _t('up_copy_title', 'Copier');
     btn.textContent = '📋';
     btn.addEventListener('click', function () {
       var text = getTextFn();

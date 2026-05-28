@@ -123,9 +123,10 @@
   function _updateBtn() {
     var btn = document.getElementById('sfx-toggle-btn');
     if (!btn) return;
+    var _t = window.i18n && window.i18n.t ? window.i18n.t.bind(window.i18n) : function(k) { return k; };
     btn.textContent  = _isOn() ? '🔊' : '🔇';
-    btn.title        = _isOn() ? 'Sons activés — cliquer pour désactiver'
-                               : 'Sons désactivés — cliquer pour activer';
+    btn.title        = _isOn() ? (_t('sfx_on')  || 'Sons activés — cliquer pour désactiver')
+                               : (_t('sfx_off') || 'Sons désactivés — cliquer pour activer');
     btn.setAttribute('aria-label', btn.title);
     btn.setAttribute('aria-pressed', String(_isOn()));
   }
@@ -135,4 +136,5 @@
     var btn = document.getElementById('sfx-toggle-btn');
     if (btn) btn.addEventListener('click', function () { SFX.toggle(); _updateBtn(); });
   });
+  document.addEventListener('langchange', _updateBtn);
 }());

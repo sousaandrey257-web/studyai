@@ -861,7 +861,7 @@ document.addEventListener('DOMContentLoaded', function () {
     state.quizQuestions = data.quiz || [];
     const n = state.quizQuestions.length;
     var examLabel = n >= 14 ? (t('quiz_exam_mode') || '🎯 Mode Examen') : (t('quiz_standard_label') || '— du facile au difficile');
-    quizQCount.textContent = n + ' question' + (n > 1 ? 's' : '') + ' ' + examLabel;
+    quizQCount.textContent = (t('quiz_n_questions') || '{n} questions').replace('{n}', n) + ' ' + examLabel;
 
     const mode = data.mode || 'full';
     showSection('results');
@@ -1342,6 +1342,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // ============================================================
 
   async function refreshUsage() {
+    if (!window.auth?.isLoggedIn()) return;
     try {
       const headers = {};
       if (state.premiumToken) headers['x-premium-token'] = state.premiumToken;
@@ -1354,6 +1355,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const usageCounter = document.getElementById('usage-counter');
 
   function updateUsage(remaining, isPremium) {
+    if (!window.auth?.isLoggedIn()) {
+      if (usageBadge)  usageBadge.classList.add('hidden');
+      if (usageCounter) usageCounter.classList.add('hidden');
+      return;
+    }
     usageBadge.classList.remove('hidden');
     if (isPremium) {
       state.isPremium              = true;
@@ -1458,7 +1464,7 @@ document.addEventListener('DOMContentLoaded', function () {
           if (btn) { btn.disabled = false; btn.textContent = t('wl_btn') || "M'inscrire"; }
           if (msg) {
             msg.className = 'wl-message wl-error';
-            msg.textContent = '❌ Erreur réseau, réessaie.';
+            msg.textContent = '❌ ' + (t('toast_conn_error') || 'Erreur réseau, réessaie.');
           }
         });
     });
@@ -1593,6 +1599,8 @@ document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   const MAX_GEN  = 5;
+  let _lastRemaining = MAX_GEN; // cache — évite le fetch réseau au langchange
+  let _lastResetAt   = null;    // cache pour le texte de réinitialisation modal
 
   // Build a stable fingerprint from the existing window._fpSignals (fingerprint.js)
   // Augmented with screen/timezone signals for uniqueness
@@ -1625,9 +1633,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function showBanner(remaining) {
     if (!banner || !bannerText) return;
     if (window.auth?.isLoggedIn()) { banner.hidden = true; return; }
+    _lastRemaining = remaining;
+    const _t = window.i18n?.t || function(k) { return k; };
     bannerText.textContent = remaining === 0
-      ? '⏳ Limite atteinte — 0 / ' + MAX_GEN + ' générations gratuites'
-      : `⚡ ${remaining} / ${MAX_GEN} générations gratuites restantes`;
+      ? _t('quota_banner_empty',     { n: 0,         max: MAX_GEN })
+      : _t('quota_banner_remaining', { n: remaining, max: MAX_GEN });
     banner.hidden = false;
   }
 
@@ -1649,16 +1659,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function showModal(data) {
     if (!overlay) return;
-    if (data?.resetAt) {
-      const delta = Math.max(0, data.resetAt - Date.now());
+    _lastResetAt = data?.resetAt || null;
+    _renderModalReset();
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function _renderModalReset() {
+    if (!modalReset) return;
+    const _t = window.i18n?.t || function(k) { return k; };
+    if (_lastResetAt) {
+      const delta = Math.max(0, _lastResetAt - Date.now());
       const h     = Math.floor(delta / 3600000);
       const m     = Math.floor((delta % 3600000) / 60000);
-      modalReset.textContent = `Réinitialisation dans ${h}h ${m}min`;
+      modalReset.textContent = _t('quota_modal_reset', { h, m });
     } else {
       modalReset.textContent = '';
     }
-    overlay.hidden = false;
-    document.body.style.overflow = 'hidden';
   }
 
   function hideModal() {
@@ -1687,6 +1704,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Expose for use in generate error handler
   window._quotaUI = { showModal, showBanner };
+
+  // Re-render banner + modal-reset synchronously on lang change (no fetch)
+  document.addEventListener('langchange', function () {
+    if (!window.auth?.isLoggedIn()) {
+      if (banner && !banner.hidden) showBanner(_lastRemaining);
+    }
+    if (overlay && !overlay.hidden) _renderModalReset();
+  });
 
   // ── Init: fetch quota on load (anonymous only) ─────────────
   async function refreshQuota() {
