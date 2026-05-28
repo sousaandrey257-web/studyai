@@ -100,8 +100,10 @@ const BehaviorModel      = require('./services/antiBot/behaviorModel');
 const ChallengeRouter    = require('./services/antiBot/challengeRouter');
 const BotSimulator       = require('./services/antiBot/simulator');
 require('./services/events/handlers'); // side-effect: registers all event listeners + outbox poller
-const SecretSanitizer = require('./middleware/secretSanitizer');
-const TokenBlacklist  = require('./middleware/tokenBlacklist');
+const SecretSanitizer    = require('./middleware/secretSanitizer');
+const TokenBlacklist     = require('./middleware/tokenBlacklist');
+const antiAbuseMiddleware = require('./middleware/anti-abuse.middleware');
+const antiAbuseService    = require('./services/anti-abuse.service');
 const AutoBackup      = require('./services/backup/autoBackup');
 const SafeMode        = require('./services/safeMode');
 const FileIntegrity   = require('./services/integrity/fileIntegrity');
@@ -303,7 +305,9 @@ app.use(helmet({
     },
   },
   crossOriginEmbedderPolicy:    false,
-  hsts:                         { maxAge: 31536000, includeSubDomains: true, preload: true },
+  hsts:                         process.env.NODE_ENV === 'production'
+                                  ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+                                  : false,
   referrerPolicy:               { policy: 'strict-origin-when-cross-origin' },
   permittedCrossDomainPolicies: { permittedPolicies: 'none' },
   crossOriginOpenerPolicy:      { policy: 'same-origin-allow-popups' },
@@ -391,6 +395,7 @@ const generateLimiter = rateLimit({
   skip: (req) => isAdmin(req),
 });
 app.use('/api/generate', generateLimiter);
+app.use('/api/generate', antiAbuseMiddleware);
 
 // Rate-limiting sur /api/consolidation-quiz : 10 appels IA / 15 min — même coût qu'une génération
 const consolidationLimiter = rateLimit({
@@ -473,7 +478,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ============================================================
 //  SYSTÈME FREEMIUM
 // ============================================================
-const FREE_LIMIT  = 20;
+const FREE_LIMIT  = 12;
 const ADMIN_KEY   = process.env.ADMIN_KEY?.trim() || null;
 const usageStore  = new Map(); // ip → { count, date }
 
@@ -1689,6 +1694,16 @@ app.get('/api/usage', optionalAuth, (req, res) => {
   res.json(checkUsage(ip, token, userId));
 });
 
+// GET /api/quota — anonymous quota status (always returns info, never blocks)
+app.get('/api/quota', optionalAuth, (req, res) => {
+  if (req.user) return res.json({ anonymous: false, remaining: null, resetAt: null });
+  const fingerprint = (req.headers['x-device-fingerprint'] || '').trim().slice(0, 128);
+  if (!fingerprint) return res.json({ anonymous: true, remaining: null, resetAt: null });
+  const ip     = getClientIP(req);
+  const result = antiAbuseService.checkQuota(fingerprint, ip);
+  res.json({ anonymous: true, allowed: result.allowed, remaining: result.remaining, resetAt: result.resetAt });
+});
+
 // POST /api/generate
 app.get('/api/generate', (req, res) => {
   res.status(405).json({ error: 'Cette route doit être appelée en POST, pas en GET.' });
@@ -1702,7 +1717,7 @@ app.post('/api/generate', optionalAuth, async (req, res) => {
 
   if (!usage.allowed) {
     return res.status(429).json({ error: 'limit_reached',
-      message: 'Limite quotidienne atteinte (20/jour). Passez Premium pour un accès illimité.' });
+      message: 'Limite quotidienne atteinte (12/jour). Passez Premium pour un accès illimité.' });
   }
 
   const { text, country, lang } = req.body;
@@ -1911,6 +1926,11 @@ Q5:    type "open", difficulty 2 — ask them to solve a problem similar to thei
 
     if (!admin && !usage.isPremium) incrementUsage(ip, userId);
     const remaining = (admin || usage.isPremium) ? null : checkUsage(ip, token, userId).remaining;
+
+    // Record anonymous generation for anti-abuse quota tracking
+    if (!req.user && req._abuseInfo?.deviceId) {
+      antiAbuseService.recordGeneration(req._abuseInfo.deviceId);
+    }
 
     // Funnel + retention tracking (fire-and-forget, never blocks response)
     FunnelAnalytics.track('generate_success', { userId: req.user?.userId, isPremium: usage.isPremium });

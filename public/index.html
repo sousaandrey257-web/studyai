@@ -66,11 +66,12 @@
   <link rel="stylesheet" href="css/gamification.css?v=2" />
   <link rel="stylesheet" href="css/premium.css?v=3" />
   <link rel="stylesheet" href="css/refresh.css?v=5" />
+  <link rel="stylesheet" href="css/quota-modal.css?v=1" />
 </head>
 <body>
 
   <!-- Skip link accessibilité clavier -->
-  <a href="#course-input" class="skip-link">Aller au contenu</a>
+  <a href="#course-input" class="skip-link" data-i18n="skip_link">Aller au contenu</a>
 
   <!-- ===== HEADER ===== -->
   <header class="header">
@@ -87,8 +88,8 @@
       <div id="auth-zone" class="auth-zone">
         <button id="btn-login" class="btn-secondary-small" data-i18n="btn_login">Connexion</button>
         <div id="user-zone" class="user-zone hidden">
-          <a href="/dashboard" class="btn-icon-small" title="Mon espace">📊</a>
-          <button id="btn-history" class="btn-icon-small" title="Historique rapide">📚</button>
+          <a href="/dashboard" class="btn-icon-small" data-i18n-title="title_my_space" title="Mon espace">📊</a>
+          <button id="btn-history" class="btn-icon-small" data-i18n-title="title_history" title="Historique rapide">📚</button>
           <span id="user-email-label" class="user-email-label"></span>
           <button id="btn-logout" class="btn-text-small" data-i18n="btn_logout">Déco</button>
         </div>
@@ -118,6 +119,27 @@
       <button id="btn-premium-header" class="btn-premium-small" data-i18n="premium_btn">✨ Premium</button>
     </div>
   </header>
+
+  <!-- ===== QUOTA BANNER (anonymous only) ===== -->
+  <div id="quota-banner" hidden>
+    <span id="quota-banner-text"></span>
+    <a href="#" id="quota-banner-cta" class="quota-banner-cta" data-i18n="quota_modal_signup">Créer un compte gratuit</a>
+  </div>
+
+  <!-- ===== QUOTA MODAL (limit reached) ===== -->
+  <div id="quota-modal-overlay" class="quota-modal-overlay" hidden>
+    <div class="quota-modal" role="dialog" aria-modal="true" aria-labelledby="quota-modal-title">
+      <div class="quota-modal-icon">⏳</div>
+      <h2 class="quota-modal-title" id="quota-modal-title" data-i18n="quota_modal_title">Limite atteinte</h2>
+      <p class="quota-modal-body" id="quota-modal-body" data-i18n="quota_modal_body">Tu as utilisé tes 5 générations gratuites. Crée un compte gratuit pour continuer (12/jour) ou passe Premium pour un accès illimité.</p>
+      <p class="quota-modal-reset" id="quota-modal-reset"></p>
+      <div class="quota-modal-actions">
+        <button class="quota-modal-btn quota-modal-btn--primary" id="quota-modal-signup" data-i18n="quota_modal_signup">Créer un compte gratuit</button>
+        <button class="quota-modal-btn quota-modal-btn--secondary" id="quota-modal-premium" data-i18n="quota_modal_premium">Voir Premium</button>
+        <button class="quota-modal-btn quota-modal-btn--ghost" id="quota-modal-close" data-i18n="quota_modal_close">Fermer</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== HERO / INPUT ===== -->
   <main class="main">
@@ -574,7 +596,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
             💾 Sauvegarde ce résultat — crée un compte gratuit pour l'historique, l'XP et le streak
           </div>
           <button id="guest-nudge-cta" class="guest-nudge-cta" data-i18n="guest_nudge_cta">Créer mon compte →</button>
-          <button id="guest-nudge-close" class="guest-nudge-close" aria-label="Fermer">✕</button>
+          <button id="guest-nudge-close" class="guest-nudge-close" data-i18n-aria="quota_modal_close" aria-label="Fermer">✕</button>
         </div>
       </div>
 
@@ -906,7 +928,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       </a>
       <a href="/upload" class="bottom-nav-item" data-page="/upload">
         <span class="bottom-nav-icon">📄</span>
-        <span>Auto Study</span>
+        <span data-i18n="nav_auto_study">Auto Study</span>
       </a>
       <button id="bottom-nav-dashboard" class="bottom-nav-item" data-page="/dashboard">
         <span class="bottom-nav-icon">📊</span>
@@ -925,9 +947,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <script src="js/fingerprint.js?v=1" defer></script>
   <script src="js/pow.js?v=1" defer></script>
   <!-- i18n must load BEFORE app.js -->
-  <script src="js/i18n.js?v=32"></script>
+  <script src="js/i18n.js?v=34"></script>
   <script src="js/auth.js?v=7"></script>
-  <script src="js/app.js?v=42"></script>
+  <script src="js/app.js?v=43"></script>
   <script src="js/ui.js?v=2"></script>
   <script src="js/share-card.js?v=1" defer></script>
   <script>
@@ -1234,7 +1256,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   </script>
 
   <button id="sfx-toggle-btn" class="sfx-toggle-btn" aria-label="Sons">🔊</button>
-  <script src="js/sfx.js?v=1" defer></script>
+  <script src="js/sfx.js?v=2" defer></script>
   <script src="js/pwa-install.js?v=1" defer></script>
   <link rel="stylesheet" href="/css/support-bot.css">
   <div id="support-bot-container"></div>

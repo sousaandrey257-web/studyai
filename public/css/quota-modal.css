@@ -1,0 +1,126 @@
+/* ── Quota Banner ─────────────────────────────────────────────── */
+#quota-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.25);
+  font-size: 13px;
+  color: #94a3b8;
+  text-align: center;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+#quota-banner[hidden] { display: none !important; }
+
+#quota-banner-text {
+  font-weight: 500;
+}
+
+.quota-banner-cta {
+  color: #818cf8;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.quota-banner-cta:hover { color: #a5b4fc; }
+
+/* ── Quota Modal ─────────────────────────────────────────────── */
+.quota-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.quota-modal-overlay[hidden] { display: none !important; }
+
+.quota-modal {
+  background: #0f0f1a;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 20px;
+  padding: 40px 32px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  animation: quotaModalIn 0.25s ease;
+}
+
+@keyframes quotaModalIn {
+  from { opacity: 0; transform: scale(0.9) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+.quota-modal-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.quota-modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0 0 12px;
+}
+
+.quota-modal-body {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin: 0 0 10px;
+}
+
+.quota-modal-reset {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 24px;
+  min-height: 16px;
+}
+
+.quota-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quota-modal-btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.quota-modal-btn:hover  { opacity: 0.9; }
+.quota-modal-btn:active { transform: scale(0.97); }
+
+.quota-modal-btn--primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+}
+
+.quota-modal-btn--secondary {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.quota-modal-btn--ghost {
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  padding: 8px 20px;
+}
