@@ -1573,12 +1573,19 @@ document.addEventListener('DOMContentLoaded', function () {
       card.appendChild(desc);
 
       card.addEventListener('click', function () {
-        var prompt = t('exam_ex_' + subj.key + '_prompt');
-        if (courseInput) {
-          courseInput.value = prompt;
-          courseInput.focus();
-          courseInput.dispatchEvent(new Event('input'));
-          courseInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (_SUBJECTS[subj.key]) {
+          // Subject has subtopics → open topic picker (74 subtopics system)
+          _hideModePicker();
+          _showTopicPicker(subj.key);
+        } else {
+          // No subtopics yet (philosophy, economics, cs, law, medicine)
+          // → pre-fill textarea with prompt ending in "sur…" and let user complete
+          if (courseInput) {
+            courseInput.value = t('exam_ex_' + subj.key + '_prompt');
+            courseInput.focus();
+            courseInput.dispatchEvent(new Event('input'));
+            courseInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       });
 
