@@ -150,7 +150,7 @@ window.startCheckout = async function (plan) {
   if (!plan) return;
   var modal = document.getElementById('modal-premium');
   var btns  = modal ? Array.from(modal.querySelectorAll('.btn-checkout')) : [];
-  btns.forEach(function (b) { b.disabled = true; b.textContent = 'Redirection…'; });
+  btns.forEach(function (b) { b.disabled = true; b.textContent = t('premium_cta_wait'); });
   try {
     var headers = { 'Content-Type': 'application/json' };
     if (window.auth && window.auth.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
