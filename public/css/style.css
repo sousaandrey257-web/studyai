@@ -2295,6 +2295,11 @@ body::before {
   box-shadow: 0 6px 18px color-mix(in srgb, #ef4444 20%, transparent);
 }
 .exam-example-card:active { transform: translateY(0); }
+.exam-example-card--active {
+  border-color: #ef4444;
+  background: color-mix(in srgb, #ef4444 12%, var(--card-bg, var(--bg-card)));
+  box-shadow: 0 4px 14px color-mix(in srgb, #ef4444 25%, transparent);
+}
 .exam-example-card-icon  { font-size: 1.8rem; line-height: 1; }
 .exam-example-card-title { font-size: .82rem; font-weight: 700; letter-spacing: -.01em; }
 .exam-example-card-desc  { font-size: .74rem; color: var(--text-muted); line-height: 1.45; }

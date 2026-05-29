@@ -602,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     picker.classList.remove('hidden');
-    picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    picker.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function _hideTopicPicker() {
@@ -648,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     picker.classList.remove('hidden');
-    picker.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    picker.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function _hideModePicker() {
@@ -1573,13 +1573,22 @@ document.addEventListener('DOMContentLoaded', function () {
       card.appendChild(desc);
 
       card.addEventListener('click', function () {
+        // Reset: remove active highlight from all cards, apply to this one
+        grid.querySelectorAll('.exam-example-card').forEach(function (c) {
+          c.classList.remove('exam-example-card--active');
+        });
+        card.classList.add('exam-example-card--active');
+
         if (_SUBJECTS[subj.key]) {
           // Subject has subtopics → open topic picker (74 subtopics system)
-          _hideModePicker();
+          // Clear any textarea pre-fill from a previous no-subtopics card
+          if (courseInput) courseInput.value = '';
           _showTopicPicker(subj.key);
         } else {
           // No subtopics yet (philosophy, economics, cs, law, medicine)
-          // → pre-fill textarea with prompt ending in "sur…" and let user complete
+          // Close any open picker first, then pre-fill textarea
+          _hideTopicPicker();
+          _hideModePicker();
           if (courseInput) {
             courseInput.value = t('exam_ex_' + subj.key + '_prompt');
             courseInput.focus();
