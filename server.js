@@ -437,6 +437,9 @@ app.get('/battle', (_req, res) => res.sendFile(path.join(__dirname, 'public/batt
 app.get('/brain',  (_req, res) => res.sendFile(path.join(__dirname, 'public/brain.html')));
 // Invite / referral landing page
 app.get('/invite/:code', (_req, res) => res.sendFile(path.join(__dirname, 'public/invite.html')));
+// favicon.ico — redirect to SVG icon (no 404)
+app.get('/favicon.ico', (_req, res) => res.redirect(301, '/icons/icon.svg'));
+
 // Modal routes — auth/premium are inline modals on the homepage
 app.get('/login',       (_req, res) => res.redirect('/#login'));
 app.get('/register',    (_req, res) => res.redirect('/#register'));
