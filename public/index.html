@@ -76,7 +76,7 @@
   <!-- ===== HEADER ===== -->
   <header class="header">
     <div class="header-inner">
-      <a href="/" class="logo" aria-label="Accueil StudyAI">
+      <a href="/" class="logo" data-i18n-aria="aria_logo" aria-label="Accueil StudyAI">
         <span class="logo-icon">⚡</span>
         <span class="logo-text">StudyAI</span>
       </a>
@@ -352,9 +352,9 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       </div>
 
       <!-- ===== CAROUSEL ROTATIF ===== -->
-      <section class="rotating-grid-section" aria-label="Matières et fonctionnalités">
+      <section class="rotating-grid-section" data-i18n-aria="aria_grid" aria-label="Matières et fonctionnalités">
         <h3 class="rotating-grid-title" data-i18n="rotating_grid_title">✨ Ça marche pour TOUTES tes études</h3>
-        <div class="rotating-grid" id="rotatingGrid" role="region" aria-label="Matières et fonctionnalités">
+        <div class="rotating-grid" id="rotatingGrid" role="region" data-i18n-aria="aria_grid" aria-label="Matières et fonctionnalités">
           <!-- 6 chips, renouvelés via JS toutes les 3 sec -->
         </div>
       </section>
@@ -743,7 +743,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   </div>
 
   <!-- ===== MODAL PREMIUM ===== -->
-  <div id="modal-premium" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Offres Premium">
+  <div id="modal-premium" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true" data-i18n-aria="aria_premium_modal" aria-label="Offres Premium">
     <div class="modal-card modal-card-wide">
       <button class="modal-close" type="button">✕</button>
       <div class="modal-icon">✨</div>
@@ -817,7 +817,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   </div>
 
   <!-- ===== MODAL WAITLIST ===== -->
-  <div id="modal-waitlist" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Liste d'attente">
+  <div id="modal-waitlist" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-hidden="true" data-i18n-aria="aria_waitlist_modal" aria-label="Liste d'attente">
     <div class="modal-card modal-card-waitlist">
       <button class="modal-close" id="wl-close" type="button">✕</button>
       <div class="modal-icon">🚀</div>
@@ -878,7 +878,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       <div class="footer-col">
         <h4 class="footer-col-title" data-i18n="footer_lang_title">Langue</h4>
         <div class="footer-lang-wrap">
-          <select id="footer-lang-select" class="footer-lang-select" aria-label="Sélectionner la langue">
+          <select id="footer-lang-select" class="footer-lang-select" data-i18n-aria="aria_lang_select" aria-label="Sélectionner la langue">
             <option value="fr">🇫🇷 Français</option>
             <option value="en">🇬🇧 English</option>
             <option value="es">🇪🇸 Español</option>
@@ -920,7 +920,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <div id="toast" class="toast hidden"></div>
 
   <!-- Mobile bottom nav (hidden on desktop via CSS) -->
-  <nav class="bottom-nav" aria-label="Navigation">
+  <nav class="bottom-nav" data-i18n-aria="aria_nav" aria-label="Navigation">
     <div class="bottom-nav-inner">
       <a href="/" class="bottom-nav-item active" data-page="/">
         <span class="bottom-nav-icon">⚡</span>
@@ -947,7 +947,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <script src="js/fingerprint.js?v=1" defer></script>
   <script src="js/pow.js?v=1" defer></script>
   <!-- i18n must load BEFORE app.js -->
-  <script src="js/i18n.js?v=35"></script>
+  <script src="js/i18n.js?v=36"></script>
   <script src="js/auth.js?v=7"></script>
   <script src="js/app.js?v=43"></script>
   <script src="js/ui.js?v=2"></script>
@@ -1255,7 +1255,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
 
   </script>
 
-  <button id="sfx-toggle-btn" class="sfx-toggle-btn" aria-label="Sons">🔊</button>
+  <button id="sfx-toggle-btn" class="sfx-toggle-btn" data-i18n-aria="aria_sfx" aria-label="Sons">🔊</button>
   <script src="js/sfx.js?v=2" defer></script>
   <script src="js/pwa-install.js?v=1" defer></script>
   <link rel="stylesheet" href="/css/support-bot.css">
