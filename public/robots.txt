@@ -10,4 +10,4 @@ Disallow: /brain
 Disallow: /battle
 Disallow: /reset-password
 
-Sitemap: https://studyai.app/sitemap.xml
+Sitemap: https://studyai-production-5202.up.railway.app/sitemap.xml
