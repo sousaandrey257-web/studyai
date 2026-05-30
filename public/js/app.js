@@ -1587,12 +1587,13 @@ document.addEventListener('DOMContentLoaded', function () {
           _showTopicPicker(subj.key);
         } else {
           // No subtopics yet (philosophy, economics, cs, law, medicine)
-          // Close any open picker first, then pre-fill textarea
+          // Close pickers, switch to text tab (makes #imode-text visible), pre-fill textarea
           _hideTopicPicker();
           _hideModePicker();
+          var textTab = document.getElementById('tab-text-mode');
+          if (textTab) textTab.click();
           if (courseInput) {
             courseInput.value = t('exam_ex_' + subj.key + '_prompt');
-            courseInput.focus();
             courseInput.dispatchEvent(new Event('input'));
             courseInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
