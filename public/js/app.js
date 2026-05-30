@@ -553,6 +553,26 @@ document.addEventListener('DOMContentLoaded', function () {
     literature: {
       re: /littératur|literatur|letteratur|sastra|edebiyat|литератур|літератур|文学|문학|วรรณ|أدب|văn\s*học|साहित्य/i,
       topics: ['li_text','li_style','li_poet','li_novel','li_theat','li_essay','li_human','li_class','li_romant','li_modern']
+    },
+    economics: {
+      re: /econom|économ|ekonom|wirtschaft|economía|economia|экономик|経済|경제|kinh\s*tế|เศรษฐ|اقتصاد|अर्थ/i,
+      topics: ['ec_micro','ec_macro','ec_money','ec_trade','ec_pubfin','ec_labor','ec_devel','ec_think','ec_eu','ec_envi']
+    },
+    law: {
+      re: /\bdroit|law\b|recht|derecho|diritto|hukum|hukuku|право|法律|법|pháp\s*luật|กฎหมาย|قانون|कानून|prawa\b|rechts/i,
+      topics: ['la_const','la_civil','la_prop','la_crim','la_admin','la_eu','la_intl','la_labor','la_biz','la_dig']
+    },
+    medicine: {
+      re: /médecin|medicin|medizin|medicina|kedokter|tıp|медицин|医学|의학|y\s*học|การแพทย์|طب|चिकित्सा/i,
+      topics: ['md_anato','md_cardio','md_neuro','md_infect','md_pharma','md_diag','md_surg','md_pub','md_endo','md_onco']
+    },
+    cs: {
+      re: /informatik|comput|informatica|programmier|komputer|bilgisayar|информатик|情報|컴퓨터|lập\s*trình|คอมพิว|حاسوب|कंप्यूटर/i,
+      topics: ['cs_algo','cs_data','cs_prog','cs_db','cs_os','cs_net','cs_web','cs_sec','cs_ai','cs_soft']
+    },
+    philosophy: {
+      re: /philosoph|filosofi|philosophie|filosofía|filosofia|filsafat|felsefe|философи|哲学|철학|triết|ปรัชญา|فلسف|दर्शन/i,
+      topics: ['pf_meta','pf_epist','pf_ethic','pf_polit','pf_logic','pf_mind','pf_sci','pf_anc','pf_mod','pf_cont']
     }
   };
   // Triggers: stem-based, no \b needed — inputs are short (≤350 chars)
