@@ -579,6 +579,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var subEl   = document.getElementById('topic-picker-sub');
     var skipEl  = document.getElementById('topic-skip-btn');
     if (!picker) return;
+    if (!_SUBJECTS[subject] || !_SUBJECTS[subject].topics.length) return;
 
     _hideModePicker();
     titleEl.textContent = t('topic_picker_title');
