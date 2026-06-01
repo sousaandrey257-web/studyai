@@ -14,6 +14,10 @@ function antiAbuseMiddleware(req, res, next) {
   // Skip for any authenticated user (free or premium)
   if (req.user) return next();
 
+  // Skip for authenticated admin requests (mirrors rate-limiter skip: isAdmin(req))
+  const adminKey = process.env.ADMIN_KEY?.trim();
+  if (req._adminAuth || (adminKey && req.headers['x-admin-key'] === adminKey)) return next();
+
   const fingerprint = (req.headers['x-device-fingerprint'] || '').trim().slice(0, 128);
   if (!fingerprint) {
     return res.status(400).json({
