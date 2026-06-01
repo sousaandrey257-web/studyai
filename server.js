@@ -755,6 +755,65 @@ app.get('/api/admin/health/full', adminRateLimiter, requireSuperAdmin, async (re
   res.json(report);
 });
 
+// GET /api/admin/monitoring — i18n coverage + service env check (read-only, admin)
+app.get('/api/admin/monitoring', adminRateLimiter, requireSuperAdmin, async (req, res) => {
+  auditAction(req, 'view_monitoring');
+
+  // ── Services (env-var checks only — no external calls) ───────────────────
+  const groqKey   = process.env.GROQ_API_KEY?.trim()   || '';
+  const openaiKey = process.env.OPENAI_API_KEY?.trim()  || '';
+  const stripeKey = process.env.STRIPE_SECRET_KEY?.trim() || '';
+
+  const services = {
+    server: { ok: true, note: 'responding' },
+    ai: {
+      ok: !!(groqKey || openaiKey),
+      provider: groqKey ? 'groq' : openaiKey ? 'openai' : 'none',
+    },
+    stripe: {
+      ok: !!stripeKey,
+      mode: stripeKey.startsWith('sk_live_') ? 'live'
+          : stripeKey.startsWith('sk_test_') ? 'test'
+          : stripeKey ? 'unknown' : 'not configured',
+    },
+  };
+
+  // Redis — reuse existing health check (read-only ping)
+  try {
+    const health = await HealthCheck.runFullCheck();
+    services.redis = { ok: health.components?.redis?.ok ?? false, walBuffered: health.components?.redis?.walBuffered ?? 0 };
+    services.bullmq = { ok: health.components?.bullmq?.ok ?? false, dlqSize: health.components?.bullmq?.dlqSize ?? 0 };
+  } catch {
+    services.redis  = { ok: false, error: 'health check failed' };
+    services.bullmq = { ok: false };
+  }
+
+  // ── i18n coverage ────────────────────────────────────────────────────────
+  let i18n;
+  try {
+    const I18nChecker = require('./services/i18nChecker');
+    i18n = I18nChecker.checkI18n();
+  } catch (e) {
+    i18n = { error: e.message };
+  }
+
+  // ── Process info ─────────────────────────────────────────────────────────
+  const mem = process.memoryUsage();
+
+  res.json({
+    ts:        new Date().toISOString(),
+    uptimeSec: Math.round(process.uptime()),
+    services,
+    i18n,
+    process: {
+      uptimeSec:   Math.round(process.uptime()),
+      rss:         `${Math.round(mem.rss      / 1024 / 1024)}MB`,
+      heapUsed:    `${Math.round(mem.heapUsed / 1024 / 1024)}MB`,
+      nodeVersion: process.version,
+    },
+  });
+});
+
 // ── Phase 6: Event Log admin endpoints ───────────────────────────────────────
 
 // GET /api/admin/event-log — recent global events
