@@ -655,7 +655,7 @@ async function callOpenAI(messages) {
     // Cerebras: gpt-oss-120b — sub-second on Cerebras silicon (primary)
     ...(cerebrasClient   ? [{ client: cerebrasClient,   model: 'gpt-oss-120b',                              name: 'Cerebras',    jsonMode: true,  maxTokens: 4096, providerTimeout:  8000 }] : []),
     { client: openai,          model: MODEL,                                   name: 'Groq',        jsonMode: true,  maxTokens: 4096, providerTimeout:  8000 },
-    ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true,  maxTokens: 4096, providerTimeout: 30000 }] : []),
+    ...(geminiClient     ? [{ client: geminiClient,     model: 'models/gemini-2.5-flash',                   name: 'Gemini',      jsonMode: true,  maxTokens: 8192, providerTimeout: 30000 }] : []),
     ...(openrouterClient ? [{ client: openrouterClient, model: 'meta-llama/llama-3.3-70b-instruct:free',    name: 'OpenRouter',  jsonMode: false, maxTokens: 4096, providerTimeout:  8000 }] : []),
   ];
 
