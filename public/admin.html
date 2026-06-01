@@ -65,7 +65,7 @@
     <h1>StudyAI Admin</h1>
     <p>Accès réservé à l'administrateur</p>
     <input type="password" id="key-input" placeholder="Clé admin…" autocomplete="off" />
-    <button class="btn btn-primary" onclick="login()">Accéder →</button>
+    <button class="btn btn-primary" id="btn-login">Accéder →</button>
     <div class="err" id="login-err"></div>
   </div>
 </div>
@@ -76,8 +76,8 @@
     <h1>⚡ StudyAI Admin</h1>
     <div style="display:flex;gap:10px;align-items:center">
       <span class="badge-admin">Admin connecté</span>
-      <button class="btn btn-sm btn-primary" onclick="activateTestMode()">🧪 Activer mode test sur le site</button>
-      <button class="btn btn-sm" style="background:#2d2d44" onclick="logout()">Déconnexion</button>
+      <button class="btn btn-sm btn-primary" id="btn-activate-test-top">🧪 Activer mode test sur le site</button>
+      <button class="btn btn-sm" style="background:#2d2d44" id="btn-logout">Déconnexion</button>
     </div>
   </div>
 
@@ -94,10 +94,10 @@
     <div class="card">
       <h2>⚙️ Actions</h2>
       <div class="actions">
-        <button class="btn btn-orange" onclick="resetUsage()">🔄 Réinitialiser les compteurs IP</button>
-        <button class="btn btn-blue" onclick="loadStats()">↺ Actualiser les stats</button>
-        <button class="btn btn-green" onclick="activateTestMode()">🧪 Mode test sur le site principal</button>
-        <button class="btn btn-danger" onclick="deactivateTestMode()">✕ Désactiver mode test</button>
+        <button class="btn btn-orange" id="btn-reset-usage">🔄 Réinitialiser les compteurs IP</button>
+        <button class="btn btn-blue" id="btn-refresh-stats">↺ Actualiser les stats</button>
+        <button class="btn btn-green" id="btn-activate-test">🧪 Mode test sur le site principal</button>
+        <button class="btn btn-danger" id="btn-deactivate-test">✕ Désactiver mode test</button>
       </div>
     </div>
   </div>
@@ -129,7 +129,7 @@
         <option value="th">🇹🇭 ภาษาไทย</option>
       </select>
       <textarea id="test-text" rows="2" placeholder="Texte ou commande (ex: aide moi examen maths dérivées)" style="flex:1;min-width:200px"></textarea>
-      <button class="btn btn-primary btn-sm" onclick="runTest()">▶ Tester</button>
+      <button class="btn btn-primary btn-sm" id="btn-run-test">▶ Tester</button>
     </div>
 
     <!-- Quick-launch buttons -->
@@ -142,8 +142,19 @@
   <div class="test-section" style="margin-top:32px">
     <h2>🌍 Test complet 20 langues</h2>
     <p style="color:#94a3b8;font-size:.85rem;margin-bottom:12px">Lance une génération dans toutes les langues et vérifie l'absence d'anglais parasite.</p>
-    <button class="btn btn-primary btn-sm" onclick="runAllLangs()" id="btn-all-langs">▶ Lancer 20 tests</button>
+    <button class="btn btn-primary btn-sm" id="btn-all-langs">▶ Lancer 20 tests</button>
     <div id="all-langs-result" style="margin-top:16px"></div>
+  </div>
+
+  <!-- ── MONITORING ───────────────────────────────────────────────────────── -->
+  <div class="test-section" style="margin-top:40px;border-top:1px solid #2d2d44;padding-top:32px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 style="margin:0">🔍 Monitoring système</h2>
+      <button class="btn btn-sm btn-blue" id="btn-monitoring">↺ Actualiser</button>
+    </div>
+    <div id="monitoring-content">
+      <div style="color:#94a3b8;font-size:.88rem">Cliquez sur Actualiser pour lancer l'analyse…</div>
+    </div>
   </div>
 </div>
 
@@ -231,10 +242,14 @@ function showPanel() {
 function buildQuickButtons() {
   const el = document.getElementById('quick-tests');
   el.innerHTML = QUICK.map(q => `
-    <button class="test-btn" onclick="quickTest('${q.lang}','${q.text}')">
+    <button class="test-btn" data-lang="${q.lang}" data-text="${q.text.replace(/"/g,'&quot;')}">
       <span class="lang">${q.lang.toUpperCase()}</span> · ${q.subj}<br>
       <span class="subj">${q.text.slice(0,45)}…</span>
     </button>`).join('');
+  el.addEventListener('click', e => {
+    const btn = e.target.closest('[data-lang]');
+    if (btn) quickTest(btn.dataset.lang, btn.dataset.text);
+  });
 }
 
 async function loadStats() {
@@ -385,14 +400,134 @@ async function runAllLangs() {
   btn.textContent = '▶ Relancer 20 tests';
 }
 
+// ── Monitoring ────────────────────────────────────────────────────────────
+const LANG_FLAGS = {
+  fr:'🇫🇷',en:'🇬🇧',es:'🇪🇸',de:'🇩🇪',pt:'🇵🇹','pt-BR':'🇧🇷',it:'🇮🇹',zh:'🇨🇳',
+  ja:'🇯🇵',ko:'🇰🇷',id:'🇮🇩',ar:'🇸🇦',th:'🇹🇭',tr:'🇹🇷',nl:'🇳🇱',ru:'🇷🇺',
+  pl:'🇵🇱',vi:'🇻🇳',hi:'🇮🇳',uk:'🇺🇦',
+};
+
+async function loadMonitoring() {
+  const el  = document.getElementById('monitoring-content');
+  const btn = document.getElementById('btn-monitoring');
+  btn.disabled = true;
+  el.innerHTML = '<div style="color:#94a3b8;font-size:.88rem"><span class="spinner"></span>Analyse en cours…</div>';
+
+  let d;
+  try {
+    d = await api('/api/admin/monitoring');
+  } catch(e) {
+    el.innerHTML = `<div style="color:#f87171">❌ Erreur : ${e.message}</div>`;
+    btn.disabled = false;
+    return;
+  }
+  if (d.error) {
+    el.innerHTML = `<div style="color:#f87171">❌ ${d.error}</div>`;
+    btn.disabled = false;
+    return;
+  }
+
+  // ── Services ──────────────────────────────────────────────────────────────
+  const svcRows = Object.entries(d.services || {}).map(([name, s]) => {
+    const dot   = s.ok ? '🟢' : '🔴';
+    let detail  = '';
+    if (name === 'ai')     detail = s.provider ? `(${s.provider})` : '';
+    if (name === 'stripe') detail = s.mode ? `(${s.mode})` : '';
+    if (name === 'redis')  detail = s.walBuffered ? `WAL:${s.walBuffered}` : '';
+    if (name === 'bullmq') detail = s.dlqSize     ? `DLQ:${s.dlqSize}`    : '';
+    return `<div class="stat-row"><span>${dot} ${name}</span><span class="stat-val ${s.ok?'ok':'err'}">${s.ok?'OK':'NOK'} ${detail}</span></div>`;
+  }).join('');
+
+  // ── Uptime + process ──────────────────────────────────────────────────────
+  const upMin  = Math.floor((d.uptimeSec || 0) / 60);
+  const upH    = Math.floor(upMin / 60);
+  const upStr  = upH ? `${upH}h ${upMin % 60}min` : `${upMin} min`;
+  const proc   = d.process || {};
+
+  // ── i18n summary ──────────────────────────────────────────────────────────
+  const i18n   = d.i18n || {};
+  const detail = i18n.detail || {};
+  const issues = i18n.issues || [];
+
+  const langGrid = Object.entries(detail).map(([lang, info]) => {
+    const flag    = LANG_FLAGS[lang] || '🏳';
+    const ok      = info.ok;
+    const missing = info.missing?.length || 0;
+    const bg      = ok ? '#4ade8022' : '#f8717122';
+    const border  = ok ? '#4ade8044' : '#f8717144';
+    const label   = ok ? '✅ OK' : `❌ ${missing} manquante${missing>1?'s':''}`;
+    const title   = missing ? `Manquantes : ${info.missing.slice(0,10).join(', ')}${missing>10?'…':''}` : '';
+    return `<div title="${title}" style="background:${bg};border:1px solid ${border};border-radius:8px;padding:8px 10px;font-size:.8rem;cursor:default">
+      <div style="font-weight:700">${flag} ${lang.toUpperCase()}</div>
+      <div style="margin-top:2px;color:${ok?'#4ade80':'#f87171'}">${label}</div>
+      <div style="color:#64748b;font-size:.72rem">${info.keyCount} clés</div>
+    </div>`;
+  }).join('');
+
+  const issueList = issues.length === 0
+    ? '<div style="color:#4ade80;font-size:.85rem">✅ Aucun problème i18n détecté.</div>'
+    : issues.map(i => `<div style="color:#f87171;font-size:.83rem;padding:4px 0">❌ <b>${i.lang}</b> — ${i.missingCount} clé${i.missingCount>1?'s':''} manquante${i.missingCount>1?'s':''} : ${(i.missing||[]).slice(0,5).join(', ')}${i.missingCount>5?'…':''}</div>`).join('');
+
+  const ts = new Date(d.ts).toLocaleTimeString('fr-FR');
+
+  el.innerHTML = `
+    <div class="grid" style="margin-bottom:20px">
+      <div class="card">
+        <h2>🛠 Services</h2>
+        ${svcRows}
+      </div>
+      <div class="card">
+        <h2>⏱ Processus</h2>
+        <div class="stat-row"><span>Uptime</span><span class="stat-val ok">${upStr}</span></div>
+        <div class="stat-row"><span>RAM (RSS)</span><span class="stat-val">${proc.rss||'—'}</span></div>
+        <div class="stat-row"><span>Heap</span><span class="stat-val">${proc.heapUsed||'—'}</span></div>
+        <div class="stat-row"><span>Node</span><span class="stat-val">${proc.nodeVersion||'—'}</span></div>
+      </div>
+      <div class="card">
+        <h2>🌍 i18n — résumé</h2>
+        <div class="stat-row"><span>Référence (fr)</span><span class="stat-val ok">${i18n.refKeyCount||'—'} clés</span></div>
+        <div class="stat-row"><span>Langues OK</span><span class="stat-val ok">${i18n.langsOk||0} / ${i18n.totalLangs||0}</span></div>
+        <div class="stat-row"><span>Langues avec gaps</span><span class="stat-val ${i18n.langsWithIssues?'err':'ok'}">${i18n.langsWithIssues||0}</span></div>
+        <div class="stat-row"><span>Vérifié à</span><span class="stat-val">${ts}</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <h2>⚠️ Problèmes détectés</h2>
+      ${issueList}
+    </div>
+
+    <div class="card">
+      <h2>🌍 Couverture i18n — 20 langues</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px">
+        ${langGrid}
+      </div>
+    </div>
+  `;
+
+  btn.disabled = false;
+}
+
 // Auto-login si clé sauvegardée
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('studyai_admin_key_panel');
-  if (saved) {
-    adminKey = saved;
-    showPanel();
-  }
+  // Login form
+  document.getElementById('btn-login').addEventListener('click', login);
   document.getElementById('key-input').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+  // Panel buttons (wired once; safe because they're always in the DOM)
+  document.getElementById('btn-logout').addEventListener('click', logout);
+  document.getElementById('btn-activate-test-top').addEventListener('click', activateTestMode);
+  document.getElementById('btn-activate-test').addEventListener('click', activateTestMode);
+  document.getElementById('btn-deactivate-test').addEventListener('click', deactivateTestMode);
+  document.getElementById('btn-reset-usage').addEventListener('click', resetUsage);
+  document.getElementById('btn-refresh-stats').addEventListener('click', loadStats);
+  document.getElementById('btn-run-test').addEventListener('click', runTest);
+  document.getElementById('btn-all-langs').addEventListener('click', runAllLangs);
+  document.getElementById('btn-monitoring').addEventListener('click', loadMonitoring);
+
+  // Auto-login
+  const saved = localStorage.getItem('studyai_admin_key_panel');
+  if (saved) { adminKey = saved; showPanel(); }
 });
 </script>
 </body>
