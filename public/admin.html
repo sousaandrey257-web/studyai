@@ -256,7 +256,7 @@ async function loadStats() {
   const el = document.getElementById('stats-content');
   try {
     const d = await api('/api/admin/health/full');
-    const uptime = Math.floor((d.uptime || 0) / 60);
+    const uptime = Math.floor((d.process?.uptimeSec || 0) / 60);
     el.innerHTML = `
       <div class="stat-row"><span>Uptime</span><span class="stat-val ok">${uptime} min</span></div>
       <div class="stat-row"><span>Utilisateurs</span><span class="stat-val">${d.users ?? '—'}</span></div>
@@ -361,23 +361,31 @@ async function runTest() {
 async function runAllLangs() {
   const btn = document.getElementById('btn-all-langs');
   const container = document.getElementById('all-langs-result');
+  const DELAY_MS = 3500;
+  const total = ALL_LANGS.length;
   btn.disabled = true;
-  btn.textContent = '⏳ Tests en cours…';
-  container.innerHTML = '<div style="color:#94a3b8;font-size:.85rem">Lancement séquentiel (1 req/s pour ne pas saturer)…</div>';
+  btn.textContent = `⏳ Tests en cours (0/${total})…`;
+  container.innerHTML = `<div style="color:#94a3b8;font-size:.85rem">Test en cours — patiente ~${Math.ceil(total * DELAY_MS / 1000 / 60)} min (1 req / 3.5s)…</div>`;
 
-  const rows = [];
+  let i = 0;
   for (const {lang, text} of ALL_LANGS) {
+    i++;
+    btn.textContent = `⏳ Tests en cours (${i}/${total})…`;
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #2d2d4430;font-size:.85rem';
     row.innerHTML = `<span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span><span class="spinner"></span><span style="color:#94a3b8">En cours…</span>`;
     container.appendChild(row);
-    rows.push({lang, row});
+
+    const doRequest = () => api('/api/generate', { method: 'POST', body: JSON.stringify({ text, lang }) });
 
     try {
-      const d = await api('/api/generate', {
-        method: 'POST',
-        body: JSON.stringify({ text, lang }),
-      });
+      let d = await doRequest();
+      // Retry once on rate-limit (express limiter or Groq API) after a 6s pause
+      if (d.error === 'rate_limited' || d.error?.includes('Trop de requêtes')) {
+        row.innerHTML = `<span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span><span style="color:#fbbf24;font-size:.8rem">⏳ rate-limit — retry dans 6s…</span>`;
+        await new Promise(r => setTimeout(r, 6000));
+        d = await doRequest();
+      }
       if (d.error) {
         row.innerHTML = `<span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span><span class="tag tag-fail">❌ ${d.error.slice(0,25)}</span>`;
       } else {
@@ -393,7 +401,7 @@ async function runAllLangs() {
     } catch(e) {
       row.innerHTML = `<span style="width:60px;font-weight:700;color:#a78bfa">${lang.toUpperCase()}</span><span class="tag tag-fail">ERR ${e.message.slice(0,20)}</span>`;
     }
-    await new Promise(r => setTimeout(r, 800));
+    if (i < total) await new Promise(r => setTimeout(r, DELAY_MS));
   }
 
   btn.disabled = false;
@@ -431,7 +439,7 @@ async function loadMonitoring() {
   const svcRows = Object.entries(d.services || {}).map(([name, s]) => {
     const dot   = s.ok ? '🟢' : '🔴';
     let detail  = '';
-    if (name === 'ai')     detail = s.provider ? `(${s.provider})` : '';
+    if (name === 'ai')     detail = s.providers?.length ? `(${s.providers.join('+')})` : '';
     if (name === 'stripe') detail = s.mode ? `(${s.mode})` : '';
     if (name === 'redis')  detail = s.walBuffered ? `WAL:${s.walBuffered}` : '';
     if (name === 'bullmq') detail = s.dlqSize     ? `DLQ:${s.dlqSize}`    : '';

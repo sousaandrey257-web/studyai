@@ -760,15 +760,24 @@ app.get('/api/admin/monitoring', adminRateLimiter, requireSuperAdmin, async (req
   auditAction(req, 'view_monitoring');
 
   // ── Services (env-var checks only — no external calls) ───────────────────
-  const groqKey   = process.env.GROQ_API_KEY?.trim()   || '';
-  const openaiKey = process.env.OPENAI_API_KEY?.trim()  || '';
-  const stripeKey = process.env.STRIPE_SECRET_KEY?.trim() || '';
+  const groqKey     = process.env.GROQ_API_KEY?.trim()      || '';
+  const openaiKey   = process.env.OPENAI_API_KEY?.trim()     || '';
+  const cerebrasKey = process.env.CEREBRAS_API_KEY?.trim()   || '';
+  const geminiKey   = process.env.GEMINI_API_KEY?.trim()     || '';
+  const stripeKey   = process.env.STRIPE_SECRET_KEY?.trim()  || '';
+
+  const aiProviders = [
+    groqKey     ? 'groq'     : null,
+    cerebrasKey ? 'cerebras' : null,
+    geminiKey   ? 'gemini'   : null,
+    openaiKey   ? 'openai'   : null,
+  ].filter(Boolean);
 
   const services = {
     server: { ok: true, note: 'responding' },
     ai: {
-      ok: !!(groqKey || openaiKey),
-      provider: groqKey ? 'groq' : openaiKey ? 'openai' : 'none',
+      ok: aiProviders.length > 0,
+      providers: aiProviders,
     },
     stripe: {
       ok: !!stripeKey,
