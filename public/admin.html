@@ -213,9 +213,12 @@
   <div class="login-card">
     <div class="login-logo">🔐</div>
     <h1>StudyAI Admin</h1>
-    <p>Tableau de bord administrateur</p>
-    <input class="login-input" type="password" id="key-input" placeholder="Clé admin…" autocomplete="off" />
-    <button class="btn btn-primary" style="width:100%;justify-content:center" id="btn-login">Accéder →</button>
+    <p>Connecte-toi avec ton compte super admin</p>
+    <input class="login-input" type="email" id="email-input" placeholder="Email super admin…" autocomplete="email" />
+    <input class="login-input" type="password" id="pass-input" placeholder="Mot de passe…" autocomplete="current-password" />
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:12px" id="btn-login">Accéder →</button>
+    <div style="color:var(--subtle);font-size:.75rem;margin-bottom:8px">— ou avec ta clé admin —</div>
+    <input class="login-input" type="password" id="key-input" placeholder="Clé admin (optionnel)…" autocomplete="off" style="margin-bottom:10px" />
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
@@ -446,15 +449,19 @@
 
 const BASE = '';
 let adminKey = '';
+let adminJWT = '';
 let _refreshTimer = null;
 let _currentPage = 'overview';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function api(path, opts = {}) {
+  const authHeaders = adminJWT
+    ? { 'x-auth-token': adminJWT }
+    : { 'x-admin-key': adminKey };
   return fetch(BASE + path, {
     ...opts,
-    headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey, ...(opts.headers || {}) },
+    headers: { 'Content-Type': 'application/json', ...authHeaders, ...(opts.headers || {}) },
   }).then(r => r.json()).catch(e => ({ error: e.message }));
 }
 
@@ -487,26 +494,64 @@ function setAlert(id, msg, type = 'warn') {
 // ── Login ────────────────────────────────────────────────────────────────────
 
 async function doLogin() {
-  const k = document.getElementById('key-input').value.trim();
-  if (!k) return;
+  const email = document.getElementById('email-input').value.trim();
+  const pass  = document.getElementById('pass-input').value;
+  const key   = document.getElementById('key-input').value.trim();
   const errEl = document.getElementById('login-err');
   errEl.textContent = '';
-  const d = await fetch('/api/admin/live-stats', { headers: { 'x-admin-key': k } }).then(r => r.json()).catch(() => ({ error: 'unreachable' }));
-  if (d.error) { errEl.textContent = 'Clé invalide ou serveur inaccessible.'; return; }
-  adminKey = k;
-  localStorage.setItem('sa_key', k);
-  document.getElementById('login-wrap').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  initPanel();
+
+  // Méthode 1 : email + mot de passe (JWT super admin)
+  if (email && pass) {
+    const btn = document.getElementById('btn-login');
+    btn.disabled = true; btn.textContent = 'Connexion…';
+    try {
+      const r = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass }),
+      });
+      const d = await r.json();
+      if (!r.ok || d.error) { errEl.textContent = d.error || 'Email ou mot de passe incorrect.'; btn.disabled = false; btn.textContent = 'Accéder →'; return; }
+      // Vérifier que c'est bien un super admin
+      const check = await fetch('/api/admin/live-stats', { headers: { 'x-auth-token': d.token } }).then(x => x.json()).catch(() => ({ error: 'unreachable' }));
+      if (check.error) { errEl.textContent = 'Compte non autorisé — super admin requis.'; btn.disabled = false; btn.textContent = 'Accéder →'; return; }
+      adminKey = '';
+      adminJWT = d.token;
+      localStorage.setItem('sa_jwt', d.token);
+      localStorage.removeItem('sa_key');
+      document.getElementById('login-wrap').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      initPanel();
+    } catch { errEl.textContent = 'Serveur inaccessible.'; btn.disabled = false; btn.textContent = 'Accéder →'; }
+    return;
+  }
+
+  // Méthode 2 : clé admin
+  if (key) {
+    const d = await fetch('/api/admin/live-stats', { headers: { 'x-admin-key': key } }).then(r => r.json()).catch(() => ({ error: 'unreachable' }));
+    if (d.error) { errEl.textContent = 'Clé invalide ou serveur inaccessible.'; return; }
+    adminKey = key; adminJWT = '';
+    localStorage.setItem('sa_key', key);
+    localStorage.removeItem('sa_jwt');
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    initPanel();
+    return;
+  }
+
+  errEl.textContent = 'Remplis l\'email + mot de passe ou la clé admin.';
 }
 
 function doLogout() {
-  adminKey = '';
+  adminKey = ''; adminJWT = '';
   localStorage.removeItem('sa_key');
+  localStorage.removeItem('sa_jwt');
   clearInterval(_refreshTimer);
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-wrap').style.display = 'flex';
   document.getElementById('key-input').value = '';
+  document.getElementById('email-input').value = '';
+  document.getElementById('pass-input').value = '';
 }
 
 // ── Navigation ───────────────────────────────────────────────────────────────
@@ -934,6 +979,8 @@ async function loadSystem() {
 window.addEventListener('DOMContentLoaded', () => {
   // Login
   document.getElementById('btn-login').addEventListener('click', doLogin);
+  document.getElementById('email-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('pass-input').focus(); });
+  document.getElementById('pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   document.getElementById('key-input').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
   // Sidebar nav
@@ -971,8 +1018,10 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('user-modal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
 
   // Auto-login
-  const saved = localStorage.getItem('sa_key');
-  if (saved) { adminKey = saved; document.getElementById('login-wrap').style.display = 'none'; document.getElementById('app').style.display = 'flex'; initPanel(); }
+  const savedJWT = localStorage.getItem('sa_jwt');
+  const savedKey = localStorage.getItem('sa_key');
+  if (savedJWT) { adminJWT = savedJWT; document.getElementById('login-wrap').style.display = 'none'; document.getElementById('app').style.display = 'flex'; initPanel(); }
+  else if (savedKey) { adminKey = savedKey; document.getElementById('login-wrap').style.display = 'none'; document.getElementById('app').style.display = 'flex'; initPanel(); }
 });
 </script>
 </body>
