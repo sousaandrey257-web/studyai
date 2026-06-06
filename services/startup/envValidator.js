@@ -20,6 +20,7 @@ const RECOMMENDED = [
   { key: 'STRIPE_WEBHOOK_SECRET', desc: 'Stripe webhook signature verification' },
   { key: 'ALLOWED_ORIGINS',  desc: 'CORS whitelist — required in production to lock down origins' },
   { key: 'NODE_ENV',         desc: 'Set to "production" in production' },
+  { key: 'SITE_URL',         desc: 'Public URL of the app (e.g. https://studyai.app) — used for Stripe redirects and email links' },
   { key: 'REDIS_URL',        desc: 'Redis for leaderboard + queues (optional but recommended)' },
 ];
 

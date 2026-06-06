@@ -82,7 +82,7 @@ router.post('/chat', chatLimiter, optionalAuth, async (req, res) => {
   try {
     const { reply, needsHuman } = await askBot(message.trim(), req.user || null, safeHistory, safeLang);
 
-    const suggestions = needsHuman ? [] : [];
+    const suggestions = [];
 
     return res.json({ reply, needsHuman, suggestions, sessionId: sessionId || null });
   } catch (err) {

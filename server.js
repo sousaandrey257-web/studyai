@@ -13,7 +13,7 @@ const jwt        = require('jsonwebtoken');
 const fs         = require('fs');
 const helmet     = require('helmet');
 const compression = require('compression');
-const rateLimit  = require('express-rate-limit');
+const { default: rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -2389,7 +2389,7 @@ app.get('/api/admin/users', adminRateLimiter, requireSuperAdmin, (req, res) => {
   }
   const total = list.length;
   list = list.slice(Number(offset), Number(offset) + Number(limit));
-  auditAction('LIST_USERS', 'admin', { q, count: list.length });
+  auditAction(req, 'LIST_USERS', { q, count: list.length });
   res.json({ total, users: list });
 });
 
@@ -2400,7 +2400,7 @@ app.get('/api/admin/users/:email', adminRateLimiter, requireSuperAdmin, (req, re
   const user  = users[key];
   if (!user) return res.status(404).json({ error: 'Utilisateur introuvable.' });
   const { passwordHash: _, ...safe } = user;
-  auditAction('VIEW_USER', key, { admin: req.adminEmail });
+  auditAction(req, 'VIEW_USER', { targetEmail: key });
   res.json({ user: safe });
 });
 
@@ -2415,7 +2415,7 @@ app.post('/api/admin/users/:email/ban', adminRateLimiter, requireSuperAdmin, (re
   users[key].bannedAt  = banned ? new Date().toISOString() : null;
   saveJSON(USERS_FILE, users);
   if (banned) TokenBlacklist.revokeUserSessions(key);
-  auditAction(banned ? 'BAN_USER' : 'UNBAN_USER', key, { reason });
+  auditAction(req, banned ? 'BAN_USER' : 'UNBAN_USER', { targetEmail: key, reason });
   res.json({ ok: true, banned });
 });
 
@@ -2427,7 +2427,7 @@ app.post('/api/admin/users/:email/shadow-ban', adminRateLimiter, requireSuperAdm
   const { shadowBanned = true } = req.body || {};
   users[key].shadowBanned = shadowBanned;
   saveJSON(USERS_FILE, users);
-  auditAction(shadowBanned ? 'SHADOW_BAN_USER' : 'UNSHADOW_BAN_USER', key, {});
+  auditAction(req, shadowBanned ? 'SHADOW_BAN_USER' : 'UNSHADOW_BAN_USER', { targetEmail: key });
   res.json({ ok: true, shadowBanned });
 });
 
@@ -2448,7 +2448,7 @@ app.post('/api/admin/users/:email/grant-premium', adminRateLimiter, requireSuper
     users[key].premiumGrantedBy  = 'admin';
   }
   saveJSON(USERS_FILE, users);
-  auditAction(revoke ? 'REVOKE_PREMIUM' : 'GRANT_PREMIUM', key, { plan });
+  auditAction(req, revoke ? 'REVOKE_PREMIUM' : 'GRANT_PREMIUM', { targetEmail: key, plan });
   res.json({ ok: true, revoked: revoke });
 });
 
@@ -2459,7 +2459,7 @@ app.post('/api/admin/users/:email/grant-beta', adminRateLimiter, requireSuperAdm
   if (!users[key]) return res.status(404).json({ error: 'Utilisateur introuvable.' });
   users[key].betaAccess = true;
   saveJSON(USERS_FILE, users);
-  auditAction('GRANT_BETA', key, {});
+  auditAction(req, 'GRANT_BETA', { targetEmail: key });
   res.json({ ok: true });
 });
 
@@ -2475,7 +2475,7 @@ app.post('/api/admin/beta/invite', adminRateLimiter, requireSuperAdmin, async (r
     catch (err) { console.error('[beta-invite] email error:', err.message); }
   }
 
-  auditAction('GENERATE_INVITE_CODES', email || 'batch', { count: codes.length });
+  auditAction(req, 'GENERATE_INVITE_CODES', { targetEmail: email || 'batch', count: codes.length });
   res.json({ ok: true, codes });
 });
 
@@ -2494,7 +2494,7 @@ app.post('/api/admin/beta/waitlist/notify', adminRateLimiter, requireSuperAdmin,
   try {
     await EmailQueue.sendBetaInvite(email, code);
     Waitlist.markNotified(email);
-    auditAction('NOTIFY_WAITLIST', email, { code });
+    auditAction(req, 'NOTIFY_WAITLIST', { targetEmail: email, code });
     res.json({ ok: true, code });
   } catch (err) {
     res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Erreur interne.' : err.message });
@@ -2537,7 +2537,6 @@ app.get('/api/public-stats', (req, res) => {
 // ============================================================
 //  YOUTUBE TRANSCRIPT — Sprint 3
 // ============================================================
-const { ipKeyGenerator } = require('express-rate-limit');
 const ytTranscriptLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, max: 30,
   standardHeaders: true, legacyHeaders: false,

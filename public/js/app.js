@@ -135,22 +135,25 @@ window.hideWaitlistModal = function () {
   modal.setAttribute('aria-hidden', 'true');
 };
 
-// startCheckout — LAUNCH MODE: shows waitlist modal instead of Stripe redirect.
-// Stripe code is preserved below (commented) for easy reactivation.
-window.startCheckout = function (plan) {
-  if (!plan) return;
-  if (window.hidePremiumModal) window.hidePremiumModal();
-  setTimeout(function () {
-    if (window.showWaitlistModal) window.showWaitlistModal();
-  }, 200);
-};
-
-/* STRIPE CHECKOUT — reactivate by restoring this function:
+// startCheckout — auto-détecte si Stripe est configuré.
+// Avec des clés live Stripe dans .env → redirige vers le paiement.
+// Sans Stripe configuré → ouvre la waitlist (mode beta).
 window.startCheckout = async function (plan) {
   if (!plan) return;
   var modal = document.getElementById('modal-premium');
   var btns  = modal ? Array.from(modal.querySelectorAll('.btn-checkout')) : [];
-  btns.forEach(function (b) { b.disabled = true; b.textContent = t('premium_cta_wait'); });
+
+  // Si Stripe n'est pas chargé côté serveur → waitlist
+  var stripeAvailable = !!(window._stripePublicKey);
+  if (!stripeAvailable) {
+    if (window.hidePremiumModal) window.hidePremiumModal();
+    setTimeout(function () {
+      if (window.showWaitlistModal) window.showWaitlistModal();
+    }, 200);
+    return;
+  }
+
+  btns.forEach(function (b) { b.disabled = true; b.textContent = t('premium_cta_wait') || 'Redirection…'; });
   try {
     var headers = { 'Content-Type': 'application/json' };
     if (window.auth && window.auth.isLoggedIn()) headers['x-auth-token'] = window.auth.token;
@@ -172,7 +175,6 @@ window.startCheckout = async function (plan) {
     if (b.dataset.originalText) b.textContent = b.dataset.originalText;
   });
 };
-*/
 
 // ============================================================
 //  CAROUSEL ROTATIF — 24 éléments × 20 langues
@@ -242,6 +244,8 @@ const ROTATING_GRID_ITEMS = [
 // ============================================================
 document.addEventListener('DOMContentLoaded', function () {
 
+  function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
   // --- Éléments DOM ---
   const courseInput       = document.getElementById('course-input');
   const charCount         = document.getElementById('char-count');
@@ -293,7 +297,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // --- Tarification régionale — avec retry silencieux ---
+  // --- Config Stripe + Tarification régionale ---
+  fetch('/api/config')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (cfg) {
+      if (cfg && cfg.stripePublicKey) window._stripePublicKey = cfg.stripePublicKey;
+    }).catch(function () {});
+
   (window.fetchRetry || fetch)('/api/country', {}, 1)
     .then(function (r) { return r.json(); })
     .then(function (pricing) {
@@ -1080,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', function () {
           correctByDifficulty: state.correctByDifficulty,
         }),
       })
-        .then(function (r) { return r.json(); })
+        .then(function (r) { if (!r.ok) throw new Error('quiz-result'); return r.json(); })
         .then(function (data) { if (data.xpGain) showGamiResult(data); })
         .catch(function () {});
     }
@@ -1163,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', function () {
           '<div class="gami-level-sub">' + (prog.current || 0) + ' / ' + (prog.needed || 100) + ' XP</div>' +
         '</div>' +
       '</div>' +
-      (data.motivational ? '<div class="gami-motivational">' + data.motivational + '</div>' : '') +
+      (data.motivational ? '<div class="gami-motivational">' + esc(data.motivational) + '</div>' : '') +
       '<a class="engage-cta" href="#" id="engage-cta-btn">' +
         '<div class="engage-cta-text">' +
           '<strong>' + t('gami_cta_strong') + '</strong>' +
@@ -1251,7 +1261,7 @@ document.addEventListener('DOMContentLoaded', function () {
       '<div class="badge-toast-icon">' + (m.icon || '🎯') + '</div>' +
       '<div class="badge-toast-body">' +
         '<div class="badge-toast-tag">' + t('mission_done') + '</div>' +
-        '<div class="badge-toast-name">' + (m.label || '') + '</div>' +
+        '<div class="badge-toast-name">' + esc(m.label || '') + '</div>' +
         '<div class="badge-toast-desc">+' + (m.xp || 0) + ' XP bonus</div>' +
       '</div>';
     document.body.appendChild(toast);
@@ -1266,8 +1276,8 @@ document.addEventListener('DOMContentLoaded', function () {
       '<div class="badge-toast-icon">' + (badge.icon || '🏅') + '</div>' +
       '<div class="badge-toast-body">' +
         '<div class="badge-toast-tag">' + t('badge_unlocked') + '</div>' +
-        '<div class="badge-toast-name">' + (badge.name || '') + '</div>' +
-        '<div class="badge-toast-desc">' + (badge.desc || '') + '</div>' +
+        '<div class="badge-toast-name">' + esc(badge.name || '') + '</div>' +
+        '<div class="badge-toast-desc">' + esc(badge.desc || '') + '</div>' +
       '</div>';
     document.body.appendChild(toast);
     setTimeout(function () { toast.remove(); }, 3400);
@@ -1368,6 +1378,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const headers = {};
       if (state.premiumToken) headers['x-premium-token'] = state.premiumToken;
       const res  = await fetch('/api/usage', { headers });
+      if (!res.ok) return;
       const data = await res.json();
       updateUsage(data.remaining, data.isPremium);
     } catch (_) {}
@@ -1381,7 +1392,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (usageCounter) usageCounter.classList.add('hidden');
       return;
     }
-    usageBadge.classList.remove('hidden');
+    if (usageBadge) usageBadge.classList.remove('hidden');
     if (isPremium) {
       state.isPremium              = true;
       usageText.textContent        = t('usage_premium');

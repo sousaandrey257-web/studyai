@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_URL  = process.env.APP_URL || 'https://studyai.app';
+const APP_URL  = process.env.SITE_URL?.trim() || process.env.APP_URL?.trim() || 'https://studyai.app';
 const APP_NAME = 'StudyAI';
 
 const BASE = (content) => `<!DOCTYPE html>
