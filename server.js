@@ -479,6 +479,36 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ============================================================
+//  LIVE ACTIVITY TRACKER — utilisateurs actifs temps réel
+// ============================================================
+const _liveActivity = new Map(); // key → { lastSeen, isRegistered, userId }
+const _genCountsToday = { total: 0, date: '' }; // compteur générations du jour
+
+function _trackActivity(req) {
+  const d = today();
+  if (_genCountsToday.date !== d) { _genCountsToday.total = 0; _genCountsToday.date = d; }
+  _genCountsToday.total++;
+  const key = req.user?.userId || getClientIP(req);
+  _liveActivity.set(key, { lastSeen: Date.now(), isRegistered: !!req.user?.userId, userId: req.user?.userId || null });
+  if (_liveActivity.size > 5000) {
+    const cutoff = Date.now() - 60 * 60 * 1000;
+    for (const [k, v] of _liveActivity) { if (v.lastSeen < cutoff) _liveActivity.delete(k); }
+  }
+}
+
+function getLiveStats() {
+  const now = Date.now();
+  const w15 = now - 15 * 60 * 1000;
+  const w60 = now - 60 * 60 * 1000;
+  let active15 = 0, active60 = 0, registeredActive = 0;
+  for (const v of _liveActivity.values()) {
+    if (v.lastSeen >= w15) { active15++; if (v.isRegistered) registeredActive++; }
+    if (v.lastSeen >= w60) active60++;
+  }
+  return { active15min: active15, active60min: active60, registeredActive15min: registeredActive, generationsToday: _genCountsToday.total };
+}
+
+// ============================================================
 //  SYSTÈME FREEMIUM
 // ============================================================
 const FREE_LIMIT  = 12;
@@ -1780,6 +1810,7 @@ app.get('/api/generate', (req, res) => {
   res.status(405).json({ error: 'Cette route doit être appelée en POST, pas en GET.' });
 });
 app.post('/api/generate', optionalAuth, async (req, res) => {
+  _trackActivity(req);
   const admin  = isAdmin(req);
   const ip     = getClientIP(req);
   const token  = req.headers['x-premium-token'] || '';
@@ -2509,6 +2540,75 @@ app.get('/api/admin/email-stats', adminRateLimiter, requireSuperAdmin, (req, res
 // GET /api/admin/memory — memory watchdog stats
 app.get('/api/admin/memory', adminRateLimiter, requireSuperAdmin, (req, res) => {
   res.json(MemoryWatchdog.getStats());
+});
+
+// GET /api/admin/live-stats — tableau de bord temps réel complet
+app.get('/api/admin/live-stats', adminRateLimiter, requireSuperAdmin, async (req, res) => {
+  auditAction(req, 'view_live_stats');
+  try {
+    const users   = loadJSON(USERS_FILE, {});
+    const content = loadJSON(CONTENT_FILE, {});
+    const d       = today();
+
+    const totalUsers     = Object.keys(users).length;
+    const todayUsers     = Object.values(users).filter(u => u.createdAt?.startsWith(d)).length;
+    const bannedUsers    = Object.values(users).filter(u => u.banned).length;
+    const premiumCount   = [...premiumUsers.values()].filter(u => u.active).length;
+    const totalPacks     = Object.values(content).reduce((s, a) => s + (Array.isArray(a) ? a.length : 0), 0);
+    const totalQuizzes   = Object.values(users).reduce((s, u) => s + (u.gamification?.totalQuizzes || 0), 0);
+    const totalXP        = Object.values(users).reduce((s, u) => s + (u.gamification?.xp || 0), 0);
+
+    // Top 5 active users (most XP)
+    const topUsers = Object.values(users)
+      .filter(u => u.gamification?.xp > 0)
+      .sort((a, b) => (b.gamification?.xp || 0) - (a.gamification?.xp || 0))
+      .slice(0, 5)
+      .map(u => ({ email: u.email.replace(/^(.{2}).*(@.*)$/, '$1…$2'), xp: u.gamification?.xp || 0, level: u.gamification?.level || 1, streak: u.gamification?.streak || 0 }));
+
+    // Security
+    const sm       = SafeMode.getStatus();
+    const abuseLog = AntiFraud.getAbuseLog() || [];
+    const shadow   = ShadowMode.listActive() || [];
+    const mem      = process.memoryUsage();
+
+    let secScore = 100;
+    if (sm.active)                     secScore -= 20;
+    if (!process.env.SUPER_ADMIN_EMAIL) secScore -= 25;
+    if (!process.env.JWT_SECRET)       secScore -= 20;
+    secScore = Math.max(0, secScore);
+
+    // Health
+    let health = { status: 'ok', components: {} };
+    try { health = await HealthCheck.runFullCheck(); } catch {}
+
+    const live = getLiveStats();
+
+    res.json({
+      ts: new Date().toISOString(),
+      live,
+      users: { total: totalUsers, today: todayUsers, banned: bannedUsers, premium: premiumCount, topUsers },
+      content: { totalPacks, totalQuizzes, totalXP },
+      security: {
+        score: secScore,
+        label: secScore >= 80 ? 'good' : secScore >= 60 ? 'warning' : 'critical',
+        safeMode: sm.active,
+        abuseEvents: abuseLog.length,
+        shadowUsers: shadow.length,
+      },
+      system: {
+        uptimeSec:   Math.round(process.uptime()),
+        rss:         `${Math.round(mem.rss      / 1024 / 1024)}MB`,
+        heapUsed:    `${Math.round(mem.heapUsed / 1024 / 1024)}MB`,
+        nodeVersion: process.version,
+      },
+      health: health.status,
+      components: health.components || {},
+      stripe: { configured: !!process.env.STRIPE_SECRET_KEY, mode: (process.env.STRIPE_SECRET_KEY || '').startsWith('sk_live_') ? 'live' : 'test' },
+      ai: { provider: process.env.GROQ_API_KEY ? 'Groq' : 'OpenAI', model: MODEL },
+    });
+  } catch (err) {
+    res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Erreur interne.' : err.message });
+  }
 });
 
 // ============================================================
