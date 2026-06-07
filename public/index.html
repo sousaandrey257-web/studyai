@@ -955,7 +955,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <script src="js/fingerprint.js?v=1" defer></script>
   <script src="js/pow.js?v=1" defer></script>
   <!-- i18n must load BEFORE app.js -->
-  <script src="js/i18n.js?v=37"></script>
+  <script src="js/i18n.js?v=38"></script>
   <script src="js/auth.js?v=7"></script>
   <script src="js/app.js?v=46"></script>
   <script src="js/ui.js?v=2"></script>
@@ -1274,24 +1274,24 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;align-items:center;justify-content:center">
     <div style="background:#0e0e18;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:36px 32px;max-width:420px;width:92vw;text-align:center;box-shadow:0 0 80px rgba(124,58,237,.2)">
       <div style="font-size:2.2rem;margin-bottom:12px">⚡</div>
-      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;letter-spacing:-.03em;color:#f1f5f9">Bienvenue sur StudyAI !</h2>
-      <p style="color:#94a3b8;font-size:.9rem;margin-bottom:28px;line-height:1.6">Transforme n'importe quel cours en quiz et flashcards en 45 secondes.</p>
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;letter-spacing:-.03em;color:#f1f5f9" data-i18n="onboarding_title">Bienvenue sur StudyAI !</h2>
+      <p style="color:#94a3b8;font-size:.9rem;margin-bottom:28px;line-height:1.6" data-i18n="onboarding_sub">Transforme n'importe quel cours en quiz et flashcards en 45 secondes.</p>
       <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:28px">
         <div style="display:flex;align-items:center;gap:14px;background:#13131f;border-radius:12px;padding:14px 16px;text-align:left">
           <div style="font-size:1.6rem;flex-shrink:0">1️⃣</div>
-          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem">Colle ton cours</div><div style="color:#64748b;font-size:.8rem;margin-top:2px">Texte, chapitre, notes — ou juste un sujet</div></div>
+          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem" data-i18n="onboarding_step1_title">Colle ton cours</div><div style="color:#64748b;font-size:.8rem;margin-top:2px" data-i18n="onboarding_step1_desc">Texte, chapitre, notes — ou juste un sujet</div></div>
         </div>
         <div style="display:flex;align-items:center;gap:14px;background:#13131f;border-radius:12px;padding:14px 16px;text-align:left">
           <div style="font-size:1.6rem;flex-shrink:0">2️⃣</div>
-          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem">Clique "Analyser"</div><div style="color:#64748b;font-size:.8rem;margin-top:2px">L'IA génère ton pack d'étude en 45 secondes</div></div>
+          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem" data-i18n="onboarding_step2_title">Clique "Analyser"</div><div style="color:#64748b;font-size:.8rem;margin-top:2px" data-i18n="onboarding_step2_desc">L'IA génère ton pack d'étude en 45 secondes</div></div>
         </div>
         <div style="display:flex;align-items:center;gap:14px;background:#13131f;border-radius:12px;padding:14px 16px;text-align:left">
           <div style="font-size:1.6rem;flex-shrink:0">3️⃣</div>
-          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem">Révise et progresse</div><div style="color:#64748b;font-size:.8rem;margin-top:2px">Résumé · Flashcards · Quiz interactif</div></div>
+          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem" data-i18n="onboarding_step3_title">Révise et progresse</div><div style="color:#64748b;font-size:.8rem;margin-top:2px" data-i18n="onboarding_step3_desc">Résumé · Flashcards · Quiz interactif</div></div>
         </div>
       </div>
-      <button id="onboarding-start" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#6366f1);border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:-.01em">C'est parti ! ⚡</button>
-      <p style="color:#334155;font-size:.75rem;margin-top:12px">Gratuit · 12 générations par jour · Sans carte bancaire</p>
+      <button id="onboarding-start" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#6366f1);border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:-.01em" data-i18n="onboarding_cta">C'est parti ! ⚡</button>
+      <p style="color:#334155;font-size:.75rem;margin-top:12px" data-i18n="onboarding_free_note">Gratuit · 12 générations par jour · Sans carte bancaire</p>
     </div>
   </div>
 

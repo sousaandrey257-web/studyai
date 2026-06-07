@@ -676,6 +676,17 @@ const translations = {
     aria_nav:           'Navigation',
     aria_sfx:           'Sons',
   },
+    onboarding_title:              'Bienvenue sur StudyAI !',
+    onboarding_sub:              'Transforme n\'importe quel cours en quiz et flashcards en 45 secondes.',
+    onboarding_step1_title:              'Colle ton cours',
+    onboarding_step1_desc:              'Texte, chapitre, notes — ou juste un sujet',
+    onboarding_step2_title:              'Clique "Analyser"',
+    onboarding_step2_desc:              'L\'IA génère ton pack d\'étude en 45 secondes',
+    onboarding_step3_title:              'Révise et progresse',
+    onboarding_step3_desc:              'Résumé · Flashcards · Quiz interactif',
+    onboarding_cta:              'C\'est parti ! ⚡',
+    onboarding_free_note:              'Gratuit · 12 générations par jour · Sans carte bancaire',
+
 
   // ----------------------------------------------------------
   en: {
@@ -1347,6 +1358,17 @@ const translations = {
     aria_nav:           'Navigation',
     aria_sfx:           'Sound effects',
   },
+    onboarding_title:              'Welcome to StudyAI!',
+    onboarding_sub:              'Turn any course into quizzes and flashcards in 45 seconds.',
+    onboarding_step1_title:              'Paste your course',
+    onboarding_step1_desc:              'Text, chapter, notes — or just a topic',
+    onboarding_step2_title:              'Click "Analyze"',
+    onboarding_step2_desc:              'AI generates your study pack in 45 seconds',
+    onboarding_step3_title:              'Study and progress',
+    onboarding_step3_desc:              'Summary · Flashcards · Interactive Quiz',
+    onboarding_cta:              'Let\'s go! ⚡',
+    onboarding_free_note:              'Free · 12 generations per day · No credit card',
+
 
   // ----------------------------------------------------------
   es: {
@@ -2017,6 +2039,17 @@ const translations = {
     aria_nav:           'Navegación',
     aria_sfx:           'Efectos de sonido',
   },
+    onboarding_title:              '¡Bienvenido a StudyAI!',
+    onboarding_sub:              'Transforma cualquier curso en quiz y tarjetas en 45 segundos.',
+    onboarding_step1_title:              'Pega tu curso',
+    onboarding_step1_desc:              'Texto, capítulo, notas — o solo un tema',
+    onboarding_step2_title:              'Haz clic en "Analizar"',
+    onboarding_step2_desc:              'La IA genera tu pack de estudio en 45 segundos',
+    onboarding_step3_title:              'Estudia y progresa',
+    onboarding_step3_desc:              'Resumen · Tarjetas · Quiz interactivo',
+    onboarding_cta:              '¡Vamos! ⚡',
+    onboarding_free_note:              'Gratis · 12 generaciones por día · Sin tarjeta de crédito',
+
 
   // ----------------------------------------------------------
   de: {
@@ -2687,6 +2720,17 @@ const translations = {
     aria_nav:           'Navigation',
     aria_sfx:           'Soundeffekte',
   },
+    onboarding_title:              'Willkommen bei StudyAI!',
+    onboarding_sub:              'Verwandle jeden Kurs in 45 Sekunden in Quizze und Karteikarten.',
+    onboarding_step1_title:              'Füge deinen Kurs ein',
+    onboarding_step1_desc:              'Text, Kapitel, Notizen — oder nur ein Thema',
+    onboarding_step2_title:              'Klicke auf "Analysieren"',
+    onboarding_step2_desc:              'Die KI erstellt dein Lernpaket in 45 Sekunden',
+    onboarding_step3_title:              'Lerne und schreite voran',
+    onboarding_step3_desc:              'Zusammenfassung · Karteikarten · Interaktives Quiz',
+    onboarding_cta:              'Los geht\'s! ⚡',
+    onboarding_free_note:              'Kostenlos · 12 Generierungen pro Tag · Keine Kreditkarte',
+
 
   // ----------------------------------------------------------
   pt: {
@@ -3357,6 +3401,17 @@ const translations = {
     aria_nav:           'Navegação',
     aria_sfx:           'Efeitos sonoros',
   },
+    onboarding_title:              'Bem-vindo ao StudyAI!',
+    onboarding_sub:              'Transforma qualquer curso em quizzes e flashcards em 45 segundos.',
+    onboarding_step1_title:              'Cola o teu curso',
+    onboarding_step1_desc:              'Texto, capítulo, notas — ou apenas um tema',
+    onboarding_step2_title:              'Clica em "Analisar"',
+    onboarding_step2_desc:              'A IA gera o teu pack de estudo em 45 segundos',
+    onboarding_step3_title:              'Estuda e progride',
+    onboarding_step3_desc:              'Resumo · Flashcards · Quiz interativo',
+    onboarding_cta:              'Vamos lá! ⚡',
+    onboarding_free_note:              'Gratuito · 12 gerações por dia · Sem cartão de crédito',
+
 
   // ----------------------------------------------------------
   it: {
@@ -4027,6 +4082,17 @@ const translations = {
     aria_nav:           'Navigazione',
     aria_sfx:           'Effetti sonori',
   },
+    onboarding_title:              'Benvenuto su StudyAI!',
+    onboarding_sub:              'Trasforma qualsiasi corso in quiz e flashcard in 45 secondi.',
+    onboarding_step1_title:              'Incolla il tuo corso',
+    onboarding_step1_desc:              'Testo, capitolo, appunti — o solo un argomento',
+    onboarding_step2_title:              'Clicca su "Analizza"',
+    onboarding_step2_desc:              'L\'IA genera il tuo pacchetto di studio in 45 secondi',
+    onboarding_step3_title:              'Studia e progredisci',
+    onboarding_step3_desc:              'Riassunto · Flashcard · Quiz interattivo',
+    onboarding_cta:              'Andiamo! ⚡',
+    onboarding_free_note:              'Gratuito · 12 generazioni al giorno · Senza carta di credito',
+
 
   // ----------------------------------------------------------
   zh: {
@@ -4697,6 +4763,17 @@ const translations = {
     aria_nav:           '导航',
     aria_sfx:           '音效',
   },
+    onboarding_title:              '欢迎来到 StudyAI！',
+    onboarding_sub:              '在 45 秒内将任何课程转化为测验和闪卡。',
+    onboarding_step1_title:              '粘贴你的课程',
+    onboarding_step1_desc:              '文本、章节、笔记——或只是一个主题',
+    onboarding_step2_title:              '点击"分析"',
+    onboarding_step2_desc:              'AI 在 45 秒内生成你的学习包',
+    onboarding_step3_title:              '学习并进步',
+    onboarding_step3_desc:              '摘要 · 闪卡 · 互动测验',
+    onboarding_cta:              '开始吧！⚡',
+    onboarding_free_note:              '免费 · 每天 12 次生成 · 无需信用卡',
+
 
   // ----------------------------------------------------------
   ja: {
@@ -5367,6 +5444,17 @@ const translations = {
     aria_nav:           'ナビゲーション',
     aria_sfx:           '効果音',
   },
+    onboarding_title:              'StudyAIへようこそ！',
+    onboarding_sub:              '45秒でどんな授業もクイズとフラッシュカードに変換。',
+    onboarding_step1_title:              '授業内容を貼り付け',
+    onboarding_step1_desc:              'テキスト、章、ノート — またはトピックだけでもOK',
+    onboarding_step2_title:              '「分析」をクリック',
+    onboarding_step2_desc:              'AIが45秒で学習パックを生成',
+    onboarding_step3_title:              '学習して上達しよう',
+    onboarding_step3_desc:              'まとめ · フラッシュカード · インタラクティブクイズ',
+    onboarding_cta:              '始めよう！⚡',
+    onboarding_free_note:              '無料 · 1日12回生成 · クレジットカード不要',
+
 
   // ----------------------------------------------------------
   ko: {
@@ -6037,6 +6125,17 @@ const translations = {
     aria_nav:           '내비게이션',
     aria_sfx:           '효과음',
   },
+    onboarding_title:              'StudyAI에 오신 것을 환영합니다!',
+    onboarding_sub:              '45초 만에 어떤 강의든 퀴즈와 플래시카드로 변환하세요.',
+    onboarding_step1_title:              '강의 내용 붙여넣기',
+    onboarding_step1_desc:              '텍스트, 챕터, 노트 — 또는 주제만 입력',
+    onboarding_step2_title:              '"분석" 클릭',
+    onboarding_step2_desc:              'AI가 45초 안에 학습 팩 생성',
+    onboarding_step3_title:              '학습하고 발전하세요',
+    onboarding_step3_desc:              '요약 · 플래시카드 · 인터랙티브 퀴즈',
+    onboarding_cta:              '시작하자! ⚡',
+    onboarding_free_note:              '무료 · 하루 12회 생성 · 신용카드 불필요',
+
 
   // ----------------------------------------------------------
   id: {
@@ -6707,6 +6806,17 @@ const translations = {
     aria_nav:           'Navigasi',
     aria_sfx:           'Efek suara',
   },
+    onboarding_title:              'Selamat datang di StudyAI!',
+    onboarding_sub:              'Ubah kursus apa pun menjadi kuis dan kartu belajar dalam 45 detik.',
+    onboarding_step1_title:              'Tempel kursusmu',
+    onboarding_step1_desc:              'Teks, bab, catatan — atau sekadar topik',
+    onboarding_step2_title:              'Klik "Analisis"',
+    onboarding_step2_desc:              'AI menghasilkan paket belajarmu dalam 45 detik',
+    onboarding_step3_title:              'Belajar dan berkembang',
+    onboarding_step3_desc:              'Ringkasan · Kartu · Kuis interaktif',
+    onboarding_cta:              'Ayo mulai! ⚡',
+    onboarding_free_note:              'Gratis · 12 generasi per hari · Tanpa kartu kredit',
+
 
   // ----------------------------------------------------------
   ar: {
@@ -7377,6 +7487,17 @@ const translations = {
     aria_nav:           'التنقل',
     aria_sfx:           'المؤثرات الصوتية',
   },
+    onboarding_title:              '!مرحباً بك في StudyAI',
+    onboarding_sub:              'حوّل أي درس إلى اختبارات وبطاقات دراسية في 45 ثانية.',
+    onboarding_step1_title:              'الصق دروسك',
+    onboarding_step1_desc:              'نص، فصل، ملاحظات — أو موضوع فقط',
+    onboarding_step2_title:              'انقر على "تحليل"',
+    onboarding_step2_desc:              'يولّد الذكاء الاصطناعي حزمة دراستك في 45 ثانية',
+    onboarding_step3_title:              'ادرس وتطور',
+    onboarding_step3_desc:              'ملخص · بطاقات دراسية · اختبار تفاعلي',
+    onboarding_cta:              '!هيا نبدأ ⚡',
+    onboarding_free_note:              'مجاني · 12 توليدًا يوميًا · بدون بطاقة ائتمان',
+
 
   // ----------------------------------------------------------
   th: {
@@ -8047,6 +8168,17 @@ const translations = {
     aria_nav:           'การนำทาง',
     aria_sfx:           'เอฟเฟกต์เสียง',
   },
+    onboarding_title:              'ยินดีต้อนรับสู่ StudyAI!',
+    onboarding_sub:              'แปลงบทเรียนใดก็ได้เป็นแบบทดสอบและแฟลชการ์ดใน 45 วินาที',
+    onboarding_step1_title:              'วางบทเรียนของคุณ',
+    onboarding_step1_desc:              'ข้อความ, บท, บันทึก — หรือแค่หัวข้อ',
+    onboarding_step2_title:              'คลิก "วิเคราะห์"',
+    onboarding_step2_desc:              'AI สร้างชุดการเรียนของคุณใน 45 วินาที',
+    onboarding_step3_title:              'เรียนและพัฒนา',
+    onboarding_step3_desc:              'สรุป · แฟลชการ์ด · แบบทดสอบโต้ตอบ',
+    onboarding_cta:              'ไปเลย! ⚡',
+    onboarding_free_note:              'ฟรี · 12 ครั้งต่อวัน · ไม่ต้องใช้บัตรเครดิต',
+
 
   // ----------------------------------------------------------
   tr: {
@@ -8717,6 +8849,17 @@ const translations = {
     aria_nav:           'Gezinme',
     aria_sfx:           'Ses efektleri',
   },
+    onboarding_title:              'StudyAI\'ye hoş geldin!',
+    onboarding_sub:              'Herhangi bir dersi 45 saniyede sınavlara ve flash kartlara dönüştür.',
+    onboarding_step1_title:              'Dersini yapıştır',
+    onboarding_step1_desc:              'Metin, bölüm, notlar — ya da sadece konu',
+    onboarding_step2_title:              '"Analiz Et"e tıkla',
+    onboarding_step2_desc:              'Yapay zeka 45 saniyede çalışma paketini oluşturur',
+    onboarding_step3_title:              'Çalış ve geliş',
+    onboarding_step3_desc:              'Özet · Flash Kartlar · İnteraktif Sınav',
+    onboarding_cta:              'Hadi başlayalım! ⚡',
+    onboarding_free_note:              'Ücretsiz · Günde 12 oluşturma · Kredi kartı gerekmez',
+
 
   // ----------------------------------------------------------
   nl: {
@@ -9387,6 +9530,17 @@ const translations = {
     aria_nav:           'Navigatie',
     aria_sfx:           'Geluidseffecten',
   },
+    onboarding_title:              'Welkom bij StudyAI!',
+    onboarding_sub:              'Zet elke cursus in 45 seconden om in quizzen en flashcards.',
+    onboarding_step1_title:              'Plak je cursus',
+    onboarding_step1_desc:              'Tekst, hoofdstuk, notities — of gewoon een onderwerp',
+    onboarding_step2_title:              'Klik op "Analyseren"',
+    onboarding_step2_desc:              'AI genereert je studiepakket in 45 seconden',
+    onboarding_step3_title:              'Studeer en groei',
+    onboarding_step3_desc:              'Samenvatting · Flashcards · Interactieve quiz',
+    onboarding_cta:              'Laten we gaan! ⚡',
+    onboarding_free_note:              'Gratis · 12 generaties per dag · Geen creditcard',
+
 
   // ----------------------------------------------------------
   ru: {
@@ -10057,6 +10211,17 @@ const translations = {
     aria_nav:           'Навигация',
     aria_sfx:           'Звуковые эффекты',
   },
+    onboarding_title:              'Добро пожаловать в StudyAI!',
+    onboarding_sub:              'Преврати любой курс в тесты и карточки за 45 секунд.',
+    onboarding_step1_title:              'Вставь свой курс',
+    onboarding_step1_desc:              'Текст, глава, заметки — или просто тема',
+    onboarding_step2_title:              'Нажми "Анализировать"',
+    onboarding_step2_desc:              'ИИ создаст твой учебный пакет за 45 секунд',
+    onboarding_step3_title:              'Учись и прогрессируй',
+    onboarding_step3_desc:              'Резюме · Карточки · Интерактивный тест',
+    onboarding_cta:              'Поехали! ⚡',
+    onboarding_free_note:              'Бесплатно · 12 генераций в день · Без кредитной карты',
+
 
   // ----------------------------------------------------------
   pl: {
@@ -10727,6 +10892,17 @@ const translations = {
     aria_nav:           'Nawigacja',
     aria_sfx:           'Efekty dźwiękowe',
   },
+    onboarding_title:              'Witaj w StudyAI!',
+    onboarding_sub:              'Zamień dowolny kurs w quizy i fiszki w 45 sekund.',
+    onboarding_step1_title:              'Wklej swój kurs',
+    onboarding_step1_desc:              'Tekst, rozdział, notatki — lub tylko temat',
+    onboarding_step2_title:              'Kliknij "Analizuj"',
+    onboarding_step2_desc:              'AI generuje Twój pakiet do nauki w 45 sekund',
+    onboarding_step3_title:              'Ucz się i rozwijaj',
+    onboarding_step3_desc:              'Podsumowanie · Fiszki · Quiz interaktywny',
+    onboarding_cta:              'Zaczynamy! ⚡',
+    onboarding_free_note:              'Bezpłatnie · 12 generacji dziennie · Bez karty kredytowej',
+
 
   // ----------------------------------------------------------
   vi: {
@@ -11397,6 +11573,17 @@ const translations = {
     aria_nav:           'Điều hướng',
     aria_sfx:           'Hiệu ứng âm thanh',
   },
+    onboarding_title:              'Chào mừng đến với StudyAI!',
+    onboarding_sub:              'Biến bất kỳ bài học nào thành câu hỏi và thẻ học trong 45 giây.',
+    onboarding_step1_title:              'Dán bài học của bạn',
+    onboarding_step1_desc:              'Văn bản, chương, ghi chú — hoặc chỉ là chủ đề',
+    onboarding_step2_title:              'Nhấp vào "Phân tích"',
+    onboarding_step2_desc:              'AI tạo bộ học tập của bạn trong 45 giây',
+    onboarding_step3_title:              'Học và tiến bộ',
+    onboarding_step3_desc:              'Tóm tắt · Thẻ học · Câu hỏi tương tác',
+    onboarding_cta:              'Bắt đầu thôi! ⚡',
+    onboarding_free_note:              'Miễn phí · 12 lần tạo mỗi ngày · Không cần thẻ tín dụng',
+
 
   // ----------------------------------------------------------
   hi: {
@@ -12067,6 +12254,17 @@ const translations = {
     aria_nav:           'नेविगेशन',
     aria_sfx:           'ध्वनि प्रभाव',
   },
+    onboarding_title:              'StudyAI में आपका स्वागत है!',
+    onboarding_sub:              'किसी भी कोर्स को 45 सेकंड में क्विज़ और फ्लैशकार्ड में बदलें।',
+    onboarding_step1_title:              'अपना कोर्स पेस्ट करें',
+    onboarding_step1_desc:              'टेक्स्ट, अध्याय, नोट्स — या बस एक विषय',
+    onboarding_step2_title:              '"विश्लेषण" पर क्लिक करें',
+    onboarding_step2_desc:              'AI 45 सेकंड में आपका स्टडी पैक बनाता है',
+    onboarding_step3_title:              'पढ़ें और आगे बढ़ें',
+    onboarding_step3_desc:              'सारांश · फ्लैशकार्ड · इंटरेक्टिव क्विज़',
+    onboarding_cta:              'चलिए शुरू करते हैं! ⚡',
+    onboarding_free_note:              'मुफ़्त · प्रतिदिन 12 जनरेशन · कोई क्रेडिट कार्ड नहीं',
+
 
   // ----------------------------------------------------------
   'pt-BR': {
@@ -12737,6 +12935,17 @@ const translations = {
     aria_nav:           'Navegação',
     aria_sfx:           'Efeitos sonoros',
   },
+    onboarding_title:              'Bem-vindo ao StudyAI!',
+    onboarding_sub:              'Transforme qualquer curso em quizzes e flashcards em 45 segundos.',
+    onboarding_step1_title:              'Cole seu curso',
+    onboarding_step1_desc:              'Texto, capítulo, anotações — ou só um tema',
+    onboarding_step2_title:              'Clique em "Analisar"',
+    onboarding_step2_desc:              'A IA gera seu pacote de estudos em 45 segundos',
+    onboarding_step3_title:              'Estude e progrida',
+    onboarding_step3_desc:              'Resumo · Flashcards · Quiz interativo',
+    onboarding_cta:              'Vamos lá! ⚡',
+    onboarding_free_note:              'Gratuito · 12 gerações por dia · Sem cartão de crédito',
+
 
   // ----------------------------------------------------------
   uk: {
@@ -13487,6 +13696,17 @@ window.i18n = {
   applyTranslations,
   get currentLang() { return currentLang; },
   get langs() { return Object.keys(translations); },
+    onboarding_title:              'Ласкаво просимо до StudyAI!',
+    onboarding_sub:              'Перетвори будь-який курс на тести та картки за 45 секунд.',
+    onboarding_step1_title:              'Встав свій курс',
+    onboarding_step1_desc:              'Текст, розділ, нотатки — або просто тема',
+    onboarding_step2_title:              'Натисни "Аналізувати"',
+    onboarding_step2_desc:              'ШІ створить твій навчальний пакет за 45 секунд',
+    onboarding_step3_title:              'Навчайся та розвивайся',
+    onboarding_step3_desc:              'Резюме · Картки · Інтерактивний тест',
+    onboarding_cta:              'Поїхали! ⚡',
+    onboarding_free_note:              'Безкоштовно · 12 генерацій на день · Без кредитної картки',
+
 };
 
 // Attach lang selector and apply saved/detected language on load.
