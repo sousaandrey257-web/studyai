@@ -291,19 +291,23 @@ async function fetchBattleState() {
     const res = await fetch(`${API}/battle/${battleId}/poll`, {
       headers: authHeaders(),
     });
+    if (!res.ok) return;
     const state = await res.json();
     updateOppScore(state);
     const q = state.questions?.[currentQ];
     if (q) renderQuestion(q);
-  } catch {}
+  } catch { /* réseau — ignoré, le prochain poll réessaie */ }
 }
 
 function startPollLoop() {
+  let _loopErrors = 0;
   pollTimer = setInterval(async () => {
     try {
       const res = await fetch(`${API}/battle/${battleId}/poll`, {
         headers: authHeaders(),
       });
+      if (!res.ok) { _loopErrors++; if (_loopErrors > 5) clearInterval(pollTimer); return; }
+      _loopErrors = 0;
       const state = await res.json();
       if (state.status === 'finished') {
         clearInterval(pollTimer);
@@ -312,14 +316,13 @@ function startPollLoop() {
       }
       updateOppScore(state);
 
-      // Check if opp answered current question
       const oppPlayer = (state.players || []).find(p => p.id !== myUserId);
       if (oppPlayer) {
         const oppAnswered = (oppPlayer.answers || []).length > currentQ;
         document.getElementById('opp-thinking').classList.toggle('hidden', oppAnswered);
         document.getElementById('opp-answered').classList.toggle('hidden', !oppAnswered);
       }
-    } catch {}
+    } catch { _loopErrors++; if (_loopErrors > 5) clearInterval(pollTimer); }
   }, 1800);
 }
 

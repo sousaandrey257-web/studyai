@@ -272,19 +272,22 @@
     poll();
   }
 
+  var _pollErrors = 0;
   async function poll() {
     try {
       var res  = await fetch('/api/ai/job/' + state.jobId);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       var data = await res.json();
+      _pollErrors = 0;
       setProgress(data.progress || 0, data.progressLabel || _t('up_err_unknown', 'Traitement…'));
       updateProgressSteps(data.progress || 0);
 
       if (data.status === 'done') {
         clearInterval(state.pollTimer);
-        // Fetch full result
         var rRes  = await fetch('/api/ai/job/' + state.jobId + '/result', {
           headers: AUTH_TOKEN ? { Authorization: 'Bearer ' + AUTH_TOKEN } : {},
         });
+        if (!rRes.ok) throw new Error('HTTP ' + rRes.status);
         var rData = await rRes.json();
         state.result = rData.result;
         renderResults(state.result);
@@ -294,7 +297,14 @@
         showSection('section-upload');
         flash('❌ ' + (data.error || _t('up_err_unknown', 'Erreur inconnue')));
       }
-    } catch {}
+    } catch (err) {
+      _pollErrors++;
+      if (_pollErrors >= 4) {
+        clearInterval(state.pollTimer);
+        showSection('section-upload');
+        flash('❌ ' + _t('up_err_unknown', 'Erreur réseau. Réessaie.'));
+      }
+    }
   }
 
   // ── Progress UI ───────────────────────────────────────────────

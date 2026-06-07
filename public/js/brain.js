@@ -481,6 +481,7 @@ async function deepenConcept(node) {
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify({ concept: node.name, context: node.definition || '' }),
     });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     const el = document.getElementById('sidebar-deepen-result');
     el.classList.remove('hidden');
@@ -491,7 +492,8 @@ async function deepenConcept(node) {
       ${data.common_mistakes?.length ? `<h4 style="margin-top:12px">Erreurs fréquentes</h4><ul>${data.common_mistakes.map(m => `<li>${m}</li>`).join('')}</ul>` : ''}
     `;
   } catch (err) {
-    console.error('Deepen error:', err);
+    const el = document.getElementById('sidebar-deepen-result');
+    if (el) { el.classList.remove('hidden'); el.innerHTML = '<p style="color:#f87171">❌ Erreur lors de la génération. Réessaie.</p>'; }
   } finally {
     btn.textContent = '💡 Approfondir';
     btn.disabled = false;
