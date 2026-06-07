@@ -19,15 +19,10 @@ function antiAbuseMiddleware(req, res, next) {
   if (req._adminAuth || (adminKey && req.headers['x-admin-key'] === adminKey)) return next();
 
   const fingerprint = (req.headers['x-device-fingerprint'] || '').trim().slice(0, 128);
-  if (!fingerprint) {
-    return res.status(400).json({
-      error: 'fingerprint_required',
-      message: 'Identification requise pour les utilisateurs anonymes.',
-    });
-  }
+  const ip          = getClientIP(req);
 
-  const ip     = getClientIP(req);
-  const result = antiAbuse.checkQuota(fingerprint, ip);
+  // Si pas de fingerprint (script lent ou bloqué) → utilise l'IP seule, ne bloque jamais
+  const result = antiAbuse.checkQuota(fingerprint || ip, ip);
 
   // Attach for downstream handlers and /api/quota
   req._abuseInfo = result;

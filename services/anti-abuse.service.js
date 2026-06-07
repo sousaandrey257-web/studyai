@@ -7,7 +7,7 @@ const fs     = require('fs');
 const path   = require('path');
 
 const QUOTA_FILE   = path.join(__dirname, '../data/anonymous-quotas.json');
-const MAX_PER_HOUR = 5;
+const MAX_PER_HOUR = 10;
 const COOLDOWN_MS  = 24 * 60 * 60 * 1000; // 24h after quota exhausted
 const WINDOW_MS    = 60 * 60 * 1000;       // 1h sliding window
 

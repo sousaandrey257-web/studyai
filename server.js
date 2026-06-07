@@ -377,9 +377,28 @@ app.use('/api/', (req, _res, next) => {
 });
 
 // Rate-limiting API général : 150 req / 15 min par IP
+// Clé rate-limit intelligente : userId si connecté, IP sinon.
+// Résout le problème NAT scolaire (30 élèves derrière la même IP).
+function _rlKey(req) {
+  const token = req.headers['x-auth-token'];
+  if (token) {
+    try {
+      const d = jwt.verify(token, JWT_SECRET || 'dev', { algorithms: ['HS256'] });
+      if (d.userId) return `u:${d.userId}`;
+    } catch {}
+  }
+  return (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+    || req.socket?.remoteAddress || 'unknown';
+}
+
+// Rate-limiting global : 500/15min par userId (connecté) ou 200/15min par IP (anonyme)
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 150,
+  max: (req) => {
+    const token = req.headers['x-auth-token'];
+    return token ? 500 : 200;
+  },
+  keyGenerator: _rlKey,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Trop de requêtes. Réessayez dans quelques minutes.' },
@@ -387,10 +406,14 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
-// Rate-limiting sur /api/generate : 100 req / 15 min (anti-abus, la FREE_LIMIT journalière fait le vrai contrôle)
+// Rate-limiting sur /api/generate : 50/15min par userId ou 20/15min par IP anonyme
 const generateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: (req) => {
+    const token = req.headers['x-auth-token'];
+    return token ? 50 : 20;
+  },
+  keyGenerator: _rlKey,
   message: { error: 'rate_limited', message: 'Trop de requêtes. Réessayez dans quelques minutes.' },
   skip: (req) => isAdmin(req),
 });
