@@ -2140,7 +2140,7 @@ body::before {
 }
 .wl-input:focus {
   outline: none;
-  border-color: var(--accent);
+  border-color: var(--primary-light);
 }
 .wl-message {
   margin-top: 14px;
@@ -2300,7 +2300,7 @@ body::before {
   padding: 16px 12px;
   border-radius: 14px;
   border: 1.5px solid var(--border);
-  background: var(--card-bg, var(--bg-card));
+  background: var(--surface-2);
   cursor: pointer;
   transition: border-color .15s, transform .12s, box-shadow .15s, background .15s;
   text-align: center;
@@ -2308,14 +2308,14 @@ body::before {
 }
 .exam-example-card:hover {
   border-color: #ef4444;
-  background: color-mix(in srgb, #ef4444 8%, var(--card-bg, var(--bg-card)));
+  background: color-mix(in srgb, #ef4444 8%, var(--surface-2));
   transform: translateY(-3px);
   box-shadow: 0 6px 18px color-mix(in srgb, #ef4444 20%, transparent);
 }
 .exam-example-card:active { transform: translateY(0); }
 .exam-example-card--active {
   border-color: #ef4444;
-  background: color-mix(in srgb, #ef4444 12%, var(--card-bg, var(--bg-card)));
+  background: color-mix(in srgb, #ef4444 12%, var(--surface-2));
   box-shadow: 0 4px 14px color-mix(in srgb, #ef4444 25%, transparent);
 }
 .exam-example-card-icon  { font-size: 1.8rem; line-height: 1; }

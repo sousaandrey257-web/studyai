@@ -1692,7 +1692,7 @@ document.addEventListener('DOMContentLoaded', function () {
       a.download = 'studyai-flashcards.txt';
       a.click();
       URL.revokeObjectURL(url);
-      showToast('🎴 ' + (t('toast_anki_exported') || 'Flashcards exportées pour Anki !'), 'success');
+      showToast('🎴 ' + t('toast_anki_exported'), 'success');
     };
 
     if (btnShare) btnShare.onclick = function() {
@@ -1700,7 +1700,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var url   = window.location.origin + '/?topic=' + encodeURIComponent(topic);
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(function() {
-          showToast('🔗 ' + (t('toast_share_copied') || 'Lien copié ! Partage-le à tes amis.'), 'success');
+          showToast('🔗 ' + t('toast_share_copied'), 'success');
         });
       } else {
         window.prompt('Copie ce lien :', url);

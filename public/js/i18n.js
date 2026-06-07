@@ -686,6 +686,9 @@ const translations = {
     onboarding_step3_desc:              'Résumé · Flashcards · Quiz interactif',
     onboarding_cta:              'C\'est parti ! ⚡',
     onboarding_free_note:              'Gratuit · 12 générations par jour · Sans carte bancaire',
+    toast_anki_exported:              'Flashcards exportées pour Anki !',
+    toast_share_copied:              'Lien copié ! Partage à tes amis.',
+
 
 
   // ----------------------------------------------------------
@@ -1368,6 +1371,9 @@ const translations = {
     onboarding_step3_desc:              'Summary · Flashcards · Interactive Quiz',
     onboarding_cta:              'Let\'s go! ⚡',
     onboarding_free_note:              'Free · 12 generations per day · No credit card',
+    toast_anki_exported:              'Flashcards exported for Anki!',
+    toast_share_copied:              'Link copied! Share it with your friends.',
+
 
 
   // ----------------------------------------------------------
@@ -2049,6 +2055,9 @@ const translations = {
     onboarding_step3_desc:              'Resumen · Tarjetas · Quiz interactivo',
     onboarding_cta:              '¡Vamos! ⚡',
     onboarding_free_note:              'Gratis · 12 generaciones por día · Sin tarjeta de crédito',
+    toast_anki_exported:              '¡Tarjetas exportadas para Anki!',
+    toast_share_copied:              '¡Enlace copiado! Compártelo con tus amigos.',
+
 
 
   // ----------------------------------------------------------
@@ -2730,6 +2739,9 @@ const translations = {
     onboarding_step3_desc:              'Zusammenfassung · Karteikarten · Interaktives Quiz',
     onboarding_cta:              'Los geht\'s! ⚡',
     onboarding_free_note:              'Kostenlos · 12 Generierungen pro Tag · Keine Kreditkarte',
+    toast_anki_exported:              'Karteikarten für Anki exportiert!',
+    toast_share_copied:              'Link kopiert! Teile ihn mit deinen Freunden.',
+
 
 
   // ----------------------------------------------------------
@@ -3411,6 +3423,9 @@ const translations = {
     onboarding_step3_desc:              'Resumo · Flashcards · Quiz interativo',
     onboarding_cta:              'Vamos lá! ⚡',
     onboarding_free_note:              'Gratuito · 12 gerações por dia · Sem cartão de crédito',
+    toast_anki_exported:              'Flashcards exportados para o Anki!',
+    toast_share_copied:              'Link copiado! Partilha com os teus amigos.',
+
 
 
   // ----------------------------------------------------------
@@ -4092,6 +4107,9 @@ const translations = {
     onboarding_step3_desc:              'Riassunto · Flashcard · Quiz interattivo',
     onboarding_cta:              'Andiamo! ⚡',
     onboarding_free_note:              'Gratuito · 12 generazioni al giorno · Senza carta di credito',
+    toast_anki_exported:              'Flashcard esportate per Anki!',
+    toast_share_copied:              'Link copiato! Condividilo con i tuoi amici.',
+
 
 
   // ----------------------------------------------------------
@@ -4773,6 +4791,9 @@ const translations = {
     onboarding_step3_desc:              '摘要 · 闪卡 · 互动测验',
     onboarding_cta:              '开始吧！⚡',
     onboarding_free_note:              '免费 · 每天 12 次生成 · 无需信用卡',
+    toast_anki_exported:              '闪卡已导出到 Anki！',
+    toast_share_copied:              '链接已复制！分享给你的朋友。',
+
 
 
   // ----------------------------------------------------------
@@ -5454,6 +5475,9 @@ const translations = {
     onboarding_step3_desc:              'まとめ · フラッシュカード · インタラクティブクイズ',
     onboarding_cta:              '始めよう！⚡',
     onboarding_free_note:              '無料 · 1日12回生成 · クレジットカード不要',
+    toast_anki_exported:              'AnkiにFlashcardをエクスポートしました！',
+    toast_share_copied:              'リンクをコピーしました！友達にシェアしよう。',
+
 
 
   // ----------------------------------------------------------
@@ -6135,6 +6159,9 @@ const translations = {
     onboarding_step3_desc:              '요약 · 플래시카드 · 인터랙티브 퀴즈',
     onboarding_cta:              '시작하자! ⚡',
     onboarding_free_note:              '무료 · 하루 12회 생성 · 신용카드 불필요',
+    toast_anki_exported:              '플래시카드가 Anki로 내보내졌습니다!',
+    toast_share_copied:              '링크가 복사됐습니다! 친구에게 공유하세요.',
+
 
 
   // ----------------------------------------------------------
@@ -6816,6 +6843,9 @@ const translations = {
     onboarding_step3_desc:              'Ringkasan · Kartu · Kuis interaktif',
     onboarding_cta:              'Ayo mulai! ⚡',
     onboarding_free_note:              'Gratis · 12 generasi per hari · Tanpa kartu kredit',
+    toast_anki_exported:              'Kartu belajar diekspor ke Anki!',
+    toast_share_copied:              'Tautan disalin! Bagikan ke temanmu.',
+
 
 
   // ----------------------------------------------------------
@@ -7497,6 +7527,9 @@ const translations = {
     onboarding_step3_desc:              'ملخص · بطاقات دراسية · اختبار تفاعلي',
     onboarding_cta:              '!هيا نبدأ ⚡',
     onboarding_free_note:              'مجاني · 12 توليدًا يوميًا · بدون بطاقة ائتمان',
+    toast_anki_exported:              'تم تصدير البطاقات إلى Anki!',
+    toast_share_copied:              'تم نسخ الرابط! شاركه مع أصدقائك.',
+
 
 
   // ----------------------------------------------------------
@@ -8178,6 +8211,9 @@ const translations = {
     onboarding_step3_desc:              'สรุป · แฟลชการ์ด · แบบทดสอบโต้ตอบ',
     onboarding_cta:              'ไปเลย! ⚡',
     onboarding_free_note:              'ฟรี · 12 ครั้งต่อวัน · ไม่ต้องใช้บัตรเครดิต',
+    toast_anki_exported:              'ส่งออกแฟลชการ์ดไปยัง Anki แล้ว!',
+    toast_share_copied:              'คัดลอกลิงก์แล้ว! แชร์ให้เพื่อนของคุณ',
+
 
 
   // ----------------------------------------------------------
@@ -8859,6 +8895,9 @@ const translations = {
     onboarding_step3_desc:              'Özet · Flash Kartlar · İnteraktif Sınav',
     onboarding_cta:              'Hadi başlayalım! ⚡',
     onboarding_free_note:              'Ücretsiz · Günde 12 oluşturma · Kredi kartı gerekmez',
+    toast_anki_exported:              'Flash kartlar Anki\'ye dışa aktarıldı!',
+    toast_share_copied:              'Bağlantı kopyalandı! Arkadaşlarınla paylaş.',
+
 
 
   // ----------------------------------------------------------
@@ -9540,6 +9579,9 @@ const translations = {
     onboarding_step3_desc:              'Samenvatting · Flashcards · Interactieve quiz',
     onboarding_cta:              'Laten we gaan! ⚡',
     onboarding_free_note:              'Gratis · 12 generaties per dag · Geen creditcard',
+    toast_anki_exported:              'Flashcards geëxporteerd naar Anki!',
+    toast_share_copied:              'Link gekopieerd! Deel het met je vrienden.',
+
 
 
   // ----------------------------------------------------------
@@ -10221,6 +10263,9 @@ const translations = {
     onboarding_step3_desc:              'Резюме · Карточки · Интерактивный тест',
     onboarding_cta:              'Поехали! ⚡',
     onboarding_free_note:              'Бесплатно · 12 генераций в день · Без кредитной карты',
+    toast_anki_exported:              'Карточки экспортированы в Anki!',
+    toast_share_copied:              'Ссылка скопирована! Поделись с друзьями.',
+
 
 
   // ----------------------------------------------------------
@@ -10902,6 +10947,9 @@ const translations = {
     onboarding_step3_desc:              'Podsumowanie · Fiszki · Quiz interaktywny',
     onboarding_cta:              'Zaczynamy! ⚡',
     onboarding_free_note:              'Bezpłatnie · 12 generacji dziennie · Bez karty kredytowej',
+    toast_anki_exported:              'Fiszki wyeksportowane do Anki!',
+    toast_share_copied:              'Link skopiowany! Udostępnij znajomym.',
+
 
 
   // ----------------------------------------------------------
@@ -11583,6 +11631,9 @@ const translations = {
     onboarding_step3_desc:              'Tóm tắt · Thẻ học · Câu hỏi tương tác',
     onboarding_cta:              'Bắt đầu thôi! ⚡',
     onboarding_free_note:              'Miễn phí · 12 lần tạo mỗi ngày · Không cần thẻ tín dụng',
+    toast_anki_exported:              'Đã xuất thẻ học sang Anki!',
+    toast_share_copied:              'Đã sao chép liên kết! Chia sẻ với bạn bè.',
+
 
 
   // ----------------------------------------------------------
@@ -12264,6 +12315,9 @@ const translations = {
     onboarding_step3_desc:              'सारांश · फ्लैशकार्ड · इंटरेक्टिव क्विज़',
     onboarding_cta:              'चलिए शुरू करते हैं! ⚡',
     onboarding_free_note:              'मुफ़्त · प्रतिदिन 12 जनरेशन · कोई क्रेडिट कार्ड नहीं',
+    toast_anki_exported:              'फ्लैशकार्ड Anki में एक्सपोर्ट हो गए!',
+    toast_share_copied:              'लिंक कॉपी हो गया! दोस्तों के साथ शेयर करें।',
+
 
 
   // ----------------------------------------------------------
@@ -12945,6 +12999,9 @@ const translations = {
     onboarding_step3_desc:              'Resumo · Flashcards · Quiz interativo',
     onboarding_cta:              'Vamos lá! ⚡',
     onboarding_free_note:              'Gratuito · 12 gerações por dia · Sem cartão de crédito',
+    toast_anki_exported:              'Flashcards exportados para o Anki!',
+    toast_share_copied:              'Link copiado! Compartilhe com seus amigos.',
+
 
 
   // ----------------------------------------------------------
@@ -13706,6 +13763,9 @@ window.i18n = {
     onboarding_step3_desc:              'Резюме · Картки · Інтерактивний тест',
     onboarding_cta:              'Поїхали! ⚡',
     onboarding_free_note:              'Безкоштовно · 12 генерацій на день · Без кредитної картки',
+    toast_anki_exported:              'Картки експортовано до Anki!',
+    toast_share_copied:              'Посилання скопійовано! Поділися з друзями.',
+
 
 };
 
