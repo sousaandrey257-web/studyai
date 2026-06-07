@@ -2542,6 +2542,165 @@ app.get('/api/admin/memory', adminRateLimiter, requireSuperAdmin, (req, res) => 
   res.json(MemoryWatchdog.getStats());
 });
 
+// ── Amélioration 1 : Graphe 7 jours ──────────────────────────────────────────
+// GET /api/admin/weekly-stats — inscriptions + générations des 7 derniers jours
+app.get('/api/admin/weekly-stats', adminRateLimiter, requireSuperAdmin, (req, res) => {
+  auditAction(req, 'view_weekly_stats');
+  try {
+    const users   = loadJSON(USERS_FILE, {});
+    const content = loadJSON(CONTENT_FILE, {});
+
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      days.push(d.toISOString().split('T')[0]);
+    }
+
+    const registrations = {};
+    const generations   = {};
+    days.forEach(d => { registrations[d] = 0; generations[d] = 0; });
+
+    Object.values(users).forEach(u => {
+      const d = u.createdAt?.split('T')[0];
+      if (d && registrations[d] !== undefined) registrations[d]++;
+    });
+
+    Object.values(content).forEach(packs => {
+      if (!Array.isArray(packs)) return;
+      packs.forEach(p => {
+        const d = p.createdAt?.split('T')[0];
+        if (d && generations[d] !== undefined) generations[d]++;
+      });
+    });
+
+    res.json({
+      days,
+      registrations: days.map(d => registrations[d]),
+      generations:   days.map(d => generations[d]),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Amélioration 2 : Revenus Stripe ──────────────────────────────────────────
+// GET /api/admin/stripe-revenue — MRR, paiements récents, abonnements actifs
+app.get('/api/admin/stripe-revenue', adminRateLimiter, requireSuperAdmin, async (req, res) => {
+  auditAction(req, 'view_stripe_revenue');
+  if (!stripe) return res.json({ configured: false });
+  try {
+    const mode = (process.env.STRIPE_SECRET_KEY || '').startsWith('sk_live_') ? 'live' : 'test';
+
+    // Abonnements actifs
+    const subs = await stripe.subscriptions.list({ status: 'active', limit: 100 });
+    const activeSubs = subs.data.length;
+
+    // Paiements des 30 derniers jours
+    const since = Math.floor(Date.now() / 1000) - 30 * 24 * 3600;
+    const charges = await stripe.charges.list({ limit: 100, created: { gte: since } });
+    const successfulCharges = charges.data.filter(c => c.paid && !c.refunded);
+    const revenue30d = successfulCharges.reduce((s, c) => s + c.amount, 0);
+    const recentPayments = successfulCharges.slice(0, 5).map(c => ({
+      amount:   c.amount,
+      currency: c.currency,
+      date:     new Date(c.created * 1000).toISOString(),
+      email:    c.billing_details?.email || '—',
+    }));
+
+    // MRR estimé (abonnements actifs × prix mensuel)
+    const premiumActive = [...premiumUsers.values()].filter(u => u.active);
+    const monthlyCount  = premiumActive.filter(u => u.type === 'monthly').length;
+    const yearlyCount   = premiumActive.filter(u => u.type === 'yearly').length;
+    const mrrEstimate   = (monthlyCount * 999) + (yearlyCount * Math.round(6999 / 12));
+
+    res.json({
+      configured: true, mode,
+      activeSubs,
+      revenue30d,    // centimes
+      mrrEstimate,   // centimes
+      recentPayments,
+      monthlyCount,
+      yearlyCount,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message, configured: true });
+  }
+});
+
+// ── Amélioration 3 : Alertes automatiques ─────────────────────────────────────
+// Système d'alertes email — cooldown 1h par condition
+const _alertCooldowns = new Map(); // condition → last sent timestamp
+
+async function _checkAndSendAlerts() {
+  const adminEmail = process.env.SUPER_ADMIN_EMAIL?.trim();
+  if (!adminEmail) return;
+
+  const now      = Date.now();
+  const cooldown = 60 * 60 * 1000; // 1h entre deux alertes identiques
+  const mem      = process.memoryUsage();
+  const heapMB   = Math.round(mem.heapUsed / 1024 / 1024);
+  const sm       = SafeMode.getStatus();
+  const abuseLog = AntiFraud.getAbuseLog() || [];
+  const uptime   = process.uptime();
+
+  const alerts = [];
+
+  if (sm.active)
+    alerts.push({ key: 'safe_mode', subject: '⚠️ StudyAI — Safe Mode activé', body: `Le Safe Mode est actif depuis ${Math.round(uptime)}s. Raison : ${sm.reason || 'inconnu'}.` });
+
+  if (heapMB > 400)
+    alerts.push({ key: 'high_memory', subject: `⚠️ StudyAI — Mémoire élevée (${heapMB}MB)`, body: `La mémoire heap dépasse 400MB (actuel : ${heapMB}MB). Vérifiez les fuites mémoire.` });
+
+  if (abuseLog.length > 20) {
+    const recentAbuse = abuseLog.filter(e => e.ts && now - new Date(e.ts).getTime() < 3600_000).length;
+    if (recentAbuse > 10)
+      alerts.push({ key: 'abuse_spike', subject: `🚨 StudyAI — Pic d'abus détecté (${recentAbuse} events/h)`, body: `${recentAbuse} événements d'abus dans la dernière heure. Vérifiez le panel admin.` });
+  }
+
+  if (uptime < 180)
+    alerts.push({ key: 'restart', subject: '🔄 StudyAI — Serveur redémarré', body: `Le serveur vient de redémarrer (uptime : ${Math.round(uptime)}s). Redémarrage normal ou crash ?` });
+
+  for (const alert of alerts) {
+    const lastSent = _alertCooldowns.get(alert.key) || 0;
+    if (now - lastSent < cooldown) continue;
+    _alertCooldowns.set(alert.key, now);
+    try {
+      await EmailQueue.send({
+        to: adminEmail,
+        subject: alert.subject,
+        html: `<div style="font-family:sans-serif;padding:20px;background:#0f0f13;color:#e2e8f0">
+          <h2 style="color:#f59e0b">${alert.subject}</h2>
+          <p style="color:#94a3b8;margin-top:12px">${alert.body}</p>
+          <p style="margin-top:20px"><a href="${process.env.SITE_URL || ''}/admin.html" style="background:#7c3aed;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:700">→ Ouvrir le panel admin</a></p>
+          <p style="color:#475569;font-size:12px;margin-top:16px">StudyAI Admin Alert · ${new Date().toLocaleString('fr-FR')}</p>
+        </div>`,
+        skipDedup: true,
+      });
+      console.log(`[alerts] Email envoyé : ${alert.subject}`);
+    } catch (err) {
+      console.error(`[alerts] Échec envoi alerte "${alert.key}":`, err.message);
+    }
+  }
+}
+
+// POST /api/admin/alerts/test — envoie une alerte de test immédiatement
+app.post('/api/admin/alerts/test', adminRateLimiter, requireSuperAdmin, async (req, res) => {
+  auditAction(req, 'test_alert');
+  const adminEmail = process.env.SUPER_ADMIN_EMAIL?.trim();
+  if (!adminEmail) return res.status(400).json({ error: 'SUPER_ADMIN_EMAIL non configuré.' });
+  try {
+    await EmailQueue.send({
+      to: adminEmail,
+      subject: '✅ StudyAI — Test alerte admin',
+      html: `<div style="font-family:sans-serif;padding:20px;background:#0f0f13;color:#e2e8f0"><h2 style="color:#10b981">✅ Alertes email fonctionnelles</h2><p style="color:#94a3b8;margin-top:12px">Ton système d'alertes StudyAI fonctionne correctement. Tu recevras un email en cas de : Safe Mode activé, mémoire élevée, pic d'abus ou redémarrage serveur.</p></div>`,
+      skipDedup: true,
+    });
+    res.json({ ok: true, sentTo: adminEmail });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/admin/live-stats — tableau de bord temps réel complet
 app.get('/api/admin/live-stats', adminRateLimiter, requireSuperAdmin, async (req, res) => {
   auditAction(req, 'view_live_stats');
@@ -2826,6 +2985,12 @@ global._httpServer = app.listen(PORT, async () => {
   AutoBackup.start();        // 6h auto-backup (first run deferred 30s)
   FileIntegrity.start();     // File integrity monitoring (30min interval)
   MemoryWatchdog.start();    // Memory watchdog (1min interval)
+
+  // Alert monitoring — vérifie les conditions critiques toutes les 5 min
+  setTimeout(() => {
+    _checkAndSendAlerts();
+    setInterval(_checkAndSendAlerts, 5 * 60 * 1000);
+  }, 60_000); // première vérification après 1min (laisse le temps de démarrer)
 
   // Auto-cleanup old jobs every hour (non-blocking)
   const JobQueue = require('./services/jobs/jobQueue');

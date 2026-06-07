@@ -192,6 +192,12 @@
     /* ── Refresh indicator ── */
     .refresh-badge { display:inline-flex; align-items:center; gap:5px; font-size:.72rem; color:var(--subtle); }
 
+    /* ── Chart bars ── */
+    .bar-wrap { display:flex; flex-direction:column; align-items:center; flex:1; gap:3px; }
+    .bar { width:100%; border-radius:4px 4px 0 0; min-height:3px; transition:height .4s; }
+    .bar-label { font-size:.65rem; color:var(--subtle); text-align:center; white-space:nowrap; }
+    .bar-val { font-size:.68rem; color:var(--muted); font-weight:700; }
+
     /* ── Scrollbar ── */
     ::-webkit-scrollbar { width:5px; height:5px; }
     ::-webkit-scrollbar-track { background:transparent; }
@@ -276,8 +282,25 @@
         <div class="kpi-card purple"><div class="kpi-icon">👥</div><div class="kpi-val purple" id="k-users">—</div><div class="kpi-label">Utilisateurs</div><div class="kpi-sub" id="k-users-sub">—</div></div>
         <div class="kpi-card blue"><div class="kpi-icon">⚡</div><div class="kpi-val blue" id="k-gen">—</div><div class="kpi-label">Générations aujourd'hui</div><div class="kpi-sub" id="k-gen-sub">—</div></div>
         <div class="kpi-card yellow"><div class="kpi-icon">✨</div><div class="kpi-val yellow" id="k-premium">—</div><div class="kpi-label">Comptes Premium</div><div class="kpi-sub" id="k-premium-sub">—</div></div>
-        <div class="kpi-card green"><div class="kpi-icon">📚</div><div class="kpi-val green" id="k-packs">—</div><div class="kpi-label">Fiches générées</div><div class="kpi-sub" id="k-packs-sub">—</div></div>
+        <div class="kpi-card green"><div class="kpi-icon">💰</div><div class="kpi-val green" id="k-revenue">—</div><div class="kpi-label">Revenus 30 jours</div><div class="kpi-sub" id="k-revenue-sub">—</div></div>
         <div class="kpi-card purple"><div class="kpi-icon">🎯</div><div class="kpi-val purple" id="k-quiz">—</div><div class="kpi-label">Quiz complétés</div><div class="kpi-sub" id="k-quiz-sub">—</div></div>
+      </div>
+
+      <!-- Graphe 7 jours -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">📈 Tendance 7 jours <span id="chart-loading" style="font-size:.75rem;color:var(--muted);font-weight:400">Chargement…</span></div>
+        <div id="chart-wrap" style="display:flex;gap:24px;align-items:flex-end">
+          <div style="flex:1">
+            <div style="font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Inscriptions</div>
+            <div id="chart-reg" style="display:flex;align-items:flex-end;gap:4px;height:60px"></div>
+            <div id="chart-reg-labels" style="display:flex;gap:4px;margin-top:5px"></div>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Générations</div>
+            <div id="chart-gen" style="display:flex;align-items:flex-end;gap:4px;height:60px"></div>
+            <div id="chart-gen-labels" style="display:flex;gap:4px;margin-top:5px"></div>
+          </div>
+        </div>
       </div>
 
       <div class="card-grid">
@@ -289,7 +312,7 @@
 
         <!-- Stripe / IA -->
         <div class="card">
-          <div class="card-title">💳 Stripe & IA</div>
+          <div class="card-title">💳 Stripe & Revenus</div>
           <div id="stripe-rows"></div>
         </div>
 
@@ -368,6 +391,11 @@
             <button class="btn btn-green" id="btn-safe-off">✅ Désactiver Safe Mode</button>
             <button class="btn btn-secondary" id="btn-reset-usage-sec">🔄 Reset compteurs IP</button>
             <button class="btn btn-secondary" id="btn-manual-backup">💾 Déclencher backup</button>
+            <div style="height:1px;background:var(--border);margin:4px 0"></div>
+            <div style="font-size:.75rem;color:var(--muted);font-weight:600">📧 Alertes email automatiques</div>
+            <div style="font-size:.78rem;color:var(--subtle)">Vérification toutes les 5 min. Alerte si : Safe Mode, mémoire &gt; 400MB, pic d'abus, redémarrage serveur.</div>
+            <button class="btn btn-secondary" id="btn-test-alert">📧 Envoyer alerte de test</button>
+            <div id="alert-status" style="font-size:.78rem;min-height:16px"></div>
           </div>
         </div>
 
@@ -576,8 +604,27 @@ function initPanel() {
 
 // ── Overview ─────────────────────────────────────────────────────────────────
 
+function renderChart(containerId, labelId, values, color) {
+  const max = Math.max(...values, 1);
+  const HEIGHT = 60;
+  document.getElementById(containerId).innerHTML = values.map(v => `
+    <div class="bar-wrap">
+      <div class="bar-val">${v}</div>
+      <div class="bar" style="height:${Math.round((v/max)*HEIGHT)}px;background:${color};opacity:${v===0?'0.2':'0.85'}"></div>
+    </div>`).join('');
+  document.getElementById(labelId).innerHTML = values.map((_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6-i));
+    const label = i === 6 ? 'auj.' : d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3);
+    return `<div class="bar-label" style="flex:1">${label}</div>`;
+  }).join('');
+}
+
 async function loadOverview() {
-  const d = await api('/api/admin/live-stats');
+  const [d, weekly, revenue] = await Promise.all([
+    api('/api/admin/live-stats'),
+    api('/api/admin/weekly-stats'),
+    api('/api/admin/stripe-revenue'),
+  ]);
   if (d.error) { setAlert('overview-alert', '⚠️ Erreur chargement : ' + esc(d.error)); return; }
   setAlert('overview-alert', '');
 
@@ -593,10 +640,44 @@ async function loadOverview() {
   document.getElementById('k-gen-sub').textContent    = 'total toutes sessions';
   document.getElementById('k-premium').textContent    = fmt(d.users?.premium);
   document.getElementById('k-premium-sub').textContent= 'tokens actifs';
-  document.getElementById('k-packs').textContent      = fmt(d.content?.totalPacks);
-  document.getElementById('k-packs-sub').textContent  = `${fmt(d.content?.totalQuizzes)} quiz complétés`;
   document.getElementById('k-quiz').textContent       = fmt(d.content?.totalQuizzes);
   document.getElementById('k-quiz-sub').textContent   = `${fmt(d.content?.totalXP)} XP total`;
+
+  // Revenus Stripe
+  if (!revenue.error && revenue.configured) {
+    const r30  = revenue.revenue30d || 0;
+    const mrr  = revenue.mrrEstimate || 0;
+    const curr = revenue.mode === 'live' ? '€' : '€ (test)';
+    document.getElementById('k-revenue').textContent     = (r30 / 100).toFixed(2) + curr;
+    document.getElementById('k-revenue-sub').textContent = `MRR ≈ ${(mrr/100).toFixed(2)}€ · ${revenue.activeSubs} abonnés`;
+  } else {
+    document.getElementById('k-revenue').textContent     = revenue.configured ? '—' : 'N/A';
+    document.getElementById('k-revenue-sub').textContent = revenue.configured ? 'Erreur Stripe' : 'Stripe non configuré';
+  }
+
+  // Graphe 7 jours
+  if (!weekly.error && weekly.days) {
+    document.getElementById('chart-loading').textContent = '';
+    renderChart('chart-reg', 'chart-reg-labels', weekly.registrations, '#7c3aed');
+    renderChart('chart-gen', 'chart-gen-labels', weekly.generations,   '#10b981');
+  } else {
+    document.getElementById('chart-loading').textContent = weekly.error ? 'Erreur' : '';
+  }
+
+  // Stripe rows enrichis
+  const stripeMode = d.stripe?.mode || '—';
+  const stripeOk   = d.stripe?.configured;
+  const recentP    = (revenue.recentPayments || []).slice(0, 3).map(p =>
+    `<div style="font-size:.75rem;color:var(--subtle);padding:3px 0">· ${(p.amount/100).toFixed(2)}€ — ${p.email} — ${fmtDate(p.date)}</div>`
+  ).join('');
+  document.getElementById('stripe-rows').innerHTML = [
+    statRow('Stripe', stripeOk ? (stripeMode === 'live' ? '🟢 Live — actif' : '🟡 Mode test') : '🔴 Non configuré', stripeOk ? (stripeMode === 'live' ? 'ok' : 'warn') : 'err'),
+    statRow('Abonnements actifs', fmt(revenue.activeSubs || 0)),
+    statRow('Mensuel / Annuel', `${fmt(revenue.monthlyCount || 0)} / ${fmt(revenue.yearlyCount || 0)}`),
+    statRow('Revenus 30j', revenue.configured ? (((revenue.revenue30d||0)/100).toFixed(2) + '€') : '—', revenue.revenue30d > 0 ? 'ok' : ''),
+    statRow('IA Provider', d.ai?.provider || '—', 'ok'),
+    statRow('Modèle', d.ai?.model || '—'),
+  ].join('') + (recentP ? `<div style="margin-top:8px;font-size:.72rem;color:var(--subtle);font-weight:700;text-transform:uppercase;letter-spacing:.05em">Derniers paiements</div>${recentP}` : '');
 
   // System
   const upStr = fmtUptime(d.system?.uptimeSec || 0);
@@ -616,16 +697,8 @@ async function loadOverview() {
     statRow('BullMQ',    d.components?.bullmq?.ok ? '🟢 OK' : '⚪ Non chargé'),
   ].join('');
 
-  // Stripe & AI
-  const stripeMode = d.stripe?.mode || '—';
-  const stripeOk   = d.stripe?.configured;
-  document.getElementById('stripe-rows').innerHTML = [
-    statRow('Stripe',    stripeOk ? (stripeMode === 'live' ? '🟢 Live — paiements actifs' : '🟡 Test — paiements simulés') : '🔴 Non configuré', stripeOk ? (stripeMode === 'live' ? 'ok' : 'warn') : 'err'),
-    statRow('Mode Stripe', stripeMode.toUpperCase()),
-    statRow('IA Provider', d.ai?.provider || '—', 'ok'),
-    statRow('Modèle IA',   d.ai?.model || '—'),
-    statRow('Score sécurité', (d.security?.score || 0) + '/100', d.security?.score >= 80 ? 'ok' : d.security?.score >= 60 ? 'warn' : 'err'),
-  ].join('');
+  // Score sécurité dans sys-rows
+  document.getElementById('sys-rows').innerHTML += statRow('Score sécurité', (d.security?.score || 0) + '/100', d.security?.score >= 80 ? 'ok' : d.security?.score >= 60 ? 'warn' : 'err');
 
   // Top users
   const topHtml = (d.users?.topUsers || []).map((u, i) =>
@@ -1005,6 +1078,15 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-safe-off').addEventListener('click', () => doSafeMode('deactivate'));
   document.getElementById('btn-reset-usage-sec').addEventListener('click', doResetUsage);
   document.getElementById('btn-manual-backup').addEventListener('click', doManualBackup);
+  document.getElementById('btn-test-alert').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-test-alert');
+    const status = document.getElementById('alert-status');
+    btn.disabled = true; btn.textContent = '⏳ Envoi…';
+    const d = await api('/api/admin/alerts/test', { method: 'POST' });
+    btn.disabled = false; btn.textContent = '📧 Envoyer alerte de test';
+    status.textContent = d.ok ? `✅ Email envoyé à ${d.sentTo}` : `❌ ${d.error}`;
+    status.style.color = d.ok ? 'var(--green)' : '#f87171';
+  });
 
   // AI
   document.getElementById('btn-run-test').addEventListener('click', runTest);
