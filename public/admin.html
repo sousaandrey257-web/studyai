@@ -394,7 +394,8 @@
             <div style="height:1px;background:var(--border);margin:4px 0"></div>
             <div style="font-size:.75rem;color:var(--muted);font-weight:600">📧 Alertes email automatiques</div>
             <div style="font-size:.78rem;color:var(--subtle)">Vérification toutes les 5 min. Alerte si : Safe Mode, mémoire &gt; 400MB, pic d'abus, redémarrage serveur.</div>
-            <button class="btn btn-secondary" id="btn-test-alert">📧 Envoyer alerte de test</button>
+            <button class="btn btn-secondary" id="btn-test-alert">🚨 Envoyer alerte de test</button>
+            <button class="btn btn-green" id="btn-test-email">📧 Tester l'envoi email</button>
             <div id="alert-status" style="font-size:.78rem;min-height:16px"></div>
           </div>
         </div>
@@ -1083,9 +1084,24 @@ window.addEventListener('DOMContentLoaded', () => {
     const status = document.getElementById('alert-status');
     btn.disabled = true; btn.textContent = '⏳ Envoi…';
     const d = await api('/api/admin/alerts/test', { method: 'POST' });
-    btn.disabled = false; btn.textContent = '📧 Envoyer alerte de test';
-    status.textContent = d.ok ? `✅ Email envoyé à ${d.sentTo}` : `❌ ${d.error}`;
+    btn.disabled = false; btn.textContent = '🚨 Envoyer alerte de test';
+    status.textContent = d.ok ? `✅ Alerte envoyée à ${d.sentTo}` : `❌ ${d.error}`;
     status.style.color = d.ok ? 'var(--green)' : '#f87171';
+  });
+
+  document.getElementById('btn-test-email').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-test-email');
+    const status = document.getElementById('alert-status');
+    btn.disabled = true; btn.textContent = '⏳ Envoi…';
+    const d = await api('/api/admin/email-test', { method: 'POST' });
+    btn.disabled = false; btn.textContent = '📧 Tester l\'envoi email';
+    if (d.ok) {
+      status.textContent = `✅ Email envoyé à ${d.sentTo} via ${d.provider}`;
+      status.style.color = 'var(--green)';
+    } else {
+      status.textContent = `❌ ${d.error || 'Erreur'} — Vérifie RESEND_API_KEY dans Railway`;
+      status.style.color = '#f87171';
+    }
   });
 
   // AI

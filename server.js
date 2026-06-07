@@ -1335,6 +1335,9 @@ app.post('/api/register',
   FunnelAnalytics.track('register_success', { userId });
   Retention.recordActivity(userId);
 
+  // Email de bienvenue (fire-and-forget — ne bloque jamais la réponse)
+  EmailQueue.sendWelcome(key).catch(err => console.error('[register] welcome email:', err.message));
+
   res.json({ token, user: { id: userId, email: key } });
 });
 
@@ -2532,6 +2535,37 @@ app.post('/api/admin/beta/waitlist/notify', adminRateLimiter, requireSuperAdmin,
   }
 });
 
+// POST /api/admin/email-test — envoie un email de test à l'admin
+app.post('/api/admin/email-test', adminRateLimiter, requireSuperAdmin, async (req, res) => {
+  auditAction(req, 'email_test');
+  const to = req.body?.to || process.env.SUPER_ADMIN_EMAIL?.trim();
+  if (!to) return res.status(400).json({ error: 'Aucun destinataire configuré.' });
+  try {
+    await EmailQueue.send({
+      to,
+      subject: '✅ StudyAI — Email opérationnel !',
+      html: `<div style="font-family:sans-serif;padding:24px;background:#09090f;color:#e2e8f0;max-width:500px;margin:0 auto;border-radius:14px;border:1px solid rgba(255,255,255,.08)">
+        <div style="text-align:center;margin-bottom:20px"><span style="font-size:2rem">⚡</span></div>
+        <h2 style="color:#a78bfa;text-align:center;font-size:1.3rem;margin:0 0 12px">StudyAI Email — Opérationnel ✅</h2>
+        <p style="color:#94a3b8;line-height:1.7;margin:0 0 16px">Le provider Resend est correctement configuré. Tes utilisateurs recevront désormais :</p>
+        <ul style="color:#64748b;line-height:2;padding-left:20px">
+          <li>📧 Email de bienvenue à l'inscription</li>
+          <li>🔑 Reset de mot de passe</li>
+          <li>🔥 Reminder streak quotidien (18h)</li>
+          <li>🎫 Invitations beta</li>
+          <li>📋 Confirmation waitlist</li>
+          <li>🚨 Alertes admin critiques</li>
+        </ul>
+        <p style="color:#475569;font-size:12px;margin-top:20px;text-align:center">StudyAI · ${new Date().toLocaleString('fr-FR')}</p>
+      </div>`,
+      skipDedup: true,
+    });
+    res.json({ ok: true, sentTo: to, provider: EmailQueue.getStats().provider });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/admin/email-stats — email sending stats
 app.get('/api/admin/email-stats', adminRateLimiter, requireSuperAdmin, (req, res) => {
   res.json(EmailQueue.getStats());
@@ -2991,6 +3025,38 @@ global._httpServer = app.listen(PORT, async () => {
     _checkAndSendAlerts();
     setInterval(_checkAndSendAlerts, 5 * 60 * 1000);
   }, 60_000); // première vérification après 1min (laisse le temps de démarrer)
+
+  // Streak reminder — envoie un email aux utilisateurs à risque une fois par jour à 18h
+  (function scheduleStreakReminder() {
+    const now = new Date();
+    const next18h = new Date(now);
+    next18h.setHours(18, 0, 0, 0);
+    if (next18h <= now) next18h.setDate(next18h.getDate() + 1);
+    const msUntil18h = next18h - now;
+    setTimeout(async function runStreakReminder() {
+      try {
+        const users = loadJSON(USERS_FILE, {});
+        const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        let sent = 0;
+        for (const user of Object.values(users)) {
+          if (!user.email || user.banned) continue;
+          const g = user.gamification;
+          if (!g || (g.streak || 0) < 2) continue; // streak worth protecting (≥ 2j)
+          if (g.lastActiveDate === new Date().toISOString().split('T')[0]) continue; // already active today
+          if (g.lastActiveDate !== yesterdayStr) continue; // streak already broken or older
+          EmailQueue.sendStreakReminder(user.email, g.streak, g.bestStreak || g.streak)
+            .then(() => { sent++; })
+            .catch(() => {});
+        }
+        console.log(`[streak-reminder] ${sent} emails envoyés`);
+      } catch (err) {
+        console.error('[streak-reminder]', err.message);
+      }
+      setTimeout(runStreakReminder, 24 * 60 * 60 * 1000); // relance dans 24h
+    }, msUntil18h);
+    console.log(`✓  Streak reminder : programmé dans ${Math.round(msUntil18h/60000)} min`);
+  }());
 
   // Auto-cleanup old jobs every hour (non-blocking)
   const JobQueue = require('./services/jobs/jobQueue');
