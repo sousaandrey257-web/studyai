@@ -1,7 +1,7 @@
 'use strict';
 const https = require('https');
 
-const FROM_EMAIL = process.env.FROM_EMAIL || 'StudyAI <noreply@studyai.app>';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'StudyAI <onboarding@resend.dev>';
 
 function detectProvider() {
   if (process.env.RESEND_API_KEY)   return 'resend';
