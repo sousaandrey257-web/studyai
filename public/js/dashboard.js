@@ -416,6 +416,28 @@
         stats.weakAreas.map(esc).join(' · ');
       weakEl.classList.remove('hidden');
     }
+
+    // Graphe de progression (trend = derniers scores en %)
+    const trend = stats.trend || [];
+    const chartWrap = document.getElementById('dash-progress-chart');
+    const chartBars = document.getElementById('dash-chart-bars');
+    const chartLabels = document.getElementById('dash-chart-labels');
+    if (chartWrap && chartBars && trend.length >= 2) {
+      chartWrap.classList.remove('hidden');
+      const maxVal = Math.max(...trend, 1);
+      const HEIGHT = 70;
+      chartBars.innerHTML = trend.map(function(v, i) {
+        const h    = Math.max(4, Math.round((v / 100) * HEIGHT));
+        const col  = v >= 80 ? '#10b981' : v >= 60 ? '#f59e0b' : '#ef4444';
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+          <div style="font-size:.65rem;color:#64748b;font-weight:700">${v}%</div>
+          <div style="width:100%;height:${h}px;background:${col};border-radius:4px 4px 0 0;opacity:.85;min-height:4px"></div>
+        </div>`;
+      }).join('');
+      chartLabels.innerHTML = trend.map(function(_, i) {
+        return `<div style="flex:1;text-align:center;font-size:.65rem;color:#475569">Quiz ${i + 1}</div>`;
+      }).join('');
+    }
   }
 
   function statCard(value, label) {
@@ -619,5 +641,26 @@
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     window.location.href = '/';
+  };
+
+  // Surprise quiz — redirige vers la page principale et lance le quiz
+  window.startSurpriseQuiz = async function() {
+    var btn = document.getElementById('btn-surprise-quiz');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Chargement…'; }
+    try {
+      var res  = await fetch('/api/surprise-quiz', { headers: { 'x-auth-token': token } });
+      var data = await res.json();
+      if (!res.ok || !data.questions?.length) {
+        alert(data.error || 'Génère d\'abord quelques cours pour alimenter l\'interro surprise !');
+        if (btn) { btn.disabled = false; btn.textContent = '🎲 Interro surprise'; }
+        return;
+      }
+      // Stocke les questions et redirige vers la page principale
+      sessionStorage.setItem('studyai_surprise', JSON.stringify(data));
+      window.location.href = '/?surprise=1';
+    } catch(e) {
+      alert('Erreur réseau');
+      if (btn) { btn.disabled = false; btn.textContent = '🎲 Interro surprise'; }
+    }
   };
 })();

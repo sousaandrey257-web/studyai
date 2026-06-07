@@ -612,7 +612,11 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <div class="result-card">
           <div class="result-card-header">
             <h2 class="result-title" data-i18n="title_summary">Résumé</h2>
-            <button id="btn-copy-summary" class="btn-copy" data-i18n="copy_btn">Copier</button>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button id="btn-copy-summary" class="btn-copy" data-i18n="copy_btn">Copier</button>
+              <button id="btn-export-pdf" class="btn-copy" style="background:rgba(59,130,246,.12);color:#60a5fa;border-color:rgba(59,130,246,.25)">📄 PDF</button>
+              <button id="btn-share-topic" class="btn-copy" style="background:rgba(16,185,129,.1);color:#34d399;border-color:rgba(16,185,129,.25)">🔗 Partager</button>
+            </div>
           </div>
           <p id="summary-text" class="summary-text"></p>
         </div>
@@ -623,7 +627,10 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <div class="result-card">
           <div class="result-card-header">
             <h2 class="result-title" data-i18n="title_flashcard">Fiche de révision</h2>
-            <button id="btn-copy-flashcard" class="btn-copy" data-i18n="copy_btn">Copier</button>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button id="btn-copy-flashcard" class="btn-copy" data-i18n="copy_btn">Copier</button>
+              <button id="btn-export-anki" class="btn-copy" style="background:rgba(124,58,237,.12);color:#a78bfa;border-color:rgba(124,58,237,.25)">🎴 Anki</button>
+            </div>
           </div>
           <ul id="flashcard-list" class="flashcard-list"></ul>
         </div>
@@ -652,6 +659,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
           <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
         </div>
         <span id="quiz-counter" class="quiz-counter"></span>
+        <span id="quiz-timer" class="quiz-timer hidden">⏱ <span id="quiz-timer-val">0:00</span></span>
       </div>
 
       <div id="quiz-question-card" class="quiz-question-card">
@@ -1261,5 +1269,47 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
   <link rel="stylesheet" href="/css/support-bot.css">
   <div id="support-bot-container"></div>
   <script src="/js/support-bot.js?v=2" defer></script>
+
+  <!-- ===== ONBOARDING PREMIÈRE VISITE ===== -->
+  <div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;align-items:center;justify-content:center">
+    <div style="background:#0e0e18;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:36px 32px;max-width:420px;width:92vw;text-align:center;box-shadow:0 0 80px rgba(124,58,237,.2)">
+      <div style="font-size:2.2rem;margin-bottom:12px">⚡</div>
+      <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;letter-spacing:-.03em;color:#f1f5f9">Bienvenue sur StudyAI !</h2>
+      <p style="color:#94a3b8;font-size:.9rem;margin-bottom:28px;line-height:1.6">Transforme n'importe quel cours en quiz et flashcards en 45 secondes.</p>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:28px">
+        <div style="display:flex;align-items:center;gap:14px;background:#13131f;border-radius:12px;padding:14px 16px;text-align:left">
+          <div style="font-size:1.6rem;flex-shrink:0">1️⃣</div>
+          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem">Colle ton cours</div><div style="color:#64748b;font-size:.8rem;margin-top:2px">Texte, chapitre, notes — ou juste un sujet</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;background:#13131f;border-radius:12px;padding:14px 16px;text-align:left">
+          <div style="font-size:1.6rem;flex-shrink:0">2️⃣</div>
+          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem">Clique "Analyser"</div><div style="color:#64748b;font-size:.8rem;margin-top:2px">L'IA génère ton pack d'étude en 45 secondes</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;background:#13131f;border-radius:12px;padding:14px 16px;text-align:left">
+          <div style="font-size:1.6rem;flex-shrink:0">3️⃣</div>
+          <div><div style="font-weight:700;color:#e2e8f0;font-size:.9rem">Révise et progresse</div><div style="color:#64748b;font-size:.8rem;margin-top:2px">Résumé · Flashcards · Quiz interactif</div></div>
+        </div>
+      </div>
+      <button id="onboarding-start" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#6366f1);border:none;border-radius:12px;color:#fff;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:-.01em">C'est parti ! ⚡</button>
+      <p style="color:#334155;font-size:.75rem;margin-top:12px">Gratuit · 12 générations par jour · Sans carte bancaire</p>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    if (!localStorage.getItem('studyai_onboarded')) {
+      var ov = document.getElementById('onboarding-overlay');
+      if (ov) {
+        ov.style.display = 'flex';
+        document.getElementById('onboarding-start').addEventListener('click', function() {
+          ov.style.display = 'none';
+          localStorage.setItem('studyai_onboarded', '1');
+          var ta = document.getElementById('course-input');
+          if (ta) { ta.scrollIntoView({ behavior: 'smooth', block: 'center' }); ta.focus(); }
+        });
+      }
+    }
+  }());
+  </script>
 </body>
 </html>

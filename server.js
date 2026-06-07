@@ -1757,6 +1757,28 @@ Règles :
   }
 });
 
+// GET /api/surprise-quiz — quiz aléatoire depuis tout l'historique de l'utilisateur
+app.get('/api/surprise-quiz', requireAuth, (req, res) => {
+  const content     = loadJSON(CONTENT_FILE, {});
+  const userContent = content[req.user.userId] || [];
+  const count       = Math.min(parseInt(req.query.count) || 10, 20);
+
+  // Collecte toutes les questions de toutes les sessions sauvegardées
+  const allQuestions = [];
+  for (const session of userContent) {
+    for (const q of (session.quiz || [])) {
+      allQuestions.push({ ...q, _topic: session.topic?.slice(0, 60) || '' });
+    }
+  }
+
+  if (allQuestions.length < 3)
+    return res.status(404).json({ error: 'Pas assez de questions. Génère au moins 1 cours d\'abord !' });
+
+  // Mélange et prend N questions
+  const shuffled = allQuestions.sort(() => Math.random() - 0.5).slice(0, count);
+  res.json({ questions: shuffled, total: allQuestions.length, picked: shuffled.length });
+});
+
 // GET /api/stats — statistiques personnalisées de l'utilisateur connecté
 app.get('/api/stats', requireAuth, (req, res) => {
   const content     = loadJSON(CONTENT_FILE, {});

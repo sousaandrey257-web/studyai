@@ -332,6 +332,30 @@ document.addEventListener('DOMContentLoaded', function () {
   if (refCode) {
     try { sessionStorage.setItem('studyai_ref', refCode); } catch {}
   }
+  // Surprise quiz depuis le dashboard
+  if (params.get('surprise') === '1') {
+    window.history.replaceState({}, '', '/');
+    try {
+      var surpriseData = JSON.parse(sessionStorage.getItem('studyai_surprise') || 'null');
+      sessionStorage.removeItem('studyai_surprise');
+      if (surpriseData && surpriseData.questions?.length) {
+        setTimeout(function() {
+          state.quizQuestions       = surpriseData.questions;
+          state.currentQuestion     = 0;
+          state.score               = 0;
+          state.wrongQuestions      = [];
+          state.correctByDifficulty = {};
+          state.currentContentId    = null;
+          showSection('quiz');
+          quizScore.classList.add('hidden');
+          showQuestion(0);
+          _startTimer();
+          showToast('🎲 Interro surprise — ' + surpriseData.picked + ' questions !', 'success');
+        }, 400);
+      }
+    } catch {}
+  }
+
   // Topic pré-rempli depuis un lien partagé
   const topicParam = params.get('topic');
   if (topicParam && courseInput) {
@@ -907,6 +931,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Bouton partage viral
     injectShareButton(state.currentTopic);
 
+    // Wirer les nouveaux boutons export/partage
+    _wireExportButtons();
+
     // Guest nudge — invite à créer un compte après la première génération
     if (!window.auth?.isLoggedIn()) {
       try {
@@ -933,6 +960,7 @@ document.addEventListener('DOMContentLoaded', function () {
     quizScore.classList.add('hidden');
     showSection('quiz');
     showQuestion(0);
+    _startTimer();
   }
 
   function showQuestion(idx) {
@@ -1063,6 +1091,7 @@ document.addEventListener('DOMContentLoaded', function () {
     scoreTotal.textContent   = ' / ' + total;
     scoreMessage.textContent = msg;
     quizScore.classList.remove('hidden');
+    _stopTimer();
 
     // Bouton de consolidation si au moins 2 questions ratées
     const btnConsolidate = document.getElementById('btn-consolidate');
@@ -1637,6 +1666,112 @@ document.addEventListener('DOMContentLoaded', function () {
 
   _renderExamExamples();
   document.addEventListener('langchange', _renderExamExamples);
+
+  // ============================================================
+  //  EXPORT PDF / ANKI / PARTAGE
+  // ============================================================
+  function _wireExportButtons() {
+    var btnPdf   = document.getElementById('btn-export-pdf');
+    var btnAnki  = document.getElementById('btn-export-anki');
+    var btnShare = document.getElementById('btn-share-topic');
+
+    if (btnPdf) btnPdf.onclick = function() { window.print(); };
+
+    if (btnAnki) btnAnki.onclick = function() {
+      if (!state.flashcardData || !state.flashcardData.length) return;
+      var lines = state.flashcardData.map(function(card) {
+        var parts = card.split(' — ');
+        var front = parts[0] ? parts[0].trim() : card;
+        var back  = parts.slice(1).join(' — ').trim() || card;
+        return front + '\t' + back;
+      });
+      var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href   = url;
+      a.download = 'studyai-flashcards.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('🎴 ' + (t('toast_anki_exported') || 'Flashcards exportées pour Anki !'), 'success');
+    };
+
+    if (btnShare) btnShare.onclick = function() {
+      var topic = state.currentTopic || '';
+      var url   = window.location.origin + '/?topic=' + encodeURIComponent(topic);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function() {
+          showToast('🔗 ' + (t('toast_share_copied') || 'Lien copié ! Partage-le à tes amis.'), 'success');
+        });
+      } else {
+        window.prompt('Copie ce lien :', url);
+      }
+    };
+  }
+
+  // ============================================================
+  //  TIMER QUIZ
+  // ============================================================
+  var _timerInterval = null;
+  var _timerSeconds  = 0;
+
+  function _startTimer() {
+    _timerSeconds = 0;
+    var el = document.getElementById('quiz-timer');
+    var val = document.getElementById('quiz-timer-val');
+    if (!el || !val) return;
+    el.classList.remove('hidden', 'warning');
+    clearInterval(_timerInterval);
+    _timerInterval = setInterval(function() {
+      _timerSeconds++;
+      var m = Math.floor(_timerSeconds / 60);
+      var s = _timerSeconds % 60;
+      if (val) val.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      if (el && _timerSeconds > 60) el.classList.add('warning');
+    }, 1000);
+  }
+
+  function _stopTimer() {
+    clearInterval(_timerInterval);
+    var el = document.getElementById('quiz-timer');
+    if (el) el.classList.add('hidden');
+  }
+
+  // Patch startQuiz et fin de quiz pour le timer
+  var _origStartQuiz = window._startQuizInternal;
+
+  // ============================================================
+  //  SURPRISE QUIZ
+  // ============================================================
+  window.startSurpriseQuiz = async function() {
+    if (!window.auth?.isLoggedIn()) { window.showAuthModal && window.showAuthModal(); return; }
+    var btn = document.getElementById('btn-surprise-quiz');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ Chargement…'; }
+    try {
+      var res  = await fetch('/api/surprise-quiz', { headers: { 'x-auth-token': window.auth.token } });
+      var data = await res.json();
+      if (!res.ok || !data.questions?.length) {
+        showToast('❌ ' + (data.error || 'Pas assez de questions sauvegardées'), 'error');
+        if (btn) { btn.disabled = false; btn.textContent = '🎲 Interro surprise'; }
+        return;
+      }
+      // Lance le quiz avec les questions récupérées
+      state.quizQuestions    = data.questions;
+      state.currentQuestion  = 0;
+      state.score            = 0;
+      state.wrongQuestions   = [];
+      state.correctByDifficulty = {};
+      state.currentContentId = null; // pas de sauvegarde pour le surprise quiz
+      showToast('🎲 ' + data.picked + ' questions depuis ' + data.total + ' au total !', 'success');
+      showSection('quiz');
+      quizScore.classList.add('hidden');
+      showQuestion(0);
+      _startTimer();
+    } catch(e) {
+      showToast('❌ Erreur réseau', 'error');
+    }
+    if (btn) { btn.disabled = false; btn.textContent = '🎲 Interro surprise'; }
+  };
+
   // ────────────────────────────────────────────────────────────
 
 }); // fin DOMContentLoaded

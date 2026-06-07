@@ -7,7 +7,7 @@
 //    - /api/* routes                     → Network-only (never cache)
 // ============================================================
 
-const CACHE_VERSION = 'studyai-v52';
+const CACHE_VERSION = 'studyai-v53';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const FONT_CACHE    = `${CACHE_VERSION}-fonts`;
 const OFFLINE_URL   = '/offline.html';
