@@ -310,6 +310,12 @@
     var btnDoRegister = _q('btn-do-register');
     if (btnDoRegister) btnDoRegister.addEventListener('click', function () { doRegister(); });
 
+    // Prevent native form submission (removed onsubmit="return false" for CSP compliance)
+    var formLogin = _q('form-login');
+    if (formLogin) formLogin.addEventListener('submit', function (e) { e.preventDefault(); doLogin(); });
+    var formRegister = _q('form-register');
+    if (formRegister) formRegister.addEventListener('submit', function (e) { e.preventDefault(); doRegister(); });
+
     // History modal — overlay, close
     var modalHistory = _q('modal-history');
     if (modalHistory) {

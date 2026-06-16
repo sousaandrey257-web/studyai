@@ -475,6 +475,10 @@ const Workspace = (() => {
       if (_typeCancel) _typeCancel();
     });
 
+    /* Wire avatar button (removed inline onclick for CSP compliance) */
+    const avatarBtn = document.getElementById('topbar-avatar');
+    if (avatarBtn) avatarBtn.addEventListener('click', function() { window.location.href = '/dashboard'; });
+
     /* Expose globals — includes navigate so inline onclicks in dynamic HTML work */
     window.Workspace = { navigate, toast, savePack, bumpStreak };
   }

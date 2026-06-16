@@ -169,21 +169,56 @@ function buildCurriculumCtx(country) {
 // ============================================================
 //  DATA LAYER — stockage JSON local (dossier data/)
 // ============================================================
-const DATA_DIR         = path.join(__dirname, 'data');
-const USERS_FILE       = path.join(DATA_DIR, 'users.json');
-const CONTENT_FILE     = path.join(DATA_DIR, 'content.json');
-const PREMIUMS_FILE    = path.join(DATA_DIR, 'premiums.json');
+const DATA_DIR          = path.join(__dirname, 'data');
+const USERS_FILE        = path.join(DATA_DIR, 'users.json');
+const CONTENT_FILE      = path.join(DATA_DIR, 'content.json');
+const PREMIUMS_FILE     = path.join(DATA_DIR, 'premiums.json');
 const RESET_TOKENS_FILE = path.join(DATA_DIR, 'reset_tokens.json');
-const JWT_SECRET       = process.env.JWT_SECRET?.trim();
+const USAGE_FILE        = path.join(DATA_DIR, 'usage.json');
 
-if (!JWT_SECRET) console.warn('[auth] JWT_SECRET absent du .env — sessions non persistantes au redémarrage.');
+// JWT_SECRET: never fall back to a guessable constant — generate an ephemeral random
+// secret if not configured so at least sessions work within the process lifetime.
+const JWT_SECRET = process.env.JWT_SECRET?.trim() ||
+  (() => {
+    const t = crypto.randomBytes(32).toString('hex');
+    console.error('[CRITICAL] JWT_SECRET manquant — secret éphémère généré. Les sessions ne survivront pas aux redémarrages. Définissez JWT_SECRET dans .env !');
+    return t;
+  })();
+
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-function loadJSON(file, def = {}) {
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return def; }
+// ── Per-file write mutex — serialises concurrent async writes to the same file ──
+class _FileMutex {
+  constructor() { this._q = Promise.resolve(); }
+  run(fn) {
+    const result = this._q.then(() => fn());
+    this._q = result.catch(() => {});
+    return result;
+  }
 }
-// Atomic write: tmp file → rename. Prevents corruption if process crashes mid-write.
+const _fileMutexes = new Map();
+function getFileMutex(file) {
+  if (!_fileMutexes.has(file)) _fileMutexes.set(file, new _FileMutex());
+  return _fileMutexes.get(file);
+}
+
+// ── JSON read cache — avoids redundant synchronous disk reads within 500ms ──
+const _jsonCache = new Map();
+const _JSON_CACHE_TTL = 500;
+
+function loadJSON(file, def = {}) {
+  const cached = _jsonCache.get(file);
+  if (cached && Date.now() - cached.ts < _JSON_CACHE_TTL) return cached.data;
+  try {
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    _jsonCache.set(file, { data, ts: Date.now() });
+    return data;
+  } catch { return def; }
+}
+
+// Atomic write: tmp file → rename. Updates cache immediately.
 function saveJSON(file, data) {
+  _jsonCache.set(file, { data, ts: Date.now() });
   const tmp = file + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
   fs.renameSync(tmp, file);
@@ -235,7 +270,8 @@ async function handleStripeWebhook(req, res) {
       const exists = subId && [...premiumUsers.values()].some(u => u.subId === subId);
       if (!exists) {
         const token = crypto.randomUUID();
-        premiumUsers.set(token, { type: plan, subId, active: true, createdAt: new Date().toISOString(), source: 'webhook' });
+        const expiresAt = plan === 'lifetime' ? null : Date.now() + (plan === 'yearly' ? 370 : 35) * 86400_000;
+        premiumUsers.set(token, { type: plan, subId, active: true, expiresAt, createdAt: new Date().toISOString(), source: 'webhook' });
         savePremiums();
         FunnelAnalytics.track('upgrade_success', { plan, source: 'webhook' });
         console.log(`[webhook] Premium "${plan}" activé via webhook — sub: ${subId || 'N/A'}`);
@@ -289,11 +325,10 @@ app.use((req, res, next) => {
 
 // Sécurité HTTP headers
 app.use(helmet({
-  // CSP: 'unsafe-inline' required for inline event handlers (onclick=...) in existing HTML
   contentSecurityPolicy: {
     directives: {
       defaultSrc:      ["'self'"],
-      scriptSrc:       ["'self'", "'unsafe-inline'"],
+      scriptSrc:       ["'self'"],
       styleSrc:        ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc:         ["'self'", 'https://fonts.gstatic.com'],
       imgSrc:          ["'self'", 'data:'],
@@ -536,7 +571,26 @@ function getLiveStats() {
 // ============================================================
 const FREE_LIMIT  = 12;
 const ADMIN_KEY   = process.env.ADMIN_KEY?.trim() || null;
-const usageStore  = new Map(); // ip → { count, date }
+const usageStore  = new Map(); // key → { count, date }
+
+// ── usageStore persistence — survives restarts ─────────────────────────────
+function loadUsage() {
+  try {
+    const raw = loadJSON(USAGE_FILE, {});
+    const d   = new Date().toISOString().split('T')[0];
+    for (const [k, v] of Object.entries(raw)) {
+      if (v.date === d) usageStore.set(k, v); // discard yesterday's entries
+    }
+    if (usageStore.size) console.log(`[usage] ${usageStore.size} compteur(s) chargé(s).`);
+  } catch {}
+}
+function saveUsage() {
+  try {
+    const obj = {};
+    for (const [k, v] of usageStore) obj[k] = v;
+    saveJSON(USAGE_FILE, obj);
+  } catch {}
+}
 
 function isAdmin(req) {
   // requireSuperAdmin middleware already validated this request (JWT or key)
@@ -595,9 +649,12 @@ function recordPaymentFailure(subId) {
 function resetPaymentFailures(subId) {
   for (const [, user] of premiumUsers.entries()) {
     if (user.subId !== subId) continue;
-    if (!user.paymentFailures) break;
-    const wasSuspendedForFailures = !user.active && user.paymentFailures >= PAYMENT_FAILURE_THRESHOLD;
+    const wasSuspendedForFailures = !user.active && (user.paymentFailures || 0) >= PAYMENT_FAILURE_THRESHOLD;
     user.paymentFailures = 0;
+    // Renew expiry on each successful payment
+    if (user.type !== 'lifetime') {
+      user.expiresAt = Date.now() + (user.type === 'yearly' ? 370 : 35) * 86400_000;
+    }
     if (wasSuspendedForFailures) {
       user.active = true;
       console.log(`[premium] Accès réactivé après paiement réussi — sub: ${subId}`);
@@ -635,7 +692,10 @@ function getUsageKey(ip, userId) {
 function checkUsage(ip, token, userId) {
   if (token) {
     const user = premiumUsers.get(token);
-    if (user?.active) return { allowed: true, remaining: null, isPremium: true, plan: user.type };
+    const notExpired = !user?.expiresAt || user.expiresAt > Date.now();
+    if (user?.active && notExpired) return { allowed: true, remaining: null, isPremium: true, plan: user.type };
+    // Expired subscription — deactivate silently and fall through to free quota
+    if (user?.active && !notExpired) { user.active = false; savePremiums(); }
   }
   const key       = getUsageKey(ip, userId);
   const record    = getRecord(key);
@@ -647,6 +707,8 @@ function incrementUsage(ip, userId) {
   const key    = getUsageKey(ip, userId);
   const record = getRecord(key);
   record.count++;
+  // Persist asynchronously — fire-and-forget, never blocks response
+  setImmediate(saveUsage);
 }
 
 // ============================================================
@@ -766,35 +828,30 @@ app.get('/api/config', (req, res) => {
 
 // GET /api/admin/abuse-log — journal des abus (admin uniquement)
 app.get('/api/admin/abuse-log', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_abuse_log');
   res.json({ log: AntiFraud.getAbuseLog() });
 });
 
 // GET /api/admin/analytics/realtime — snapshot analytics en temps réel (admin)
 app.get('/api/admin/analytics/realtime', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_analytics');
   res.json(Analytics.getSnapshot());
 });
 
 // GET /api/admin/shadow-mode — liste des utilisateurs en shadow mode (admin)
 app.get('/api/admin/shadow-mode', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_shadow_mode');
   res.json({ active: ShadowMode.listActive() });
 });
 
 // GET /api/admin/dlq — Dead Letter Queue contents (admin)
 app.get('/api/admin/dlq', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_dlq');
   const dlq = DLQ.list(); res.json({ dlq, total: dlq.length });
 });
 
 // DELETE /api/admin/dlq/:id — remove a DLQ entry (admin)
 app.delete('/api/admin/dlq/:id', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'delete_dlq_entry', { id: req.params.id });
   const removed = DLQ.remove(req.params.id);
   res.json({ ok: removed });
@@ -802,7 +859,6 @@ app.delete('/api/admin/dlq/:id', adminRateLimiter, requireSuperAdmin, (req, res)
 
 // GET /api/admin/health/full — full system health (admin)
 app.get('/api/admin/health/full', adminRateLimiter, requireSuperAdmin, async (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_health_full');
   const report = await HealthCheck.runFullCheck();
   res.json(report);
@@ -880,7 +936,6 @@ app.get('/api/admin/monitoring', adminRateLimiter, requireSuperAdmin, async (req
 
 // GET /api/admin/event-log — recent global events
 app.get('/api/admin/event-log', adminRateLimiter, requireSuperAdmin, async (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_event_log');
   const fromTs = parseInt(req.query.from) || 0;
   const count  = Math.min(parseInt(req.query.count) || 100, 1_000);
@@ -890,7 +945,6 @@ app.get('/api/admin/event-log', adminRateLimiter, requireSuperAdmin, async (req,
 
 // GET /api/admin/event-log/user/:userId — user event stream
 app.get('/api/admin/event-log/user/:userId', adminRateLimiter, requireSuperAdmin, async (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_user_event_stream', { targetUserId: req.params.userId });
   const events = await EventLog.getUserEventStream(req.params.userId, 0, 500);
   res.json({ userId: req.params.userId, events, total: events.length });
@@ -898,7 +952,6 @@ app.get('/api/admin/event-log/user/:userId', adminRateLimiter, requireSuperAdmin
 
 // POST /api/admin/event-log/replay — replay events for a userId or time range
 app.post('/api/admin/event-log/replay', adminRateLimiter, requireSuperAdmin, async (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   const { type, userId, fromTs, weekStr } = req.body || {};
 
   auditAction(req, 'replay_events', { type, userId, weekStr });
@@ -928,14 +981,12 @@ app.post('/api/admin/event-log/replay', adminRateLimiter, requireSuperAdmin, asy
 
 // GET /api/admin/outbox — outbox queue status
 app.get('/api/admin/outbox', adminRateLimiter, requireSuperAdmin, async (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_outbox');
   res.json(await Outbox.getStatus());
 });
 
 // GET /api/admin/event-bus — bus subscriber info
 app.get('/api/admin/event-bus', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_event_bus');
   res.json({
     subscribedTypes: EventBus.listSubscribedTypes(),
@@ -947,7 +998,6 @@ app.get('/api/admin/event-bus', adminRateLimiter, requireSuperAdmin, (req, res) 
 
 // POST /api/admin/bot-simulate — run bot simulation suite
 app.post('/api/admin/bot-simulate', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   const { profiles, customHeaders } = req.body || {};
   auditAction(req, 'bot_simulate', { profiles: Array.isArray(profiles) ? profiles : [] });
 
@@ -964,7 +1014,6 @@ app.post('/api/admin/bot-simulate', adminRateLimiter, requireSuperAdmin, (req, r
 
 // POST /api/admin/challenge-route — compute challenge tier for given scores
 app.post('/api/admin/challenge-route', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'challenge_route_test');
   const { botScore = 0, attestationScore = 0, behaviorScore = 0 } = req.body || {};
   const fakeReq = {
@@ -984,7 +1033,6 @@ app.post('/api/admin/challenge-route', adminRateLimiter, requireSuperAdmin, (req
 
 // GET /api/admin/security-status — global security score + system state
 app.get('/api/admin/security-status', adminRateLimiter, requireSuperAdmin, async (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_security_status');
 
   const sm          = SafeMode.getStatus();
@@ -1027,7 +1075,6 @@ app.get('/api/admin/security-status', adminRateLimiter, requireSuperAdmin, async
 
 // POST /api/admin/revoke-session — immediately revoke the caller's JWT
 app.post('/api/admin/revoke-session', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
 
   if (req._adminAuth === 'jwt' && req._adminDec) {
     TokenBlacklist.blacklistToken(req._adminDec);
@@ -1039,7 +1086,6 @@ app.post('/api/admin/revoke-session', adminRateLimiter, requireSuperAdmin, (req,
 
 // POST /api/admin/revoke-user-sessions — revoke ALL sessions for a target email
 app.post('/api/admin/revoke-user-sessions', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
 
   const { email } = req.body || {};
   if (!email || typeof email !== 'string')
@@ -1059,14 +1105,12 @@ app.post('/api/admin/revoke-user-sessions', adminRateLimiter, requireSuperAdmin,
 
 // GET /api/admin/backup — list available backups
 app.get('/api/admin/backup', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'list_backups');
   res.json({ backups: AutoBackup.listBackups(), status: AutoBackup.getStatus() });
 });
 
 // POST /api/admin/backup — trigger manual backup
 app.post('/api/admin/backup', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'manual_backup');
   const result = AutoBackup.runBackup();
   res.json(result);
@@ -1077,7 +1121,6 @@ app.post('/api/admin/backup', adminRateLimiter, requireSuperAdmin, (req, res) =>
 // GET /api/admin/safe-mode — safe mode status
 // POST /api/admin/reset-usage — vide le compteur IP de génération (admin)
 app.post('/api/admin/reset-usage', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   const count = usageStore.size;
   usageStore.clear();
   auditAction(req, 'reset_usage');
@@ -1085,14 +1128,12 @@ app.post('/api/admin/reset-usage', adminRateLimiter, requireSuperAdmin, (req, re
 });
 
 app.get('/api/admin/safe-mode', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_safe_mode');
   res.json(SafeMode.getStatus());
 });
 
 // POST /api/admin/safe-mode — activate or deactivate safe mode manually
 app.post('/api/admin/safe-mode', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   const { action, reason } = req.body || {};
 
   if (action === 'activate') {
@@ -1112,7 +1153,6 @@ app.post('/api/admin/safe-mode', adminRateLimiter, requireSuperAdmin, (req, res)
 
 // GET /api/admin/integrity — file integrity status + manual check trigger
 app.get('/api/admin/integrity', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_integrity');
   const alerts = FileIntegrity.runCheck();
   res.json({ ...FileIntegrity.getStatus(), recentAlerts: alerts });
@@ -1122,35 +1162,30 @@ app.get('/api/admin/integrity', adminRateLimiter, requireSuperAdmin, (req, res) 
 
 // GET /api/admin/analytics/funnel — funnel + conversion analytics
 app.get('/api/admin/analytics/funnel', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_funnel_analytics');
   res.json(FunnelAnalytics.getSnapshot());
 });
 
 // GET /api/admin/analytics/latency — request latency percentiles p50/p95/p99
 app.get('/api/admin/analytics/latency', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_latency');
   res.json(RequestTracer.getMetrics());
 });
 
 // GET /api/admin/retention — user retention analytics
 app.get('/api/admin/retention', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_retention');
   res.json(Retention.getRetentionSnapshot());
 });
 
 // GET /api/admin/env — environment validation report
 app.get('/api/admin/env', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   auditAction(req, 'view_env_report');
   res.json(EnvValidator.getReport());
 });
 
 // POST /api/admin/funnel-event — manual funnel event ingestion (from frontend beacons)
 app.post('/api/admin/funnel-event', adminRateLimiter, requireSuperAdmin, (req, res) => {
-  if (!isAdmin(req)) return res.status(403).json({ error: 'Accès refusé.' });
   const { event, meta } = req.body || {};
   if (!event || typeof event !== 'string') return res.status(400).json({ error: 'event requis.' });
   FunnelAnalytics.track(event, meta || {});
@@ -1499,7 +1534,7 @@ app.post('/api/quiz-result', requireAuth, (req, res) => {
   }
 
   // Evaluate risk for shadow mode promotion (uses all signals, non-blocking)
-  const riskCheck = AntiFraud.computeRiskScore(user, req, loadJSON(USERS_FILE));
+  const riskCheck = AntiFraud.computeRiskScore(user, req, users);
   ShadowMode.evaluateForShadow(req.user.userId, riskCheck.score, req._botScore || 0);
 
   const oldXP = gami.xp || 0;
@@ -2089,43 +2124,43 @@ Q5:    type "open", difficulty 2 — ask them to solve a problem similar to thei
     // Sauvegarde + XP génération si connecté
     const contentId = crypto.randomUUID();
     if (req.user) {
-      const users = loadJSON(USERS_FILE);
-      const uKey  = req.user.email;  // clé canonique = email
-      if (users[uKey]) {
-        if (!users[uKey].gamification) users[uKey].gamification = initGami();
-        const g = users[uKey].gamification;
-        const genCtx = { userId: req.user.userId, email: req.user.email, source: 'generate' };
-        applyStreak(g, genCtx);
-        // XP génération de base
-        giveXP(g, usage.isPremium ? 10 : 5, genCtx);
-        // Mission "générer 1 fiche"
-        resetMissionsIfNeeded(g);
-        if (!g.dailyMissions.generate) {
-          g.dailyMissions.generate = true;
-          giveXP(g, MISSION_DEFS.generate.xp);
-          checkAllMissionsBonus(g);
+      // Mutex prevents concurrent /api/generate calls from clobbering each other's writes
+      await getFileMutex(USERS_FILE).run(async () => {
+        const users = loadJSON(USERS_FILE);
+        const uKey  = req.user.email;
+        if (users[uKey]) {
+          if (!users[uKey].gamification) users[uKey].gamification = initGami();
+          const g = users[uKey].gamification;
+          const genCtx = { userId: req.user.userId, email: req.user.email, source: 'generate' };
+          applyStreak(g, genCtx);
+          giveXP(g, usage.isPremium ? 10 : 5, genCtx);
+          resetMissionsIfNeeded(g);
+          if (!g.dailyMissions.generate) {
+            g.dailyMissions.generate = true;
+            giveXP(g, MISSION_DEFS.generate.xp, genCtx);
+            checkAllMissionsBonus(g);
+          }
+          ReferralService.ensureReferralCode(users[uKey]);
+          saveJSON(USERS_FILE, users);
         }
-        // Garantit que l'utilisateur a un code referral
-        ReferralService.ensureReferralCode(users[uKey]);
-        saveJSON(USERS_FILE, users);
-      }
-    }
-    if (req.user) {
-      const content     = loadJSON(CONTENT_FILE, {});
-      const userContent = content[req.user.userId] || [];
-      userContent.push({
-        id:         contentId,
-        createdAt:  new Date().toISOString(),
-        topic:      text.slice(0, 100),
-        mode:       result.mode || 'full',
-        summary:    result.summary,
-        flashcard:  result.flashcard,
-        quiz:       result.quiz,
-        quizResult: null,
       });
-      if (userContent.length > 50) userContent.splice(0, userContent.length - 50);
-      content[req.user.userId] = userContent;
-      saveJSON(CONTENT_FILE, content);
+      await getFileMutex(CONTENT_FILE).run(async () => {
+        const content     = loadJSON(CONTENT_FILE, {});
+        const userContent = content[req.user.userId] || [];
+        userContent.push({
+          id:         contentId,
+          createdAt:  new Date().toISOString(),
+          topic:      text.slice(0, 100),
+          mode:       result.mode || 'full',
+          summary:    result.summary,
+          flashcard:  result.flashcard,
+          quiz:       result.quiz,
+          quizResult: null,
+        });
+        if (userContent.length > 50) userContent.splice(0, userContent.length - 50);
+        content[req.user.userId] = userContent;
+        saveJSON(CONTENT_FILE, content);
+      });
     }
 
     return res.json({
@@ -2274,9 +2309,10 @@ app.get('/api/verify-payment', async (req, res) => {
       const plan  = session.metadata?.plan || (session.mode === 'subscription' ? 'monthly' : 'lifetime');
       const subId = session.subscription || null;
       const token = crypto.randomUUID();
+      const expiresAt = plan === 'lifetime' ? null : Date.now() + (plan === 'yearly' ? 370 : 35) * 86400_000;
 
       // Stocke sessionId pour dédupliquer les appels répétés (refresh, double-tap)
-      premiumUsers.set(token, { type: plan, subId, sessionId: session_id, active: true, createdAt: new Date().toISOString() });
+      premiumUsers.set(token, { type: plan, subId, sessionId: session_id, active: true, expiresAt, createdAt: new Date().toISOString() });
       savePremiums();
       console.log(`[premium] Nouveau token "${plan}" — sub: ${subId || 'N/A'}`);
       return res.json({ success: true, token, plan });
@@ -2852,7 +2888,14 @@ app.get('/api/admin/live-stats', adminRateLimiter, requireSuperAdmin, async (req
 // ============================================================
 //  PUBLIC STATS — Sprint 4
 // ============================================================
+let _publicStatsCache = null;
+let _publicStatsCacheTs = 0;
+const _PUBLIC_STATS_TTL = 60_000; // 60s server-side cache (prevents bot-driven disk thrash)
+
 app.get('/api/public-stats', (req, res) => {
+  if (_publicStatsCache && Date.now() - _publicStatsCacheTs < _PUBLIC_STATS_TTL) {
+    return res.set('Cache-Control', 'public, max-age=60').json(_publicStatsCache);
+  }
   try {
     const users   = loadJSON(USERS_FILE, {});
     const content = loadJSON(CONTENT_FILE, {});
@@ -2865,8 +2908,9 @@ app.get('/api/public-stats', (req, res) => {
       (sum, u) => sum + (u.gamification?.totalQuizzes || 0), 0
     );
 
-    res.set('Cache-Control', 'public, max-age=60');
-    res.json({ totalUsers, totalPacks, totalQuizzes });
+    _publicStatsCache = { totalUsers, totalPacks, totalQuizzes };
+    _publicStatsCacheTs = Date.now();
+    res.set('Cache-Control', 'public, max-age=60').json(_publicStatsCache);
   } catch {
     res.json({ totalUsers: 0, totalPacks: 0, totalQuizzes: 0 });
   }
@@ -2995,7 +3039,7 @@ app.post('/api/vision', visionLimiter, optionalAuth, upload_multer.single('image
     return res.json({ text });
   } catch (err) {
     console.error('[vision]', err.message);
-    return res.status(502).json({ error: 'Erreur vision : ' + err.message });
+    return res.status(502).json({ error: process.env.NODE_ENV === 'production' ? 'Erreur vision.' : 'Erreur vision : ' + err.message });
   }
 });
 
@@ -3018,6 +3062,7 @@ app.use(SecretSanitizer.sanitizeErrorResponse);
 function shutdown(signal) {
   console.log(`\n[server] ${signal} reçu — arrêt propre.`);
   savePremiums();
+  saveUsage();
   MemoryWatchdog.stop();
   if (global._httpServer) {
     global._httpServer.close(() => process.exit(0));
@@ -3058,6 +3103,7 @@ process.on('unhandledRejection', (reason) => {
 
 global._httpServer = app.listen(PORT, async () => {
   loadPremiums();            // Charge les tokens premium persistés
+  loadUsage();               // Restore daily usage counters from disk
   LeaderboardService.load(); // Restore leaderboard cache from disk
 
   // Start security services

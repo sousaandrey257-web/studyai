@@ -737,7 +737,7 @@ async function loadUsers(query) {
       <td>${badges}</td>
       <td style="color:var(--muted)">${fmtDate(u.createdAt)}</td>
       <td style="color:var(--muted)">—</td>
-      <td><button class="btn btn-secondary btn-xs" onclick="openUserModal('${esc(u.email)}')">Détail →</button></td>
+      <td><button class="btn btn-secondary btn-xs" data-action="open-user" data-email="${esc(u.email)}">Détail →</button></td>
     </tr>`;
   }).join('');
 }
@@ -762,10 +762,10 @@ async function openUserModal(email) {
   `;
   const isBanned = u.banned;
   document.getElementById('modal-actions').innerHTML = `
-    <button class="btn ${isBanned ? 'btn-green' : 'btn-red'} btn-sm" onclick="banUser('${esc(email)}', ${!isBanned})">${isBanned ? '✅ Débannir' : '🚫 Bannir'}</button>
-    <button class="btn btn-yellow btn-sm" onclick="grantPremium('${esc(email)}', false)">✨ Activer Premium</button>
-    <button class="btn btn-secondary btn-sm" onclick="grantPremium('${esc(email)}', true)">✕ Révoquer Premium</button>
-    <button class="btn btn-secondary btn-sm" onclick="revokeSessions('${esc(email)}')">🔑 Révoquer sessions</button>
+    <button class="btn ${isBanned ? 'btn-green' : 'btn-red'} btn-sm" data-action="ban-user" data-email="${esc(email)}" data-ban="${!isBanned}">${isBanned ? '✅ Débannir' : '🚫 Bannir'}</button>
+    <button class="btn btn-yellow btn-sm" data-action="grant-premium" data-email="${esc(email)}" data-revoke="false">✨ Activer Premium</button>
+    <button class="btn btn-secondary btn-sm" data-action="grant-premium" data-email="${esc(email)}" data-revoke="true">✕ Révoquer Premium</button>
+    <button class="btn btn-secondary btn-sm" data-action="revoke-sessions" data-email="${esc(email)}">🔑 Révoquer sessions</button>
   `;
   document.getElementById('user-modal').classList.add('open');
 }
@@ -790,6 +790,18 @@ async function revokeSessions(email) {
   const d = await api('/api/admin/revoke-user-sessions', { method: 'POST', body: JSON.stringify({ email }) });
   alert(d.message || d.error || 'Fait.');
 }
+
+// ── Event delegation for dynamically injected buttons (CSP compliance) ───────
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const action = btn.dataset.action;
+  const email  = btn.dataset.email;
+  if (action === 'open-user')       openUserModal(email);
+  else if (action === 'ban-user')   banUser(email, btn.dataset.ban === 'true');
+  else if (action === 'grant-premium') grantPremium(email, btn.dataset.revoke === 'true');
+  else if (action === 'revoke-sessions') revokeSessions(email);
+});
 
 // ── Security ─────────────────────────────────────────────────────────────────
 

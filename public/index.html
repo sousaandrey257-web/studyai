@@ -722,14 +722,14 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         <button class="auth-tab"        data-tab="register" data-i18n="auth_register_tab">Créer un compte</button>
       </div>
 
-      <form id="form-login" class="auth-form" onsubmit="return false">
+      <form id="form-login" class="auth-form">
         <input type="email"    id="login-email"    class="auth-input" placeholder="Email"          autocomplete="email" />
         <input type="password" id="login-password" class="auth-input" data-i18n-ph="auth_pass_ph" placeholder="Mot de passe"   autocomplete="current-password" />
         <button id="btn-do-login" type="button" class="btn-primary btn-full" data-i18n="auth_login_btn">Se connecter</button>
         <a href="/reset-password" id="auth-forgot-link" class="auth-forgot-link" data-i18n="auth_forgot">Mot de passe oublié ?</a>
       </form>
 
-      <form id="form-register" class="auth-form hidden" onsubmit="return false">
+      <form id="form-register" class="auth-form hidden">
         <input type="email"    id="register-email"    class="auth-input" placeholder="Email"                          autocomplete="email" />
         <input type="password" id="register-password" class="auth-input" data-i18n-ph="auth_pass_new_ph" placeholder="Mot de passe (6 caractères min.)" autocomplete="new-password" />
         <button id="btn-do-register" type="button" class="btn-primary btn-full" data-i18n="auth_register_btn">Créer mon compte</button>

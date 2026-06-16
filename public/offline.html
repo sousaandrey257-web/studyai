@@ -43,6 +43,7 @@
   <div class="icon">📡</div>
   <h1>Pas de connexion</h1>
   <p>StudyAI a besoin d'une connexion internet pour analyser tes cours et générer des quiz. Vérifie ta connexion puis réessaie.</p>
-  <button class="btn" onclick="window.location.reload()">Réessayer</button>
+  <button class="btn" id="btn-retry">Réessayer</button>
+  <script>document.getElementById('btn-retry').addEventListener('click', function() { window.location.reload(); });</script>
 </body>
 </html>

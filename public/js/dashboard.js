@@ -643,6 +643,20 @@
     window.location.href = '/';
   };
 
+  // Wire up logout buttons (removed inline onclick for CSP compliance)
+  document.addEventListener('DOMContentLoaded', function() {
+    var logoutBtns = [
+      document.getElementById('btn-logout-header'),
+      document.getElementById('btn-logout-bottom'),
+    ];
+    logoutBtns.forEach(function(btn) {
+      if (btn) btn.addEventListener('click', window.dashLogout);
+    });
+
+    var surpriseBtn = document.getElementById('btn-surprise-quiz');
+    if (surpriseBtn) surpriseBtn.addEventListener('click', window.startSurpriseQuiz);
+  });
+
   // Surprise quiz — redirige vers la page principale et lance le quiz
   window.startSurpriseQuiz = async function() {
     var btn = document.getElementById('btn-surprise-quiz');
@@ -655,7 +669,6 @@
         if (btn) { btn.disabled = false; btn.textContent = '🎲 Interro surprise'; }
         return;
       }
-      // Stocke les questions et redirige vers la page principale
       sessionStorage.setItem('studyai_surprise', JSON.stringify(data));
       window.location.href = '/?surprise=1';
     } catch(e) {

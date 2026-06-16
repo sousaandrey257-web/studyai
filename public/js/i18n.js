@@ -13673,6 +13673,18 @@ const translations = {
     aria_lang_select:           'Вибрати мову',
     aria_nav:           'Навігація',
     aria_sfx:           'Звукові ефекти',
+    onboarding_title:   'Ласкаво просимо до StudyAI!',
+    onboarding_sub:     'Перетвори будь-який курс на тести та картки за 45 секунд.',
+    onboarding_step1_title: 'Встав свій курс',
+    onboarding_step1_desc:  'Текст, розділ, нотатки — або просто тема',
+    onboarding_step2_title: 'Натисни "Аналізувати"',
+    onboarding_step2_desc:  'ШІ створить твій навчальний пакет за 45 секунд',
+    onboarding_step3_title: 'Навчайся та розвивайся',
+    onboarding_step3_desc:  'Резюме · Картки · Інтерактивний тест',
+    onboarding_cta:         'Поїхали! ⚡',
+    onboarding_free_note:   'Безкоштовно · 12 генерацій на день · Без кредитної картки',
+    toast_anki_exported:    'Картки експортовано до Anki!',
+    toast_share_copied:     'Посилання скопійовано! Поділися з друзями.',
   },
 };
 
@@ -13753,20 +13765,6 @@ window.i18n = {
   applyTranslations,
   get currentLang() { return currentLang; },
   get langs() { return Object.keys(translations); },
-    onboarding_title:              'Ласкаво просимо до StudyAI!',
-    onboarding_sub:              'Перетвори будь-який курс на тести та картки за 45 секунд.',
-    onboarding_step1_title:              'Встав свій курс',
-    onboarding_step1_desc:              'Текст, розділ, нотатки — або просто тема',
-    onboarding_step2_title:              'Натисни "Аналізувати"',
-    onboarding_step2_desc:              'ШІ створить твій навчальний пакет за 45 секунд',
-    onboarding_step3_title:              'Навчайся та розвивайся',
-    onboarding_step3_desc:              'Резюме · Картки · Інтерактивний тест',
-    onboarding_cta:              'Поїхали! ⚡',
-    onboarding_free_note:              'Безкоштовно · 12 генерацій на день · Без кредитної картки',
-    toast_anki_exported:              'Картки експортовано до Anki!',
-    toast_share_copied:              'Посилання скопійовано! Поділися з друзями.',
-
-
 };
 
 // Attach lang selector and apply saved/detected language on load.
