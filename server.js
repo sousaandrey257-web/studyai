@@ -545,6 +545,9 @@ const _genCountsToday = { total: 0, date: '' }; // compteur générations du jou
 function _trackActivity(req) {
   const d = today();
   if (_genCountsToday.date !== d) { _genCountsToday.total = 0; _genCountsToday.date = d; }
+  // Only count real browser traffic in live stats
+  const ua = req.headers['user-agent'] || '';
+  if (!ua || /bot|crawl|spider|scraper|headless|phantom|selenium|puppeteer|playwright|wget|curl|python|axios|httpx|java\/|go-http|ruby|okhttp/i.test(ua)) return;
   _genCountsToday.total++;
   const key = req.user?.userId || getClientIP(req);
   _liveActivity.set(key, { lastSeen: Date.now(), isRegistered: !!req.user?.userId, userId: req.user?.userId || null });
@@ -1893,6 +1896,12 @@ app.get('/api/generate', (req, res) => {
   res.status(405).json({ error: 'Cette route doit être appelée en POST, pas en GET.' });
 });
 app.post('/api/generate', optionalAuth, async (req, res) => {
+  // Block obvious bots/scrapers — real browsers always send a proper UA
+  const ua = req.headers['user-agent'] || '';
+  if (!ua || /bot|crawl|spider|scraper|headless|phantom|selenium|puppeteer|playwright|wget|curl|python-requests|axios|httpx|java\/|go-http|ruby|okhttp/i.test(ua)) {
+    return res.status(403).json({ error: 'Accès refusé.' });
+  }
+
   _trackActivity(req);
   const admin  = isAdmin(req);
   const ip     = getClientIP(req);

@@ -51,6 +51,10 @@ router.use(optAuth);
 // Body: { text?, base64?, mimeType?, filename?, mode? }
 router.post('/analyze', optAuth, analyzeLimiter, async (req, res) => {
   try {
+    const ua = req.headers['user-agent'] || '';
+    if (!ua || /bot|crawl|spider|scraper|headless|phantom|selenium|puppeteer|playwright|wget|curl|python-requests|axios|httpx|java\/|go-http|ruby|okhttp/i.test(ua))
+      return res.status(403).json({ error: 'Accès refusé.' });
+
     const { text, base64, mimeType = 'text/plain', filename = '', mode = 'standard' } = req.body || {};
     if (!text && !base64) return res.status(400).json({ error: 'Aucun contenu fourni.' });
     if (!['standard', 'simple', 'expert', 'exam'].includes(mode))
