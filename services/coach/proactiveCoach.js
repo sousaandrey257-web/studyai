@@ -6,7 +6,7 @@ const fs   = require('fs');
 const path = require('path');
 
 const DIR = path.join(__dirname, '../../data/memory');
-if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
+try { if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true }); } catch {}
 
 // ── Coaching insight generators ───────────────────────────────
 function generateInsights(userId, { sessions = [], weakPoints = [], masteryData = {} } = {}) {

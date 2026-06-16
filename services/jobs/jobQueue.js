@@ -7,7 +7,7 @@ const DIR     = path.join(__dirname, '../../data/jobs');
 const TTL_MS  = 24 * 3600_000; // 24 hours
 const MAX_MEM = 500;
 
-if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
+try { if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true }); } catch {}
 
 const mem = new Map(); // jobId → job (hot cache)
 

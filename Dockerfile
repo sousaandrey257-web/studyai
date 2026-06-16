@@ -19,24 +19,29 @@ RUN npm ci --omit=dev --ignore-scripts \
 # ── Stage 2: Final image ──────────────────────────────────────
 FROM node:20-alpine AS final
 
-# Security: run as non-root
+# su-exec: lightweight tool to drop privileges (like gosu but smaller)
+RUN apk add --no-cache su-exec
+
+# Security: create non-root user (runs via su-exec after volume chown)
 RUN addgroup -g 1001 -S studyai \
     && adduser  -u 1001 -S studyai -G studyai
 
 WORKDIR /app
 
 # Copy dependencies from deps stage
-COPY --from=deps --chown=studyai:studyai /app/node_modules ./node_modules
+COPY --from=deps /app/node_modules ./node_modules
 
 # Copy application source (exclude files via .dockerignore)
-COPY --chown=studyai:studyai . .
+COPY . .
 
-# Create data directory with correct ownership
-RUN mkdir -p data/backups \
-    && chown -R studyai:studyai data
+# Entrypoint: chowns Railway volume to studyai, then drops privileges
+RUN chmod +x entrypoint.sh
 
-# Drop to non-root user
-USER studyai
+# Create data directory so it exists in the image
+RUN mkdir -p data/backups && chown -R studyai:studyai data
+
+# Run as root so entrypoint.sh can chown the mounted volume
+USER root
 
 # Expose port
 EXPOSE 3000
@@ -45,5 +50,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
   CMD wget -qO- http://localhost:3000/healthz || exit 1
 
-# Start server
+# Entrypoint chowns /app/data then drops to studyai
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["node", "server.js"]

@@ -4,7 +4,7 @@ const fs   = require('fs');
 const path = require('path');
 
 const DIR = path.join(__dirname, '../../data/memory');
-if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
+try { if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true }); } catch {}
 
 function file(userId) { return path.join(DIR, `${userId}.json`); }
 

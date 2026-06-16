@@ -7,7 +7,7 @@ const DIR     = path.join(__dirname, '../../data/ai_cache');
 const TTL_MS  = parseInt(process.env.AI_CACHE_TTL_H || '72', 10) * 3600_000;
 const MAX_FILES = 500;
 
-if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
+try { if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true }); } catch {}
 
 function hash(text) {
   return crypto.createHash('sha256').update(text.slice(0, 20000)).digest('hex').slice(0, 20);

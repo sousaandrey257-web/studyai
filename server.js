@@ -185,7 +185,7 @@ const JWT_SECRET = process.env.JWT_SECRET?.trim() ||
     return t;
   })();
 
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+try { if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true }); } catch {}
 
 // ── Per-file write mutex — serialises concurrent async writes to the same file ──
 class _FileMutex {

@@ -6,7 +6,7 @@ const crypto = require('crypto');
 
 const DIR    = path.join(__dirname, '../../data/battles');
 const TTL_MS = 24 * 3600_000;
-if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
+try { if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true }); } catch {}
 
 function file(id) { return path.join(DIR, `${id}.json`); }
 function load(id) { try { return JSON.parse(fs.readFileSync(file(id), 'utf8')); } catch { return null; } }

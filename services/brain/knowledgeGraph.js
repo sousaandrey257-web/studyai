@@ -4,7 +4,7 @@ const fs   = require('fs');
 const path = require('path');
 
 const DIR = path.join(__dirname, '../../data/brain');
-if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
+try { if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true }); } catch {}
 
 function file(userId) { return path.join(DIR, `graph_${userId}.json`); }
 

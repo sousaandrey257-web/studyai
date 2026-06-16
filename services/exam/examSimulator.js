@@ -4,7 +4,7 @@ const path   = require('path');
 const crypto = require('crypto');
 
 const DIR = path.join(__dirname, '../../data/exams');
-if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true });
+try { if (!fs.existsSync(DIR)) fs.mkdirSync(DIR, { recursive: true }); } catch {}
 
 // ── Exam session management ──────────────────────────────────
 function createExam({ userId, questions, config = {} }) {
