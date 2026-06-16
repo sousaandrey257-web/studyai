@@ -41,9 +41,9 @@ USER studyai
 # Expose port
 EXPOSE 3000
 
-# Health check — lightweight endpoint, no AI call
-HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-  CMD wget -qO- http://localhost:3000/api/health || exit 1
+# Health check — lightweight endpoint, no auth required
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+  CMD wget -qO- http://localhost:3000/healthz || exit 1
 
 # Start server
 CMD ["node", "server.js"]
