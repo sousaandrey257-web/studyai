@@ -982,6 +982,7 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
         ? rawWords.split('|')
         : ['réviser plus efficacement', 'maîtriser n\'importe quelle matière', 'réussir ses examens', 'transformer tes cours en quiz', 'gagner du temps de révision'];
       var rotIdx = 0;
+      rotEl.textContent = words[0];           // sync le 1er mot à la langue courante (évite le français figé au chargement)
       setInterval(function() {
         rotEl.style.opacity = '0';
         rotEl.style.transform = 'translateY(-8px)';
@@ -994,7 +995,11 @@ Conséquences : création de l'ONU, Guerre froide, décolonisation, Plan Marshal
       }, 2800);
       document.addEventListener('langchange', function() {
         var raw = window.i18n ? window.i18n.t('rotating_words') : '';
-        if (raw && raw.indexOf('|') > -1) { words = raw.split('|'); rotIdx = 0; }
+        if (raw && raw.indexOf('|') > -1) {
+          words = raw.split('|');
+          rotIdx = 0;
+          rotEl.textContent = words[0];        // maj immédiate, sans attendre le prochain cycle de 2,8 s
+        }
       });
     }
 
